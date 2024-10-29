@@ -5,6 +5,9 @@ use std::{
     process::Command,
 };
 
+#[cfg(target_os = "windows")]
+use std::os::windows::process::CommandExt;
+
 use tauri::{
     menu::{Menu, MenuItemBuilder},
     Emitter,
@@ -339,7 +342,12 @@ fn preview(filename: &str, content: &str) {
 
             if let Ok(mut file) = File::create(&typst_file) {
                 if let Ok(_) = file.write_all(result.as_bytes()) {
-                    Command::new("typst")
+                    let mut command = Command::new("typst");
+
+                    #[cfg(target_os = "windows")]
+                    command.creation_flags(0x08000000);
+
+                    command
                         .current_dir(dirname)
                         .args(["compile", &typst_file, &pdf_file, "--open"])
                         .output()
@@ -362,21 +370,18 @@ pub fn run() {
 
             for item in menu.items().unwrap() {
                 if let Some(submenu) = item.as_submenu() {
-                    for (menu, remove_default, menu_items) in [
-                        (
-                            "File",
-                            true,
-                            vec![
-                                ("New", "new", "CmdOrCtrl+N"),
-                                ("Open", "open", "CmdOrCtrl+O"),
-                                ("Save", "save", "CmdOrCtrl+S"),
-                                ("Save As", "saveas", "CmdOrCtrl+Shift+S"),
-                                ("Preview", "preview", "CmdOrCtrl+R"),
-                                ("Close Tab", "close", "CmdOrCtrl+W"),
-                            ],
-                        ),
-                        ("Help", false, vec![("About", "about", "")]),
-                    ] {
+                    for (menu, remove_default, menu_items) in [(
+                        "File",
+                        true,
+                        vec![
+                            ("New", "new", "CmdOrCtrl+N"),
+                            ("Open", "open", "CmdOrCtrl+O"),
+                            ("Save", "save", "CmdOrCtrl+S"),
+                            ("Save As", "saveas", "CmdOrCtrl+Shift+S"),
+                            ("Preview", "preview", "CmdOrCtrl+Shift+K"),
+                            ("Close Tab", "close", "CmdOrCtrl+W"),
+                        ],
+                    )] {
                         if submenu.text().is_ok_and(|s| s == menu) {
                             if remove_default {
                                 for _ in 0..submenu.items().unwrap().len() {

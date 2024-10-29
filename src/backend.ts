@@ -37,14 +37,14 @@ export const onClose = () => {
   setLocalStorage("Current Document", currentDocument - 1)
 }
 
-export const onPreview = () => {
+export const onPreview = async () => {
   const openDocuments = getLocalStorage<TypStudioDocument[]>(
     "Open Documents",
     []
   )
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
-  invoke("preview", {
+  await invoke("preview", {
     filename: document.filename,
     content: JSON.stringify(document.content),
   })
@@ -68,7 +68,7 @@ export const onSaveAs = (filename: string) => {
   }
 }
 
-export const onSave = () => {
+export const onSave = async () => {
   const openDocuments = getLocalStorage<TypStudioDocument[]>(
     "Open Documents",
     []
@@ -78,7 +78,7 @@ export const onSave = () => {
   if (document.filename) {
     document.dirty = false
     setLocalStorage("Open Documents", openDocuments)
-    save(document.filename, JSON.stringify(document.content))
+    await save(document.filename, JSON.stringify(document.content))
   } else {
     saveAs()
   }

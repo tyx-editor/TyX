@@ -15,7 +15,8 @@ import TextDirection from "tiptap-text-direction"
 
 import { TypStudioDocument } from "../models"
 import { onPreview, onSave } from "../backend"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { Loader } from "@mantine/core"
 
 export const SaveControl = (props: RichTextEditorControlProps) => {
   return (
@@ -31,14 +32,21 @@ export const SaveControl = (props: RichTextEditorControlProps) => {
 }
 
 export const PreviewControl = (props: RichTextEditorControlProps) => {
+  const [loading, setLoading] = useState(false)
+
   return (
     <RichTextEditor.Control
-      onClick={onPreview}
+      onClick={() => {
+        setLoading(true)
+        onPreview()
+          .then(() => setLoading(false))
+          .catch(() => setLoading(false))
+      }}
       aria-label="Preview as PDF"
       title="Preview as PDF"
       {...props}
     >
-      <i className="fa-solid fa-eye" />
+      {loading ? <Loader size={10} /> : <i className="fa-solid fa-eye" />}
     </RichTextEditor.Control>
   )
 }
