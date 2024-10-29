@@ -11,6 +11,7 @@ export const initialize = () => {
   listen("new", onNew)
   listen("save", onSave)
   listen("close", onClose)
+  listen("preview", onPreview)
   listen<[string]>("saveas", (e) => onSaveAs(...e.payload))
 
   check()
@@ -34,6 +35,19 @@ export const onClose = () => {
   openDocuments.splice(currentDocument, 1)
   setLocalStorage("Open Documents", openDocuments)
   setLocalStorage("Current Document", currentDocument - 1)
+}
+
+export const onPreview = () => {
+  const openDocuments = getLocalStorage<TypStudioDocument[]>(
+    "Open Documents",
+    []
+  )
+  const currentDocument = getLocalStorage<number>("Current Document")
+  const document = openDocuments[currentDocument]
+  invoke("preview", {
+    filename: document.filename,
+    content: JSON.stringify(document.content),
+  })
 }
 
 export const onSaveAs = (filename: string) => {

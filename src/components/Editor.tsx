@@ -1,7 +1,6 @@
 import {
   RichTextEditor,
   Link,
-  useRichTextEditorContext,
   RichTextEditorControlProps,
 } from "@mantine/tiptap"
 import { JSONContent, useEditor } from "@tiptap/react"
@@ -14,9 +13,8 @@ import SubScript from "@tiptap/extension-subscript"
 import Highlight from "@tiptap/extension-highlight"
 import TextDirection from "tiptap-text-direction"
 
-import { invoke } from "@tauri-apps/api/core"
 import { TypStudioDocument } from "../models"
-import { onSave } from "../backend"
+import { onPreview, onSave } from "../backend"
 import { useEffect } from "react"
 
 export const SaveControl = (props: RichTextEditorControlProps) => {
@@ -32,24 +30,12 @@ export const SaveControl = (props: RichTextEditorControlProps) => {
   )
 }
 
-interface RenderControlProps extends RichTextEditorControlProps {
-  filename: string | undefined
-}
-
-export const RenderControl = (props: RenderControlProps) => {
-  const { editor } = useRichTextEditorContext()
-
+export const PreviewControl = (props: RichTextEditorControlProps) => {
   return (
     <RichTextEditor.Control
-      onClick={() =>
-        invoke("preview", {
-          filename: props.filename,
-          content: JSON.stringify(editor?.getJSON() ?? {}),
-        })
-      }
+      onClick={onPreview}
       aria-label="Preview as PDF"
       title="Preview as PDF"
-      disabled={props.filename === undefined}
       {...props}
     >
       <i className="fa-solid fa-eye" />
@@ -149,7 +135,7 @@ const Editor = ({
 
           <RichTextEditor.ControlsGroup>
             <SaveControl disabled={doc.filename !== undefined && !doc.dirty} />
-            <RenderControl filename={doc.filename} />
+            <PreviewControl disabled={doc.filename === undefined} />
           </RichTextEditor.ControlsGroup>
         </RichTextEditor.Toolbar>
 

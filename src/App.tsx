@@ -81,7 +81,8 @@ const App = () => {
                   </ActionIcon>
                 }
               >
-                {doc.filename?.split("/").pop() ?? "Untitled"}
+                {doc.filename?.split("/").pop()?.split("\\").pop() ??
+                  "Untitled"}
               </Tabs.Tab>
             ))}
           </Tabs.List>
