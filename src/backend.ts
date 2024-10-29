@@ -48,6 +48,8 @@ export const onPreview = async () => {
     filename: document.filename,
     content: JSON.stringify(document.content),
   })
+  document.dirty = false
+  setLocalStorage("Open Documents", openDocuments)
 }
 
 export const onSaveAs = (filename: string) => {

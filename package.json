@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "bun run scripts/download.ts && tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri"
   },
@@ -32,12 +32,13 @@
     "tiptap-text-direction": "^0.3.1"
   },
   "devDependencies": {
+    "@tauri-apps/cli": ">=2.0.0",
+    "@types/bun": "^1.1.12",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.2.1",
     "typescript": "^5.2.2",
-    "vite": "^5.3.1",
-    "@tauri-apps/cli": ">=2.0.0"
+    "vite": "^5.3.1"
   },
   "prettier": {
     "semi": false

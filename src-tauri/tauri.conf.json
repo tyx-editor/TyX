@@ -31,7 +31,8 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "createUpdaterArtifacts": true
+    "createUpdaterArtifacts": true,
+    "externalBin": ["bin/typst"]
   },
   "plugins": {
     "updater": {

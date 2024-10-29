@@ -2,7 +2,6 @@ use std::{
     fs::File,
     io::{Read, Write},
     path::Path,
-    process::Command,
 };
 
 #[cfg(target_os = "windows")]
@@ -13,6 +12,7 @@ use tauri::{
     Emitter,
 };
 use tauri_plugin_dialog::DialogExt;
+use tauri_plugin_shell::ShellExt;
 use typst_syntax::{SyntaxKind, SyntaxNode};
 use typstyle_core::{calculate_attributes, pretty::PrettyPrinter, strip_trailing_whitespace};
 
@@ -317,7 +317,7 @@ fn open(handle: tauri::AppHandle) {
 }
 
 #[tauri::command]
-fn preview(filename: &str, content: &str) {
+fn preview(handle: tauri::AppHandle, filename: &str, content: &str) {
     let basename = filename
         .strip_suffix(".tsd")
         .unwrap_or(filename)
@@ -342,16 +342,16 @@ fn preview(filename: &str, content: &str) {
 
             if let Ok(mut file) = File::create(&typst_file) {
                 if let Ok(_) = file.write_all(result.as_bytes()) {
-                    let mut command = Command::new("typst");
+                    let command = handle.shell().sidecar("typst").unwrap();
 
-                    #[cfg(target_os = "windows")]
-                    command.creation_flags(0x08000000);
-
-                    command
-                        .current_dir(dirname)
-                        .args(["compile", &typst_file, &pdf_file, "--open"])
-                        .output()
-                        .expect("failed ");
+                    tauri::async_runtime::block_on(async move {
+                        command
+                            .current_dir(dirname)
+                            .args(["compile", &typst_file, &pdf_file, "--open"])
+                            .output()
+                            .await
+                            .unwrap()
+                    });
                 }
             }
         }
