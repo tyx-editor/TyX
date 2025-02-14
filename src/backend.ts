@@ -4,7 +4,7 @@ import { check } from "@tauri-apps/plugin-updater"
 import { relaunch } from "@tauri-apps/plugin-process"
 
 import { getLocalStorage, setLocalStorage } from "./hooks"
-import { TypStudioDocument } from "./models"
+import { TyXDocument } from "./models"
 
 export const initialize = () => {
   listen<[string, string]>("open", (e) => onOpen(...e.payload))
@@ -27,10 +27,7 @@ export const initialize = () => {
 export const onNew = () => onOpen(undefined, "{}")
 
 export const onClose = () => {
-  const openDocuments = getLocalStorage<TypStudioDocument[]>(
-    "Open Documents",
-    []
-  )
+  const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   openDocuments.splice(currentDocument, 1)
   setLocalStorage("Open Documents", openDocuments)
@@ -38,10 +35,7 @@ export const onClose = () => {
 }
 
 export const onPreview = async () => {
-  const openDocuments = getLocalStorage<TypStudioDocument[]>(
-    "Open Documents",
-    []
-  )
+  const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
   await invoke("preview", {
@@ -53,10 +47,7 @@ export const onPreview = async () => {
 }
 
 export const onSaveAs = (filename: string) => {
-  const openDocuments = getLocalStorage<TypStudioDocument[]>(
-    "Open Documents",
-    []
-  )
+  const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
   save(filename, JSON.stringify(document.content))
@@ -71,10 +62,7 @@ export const onSaveAs = (filename: string) => {
 }
 
 export const onSave = async () => {
-  const openDocuments = getLocalStorage<TypStudioDocument[]>(
-    "Open Documents",
-    []
-  )
+  const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
   if (document.filename) {
@@ -87,10 +75,7 @@ export const onSave = async () => {
 }
 
 export const onOpen = (filename: string | undefined, content: string) => {
-  const openDocuments = getLocalStorage<TypStudioDocument[]>(
-    "Open Documents",
-    []
-  )
+  const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   openDocuments.push({ filename, content: JSON.parse(content) })
   setLocalStorage("Open Documents", openDocuments)
   setLocalStorage("Current Document", openDocuments.length - 1)

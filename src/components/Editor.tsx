@@ -13,7 +13,7 @@ import SubScript from "@tiptap/extension-subscript"
 import Highlight from "@tiptap/extension-highlight"
 import TextDirection from "tiptap-text-direction"
 
-import { TypStudioDocument } from "../models"
+import { TyXDocument } from "../models"
 import { onPreview, onSave } from "../backend"
 import { useEffect, useState } from "react"
 import { Loader } from "@mantine/core"
@@ -55,7 +55,7 @@ const Editor = ({
   doc,
   update,
 }: {
-  doc: TypStudioDocument
+  doc: TyXDocument
   update: (content: JSONContent) => void
 }) => {
   const editor = useEditor(

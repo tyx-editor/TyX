@@ -7,16 +7,14 @@ import { ActionIcon, Button, MantineProvider, Tabs, Text } from "@mantine/core"
 import { useColorScheme } from "@mantine/hooks"
 import Editor from "./components/Editor"
 import { useLocalStorage } from "./hooks"
-import { TypStudioDocument } from "./models"
+import { TyXDocument } from "./models"
 import { useEffect, useState } from "react"
 import { getVersion } from "@tauri-apps/api/app"
 import { onOpen, open } from "./backend"
 
 const App = () => {
   const colorScheme = useColorScheme()
-  const [openDocuments, setOpenDocuments] = useLocalStorage<
-    TypStudioDocument[]
-  >({
+  const [openDocuments, setOpenDocuments] = useLocalStorage<TyXDocument[]>({
     key: "Open Documents",
     defaultValue: [],
   })
@@ -115,7 +113,7 @@ const App = () => {
             alignItems: "center",
           }}
         >
-          <h2>Welcome to TypStudio!</h2>
+          <h2>Welcome to TyX!</h2>
           <Button.Group my="xs" orientation="vertical">
             <Button
               leftSection={<i className="fa-solid fa-plus" />}

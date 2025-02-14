@@ -1,1 +1,1 @@
-# TypStudio
+# TyX
