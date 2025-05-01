@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "bun run scripts/download.ts && tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "build-web": "echo 'export * from \"./web\"' > src/backend/index.ts && bun run build && echo 'export * from \"./tauri\"' > src/backend/index.ts"
   },
   "dependencies": {
     "@mantine/core": "^7.13.4",
@@ -15,6 +16,8 @@
     "@mantine/modals": "^7.17.5",
     "@mantine/notifications": "^7.17.5",
     "@mantine/tiptap": "^7.13.4",
+    "@myriaddreamin/typst-ts-web-compiler": "^0.6.0",
+    "@myriaddreamin/typst.ts": "^0.6.0",
     "@tabler/icons-react": "^3.31.0",
     "@tauri-apps/api": ">=2.0.0",
     "@tauri-apps/plugin-dialog": "~2",

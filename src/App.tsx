@@ -13,9 +13,8 @@ import {
   IconPlus,
   IconX,
 } from "@tabler/icons-react"
-import { getVersion } from "@tauri-apps/api/app"
 import { useEffect, useState } from "react"
-import { onOpen, open } from "./backend"
+import { getVersion, onNew, open } from "./backend"
 import Editor from "./components/Editor"
 import { useLocalStorage } from "./hooks"
 import { TyXDocument } from "./models"
@@ -149,10 +148,7 @@ const App = () => {
           >
             <h2>Welcome to TyX!</h2>
             <Button.Group my="xs" orientation="vertical">
-              <Button
-                leftSection={<IconPlus />}
-                onClick={() => onOpen(undefined, "{}")}
-              >
+              <Button leftSection={<IconPlus />} onClick={onNew}>
                 New Empty Document
               </Button>
               <Button leftSection={<IconFolderOpen />} onClick={open}>

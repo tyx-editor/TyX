@@ -5,11 +5,14 @@ export const converters: Record<string, (d: JSONContent) => string> = {
     return d.content?.map(tiptap2typst).join("") ?? ""
   },
   paragraph: (d) => {
-    let result = (d.content?.map(tiptap2typst).join("") ?? "#box[]") + "\n\n"
+    let result = d.content?.map(tiptap2typst).join("") ?? "#box[]"
     if (d.attrs?.textAlign && d.attrs.textAlign !== "justify") {
       result = `#align(${d.attrs.textAlign})[${result}]`
     }
-    return result
+    if (d.attrs?.dir) {
+      result = `#text(dir: ${d.attrs.dir})[${result}]`
+    }
+    return result + "\n#parbreak()\n"
   },
   text: (d) => {
     let text = typstEscape(d.text ?? "")

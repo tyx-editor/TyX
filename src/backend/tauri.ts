@@ -3,12 +3,15 @@ import { listen } from "@tauri-apps/api/event"
 import { relaunch } from "@tauri-apps/plugin-process"
 import { check } from "@tauri-apps/plugin-updater"
 
-import tiptap2typst from "./compilers/tiptap2typst"
-import { getLocalStorage, setLocalStorage } from "./hooks"
-import { TyXDocument } from "./models"
-import { showFailureMessage } from "./utilities"
+import { getVersion } from "@tauri-apps/api/app"
+import { getLocalStorage, setLocalStorage } from "../hooks"
+import { TyXDocument } from "../models"
+import { document2typst } from "./shared"
+
+let version: string
 
 export const initialize = () => {
+  getVersion().then((v) => (version = v))
   listen<[string, string]>("open", (e) => onOpen(...e.payload))
   listen("new", onNew)
   listen("save", onSave)
@@ -26,7 +29,10 @@ export const initialize = () => {
     .catch((_) => {})
 }
 
-export const onNew = () => onOpen(undefined, "{}")
+export const onNew = () => {
+  const newDocument: TyXDocument = { version, preamble: "", content: {} }
+  onOpen(undefined, JSON.stringify(newDocument))
+}
 
 export const onClose = () => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
@@ -40,15 +46,11 @@ export const onPreview = async () => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
-  try {
-    await invoke("preview", {
-      filename: document.filename,
-      content: tiptap2typst(document.content),
-    })
-  } catch (e: any) {
-    showFailureMessage(e.message)
-  }
-
+  const content = document2typst(document, version)
+  await invoke("preview", {
+    filename: document.filename,
+    content,
+  })
   document.dirty = false
   setLocalStorage("Open Documents", openDocuments)
 }
@@ -83,7 +85,7 @@ export const onSave = async () => {
 
 export const onOpen = (filename: string | undefined, content: string) => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
-  openDocuments.push({ filename, content: JSON.parse(content) })
+  openDocuments.push({ ...JSON.parse(content), filename })
   setLocalStorage("Open Documents", openDocuments)
   setLocalStorage("Current Document", openDocuments.length - 1)
 }
@@ -91,7 +93,11 @@ export const onOpen = (filename: string | undefined, content: string) => {
 export const open = () => invoke("open")
 
 export const save = (filename: string, content: string) => {
-  invoke("save", { filename, content })
+  return invoke("save", { filename, content })
 }
 
 export const saveAs = () => invoke("saveas")
+
+export { getVersion }
+
+export const isWeb = false

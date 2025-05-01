@@ -42,7 +42,6 @@ export const useLocalStorage = <T>({
   }, [key])
 
   const userSetValue = (newValue: any) => {
-    console.log("Hi", newValue)
     setValue(newValue)
     if (typeof newValue === "function") {
       newValue = newValue(value)

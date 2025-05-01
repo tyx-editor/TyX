@@ -9,6 +9,8 @@
         "@mantine/modals": "^7.17.5",
         "@mantine/notifications": "^7.17.5",
         "@mantine/tiptap": "^7.13.4",
+        "@myriaddreamin/typst-ts-web-compiler": "^0.6.0",
+        "@myriaddreamin/typst.ts": "^0.6.0",
         "@tabler/icons-react": "^3.31.0",
         "@tauri-apps/api": ">=2.0.0",
         "@tauri-apps/plugin-dialog": "~2",
@@ -160,6 +162,10 @@
     "@mantine/store": ["@mantine/store@7.17.5", "", { "peerDependencies": { "react": "^18.x || ^19.x" } }, "sha512-HQzy4rBlUFyw+39TgiAV+TGuQivMWYeQlnMctKJlaxwVY5ZTdF2IpJ/JZcjkGrmrZvBwUQ8IOMFvt2eZc20P1Q=="],
 
     "@mantine/tiptap": ["@mantine/tiptap@7.17.5", "", { "peerDependencies": { "@mantine/core": "7.17.5", "@mantine/hooks": "7.17.5", "@tiptap/extension-link": ">=2.1.12", "@tiptap/react": ">=2.1.12", "react": "^18.x || ^19.x", "react-dom": "^18.x || ^19.x" } }, "sha512-O2A7TwrW0GrUBVE/0u+wy3SJARPsGdpbFtdoCMXyLYW+oTZgNRzwY7IlIsZ+ohykHgED6YOal1uuQouofS+fJQ=="],
+
+    "@myriaddreamin/typst-ts-web-compiler": ["@myriaddreamin/typst-ts-web-compiler@0.6.0", "", {}, "sha512-P/eIJ5RnfElj0NYzn5PI296t/IwWtgqUyyTMi5Jm5X3V5kZfskkH+LI7mSQe8tEyxwgCvxbxvFe5adinA3K8Gg=="],
+
+    "@myriaddreamin/typst.ts": ["@myriaddreamin/typst.ts@0.6.0", "", { "dependencies": { "idb": "^7.1.1" }, "peerDependencies": { "@myriaddreamin/typst-ts-renderer": "^0.6.0", "@myriaddreamin/typst-ts-web-compiler": "^0.6.0" }, "optionalPeers": ["@myriaddreamin/typst-ts-renderer", "@myriaddreamin/typst-ts-web-compiler"] }, "sha512-IUpetG0NyF2H6eXRm4j+NsbanJHIvyrffHEijqYb6q128sLWQgT1FYJS+h7dtjXmrBEfnIl1mI80DyfDR6kB/w=="],
 
     "@popperjs/core": ["@popperjs/core@2.11.8", "", {}, "sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A=="],
 
@@ -384,6 +390,8 @@
     "get-nonce": ["get-nonce@1.0.1", "", {}, "sha512-FJhYRoDaiatfEkUK8HKlicmu/3SGFD51q3itKDGoSTysQJBnfOcxU5GxnhE1E6soB76MbT0MBtnKJuXyAx+96Q=="],
 
     "globals": ["globals@11.12.0", "", {}, "sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA=="],
+
+    "idb": ["idb@7.1.1", "", {}, "sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ=="],
 
     "js-tokens": ["js-tokens@4.0.0", "", {}, "sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ=="],
 
