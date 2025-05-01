@@ -1,7 +1,6 @@
 import "./index.css"
 import "@mantine/core/styles.css"
 import "@mantine/tiptap/styles.css"
-import "@fortawesome/fontawesome-free/css/all.css"
 
 import { ActionIcon, Button, MantineProvider, Tabs, Text } from "@mantine/core"
 import { useColorScheme } from "@mantine/hooks"
@@ -11,6 +10,12 @@ import { TyXDocument } from "./models"
 import { useEffect, useState } from "react"
 import { getVersion } from "@tauri-apps/api/app"
 import { onOpen, open } from "./backend"
+import {
+  IconFileText,
+  IconFolderOpen,
+  IconPlus,
+  IconX,
+} from "@tabler/icons-react"
 
 const App = () => {
   const colorScheme = useColorScheme()
@@ -60,7 +65,7 @@ const App = () => {
               <Tabs.Tab
                 key={docIndex}
                 value={docIndex.toString()}
-                leftSection={<i className="fa-solid fa-file-lines" />}
+                leftSection={<IconFileText />}
                 rightSection={
                   <ActionIcon
                     component="span"
@@ -75,7 +80,7 @@ const App = () => {
                       }
                     }}
                   >
-                    <i className="fa-solid fa-xmark" />
+                    <IconX />
                   </ActionIcon>
                 }
               >
@@ -116,15 +121,12 @@ const App = () => {
           <h2>Welcome to TyX!</h2>
           <Button.Group my="xs" orientation="vertical">
             <Button
-              leftSection={<i className="fa-solid fa-plus" />}
+              leftSection={<IconPlus />}
               onClick={() => onOpen(undefined, "{}")}
             >
               New Empty Document
             </Button>
-            <Button
-              leftSection={<i className="fa-solid fa-folder-open" />}
-              onClick={open}
-            >
+            <Button leftSection={<IconFolderOpen />} onClick={open}>
               Open a Document
             </Button>
           </Button.Group>

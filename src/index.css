@@ -15,6 +15,7 @@ p {
   margin: 0;
 }
 
-.mantine-RichTextEditor-toolbar i.fa-solid {
-  font-size: 12px;
+.tabler-icon {
+  width: 18px;
+  height: 18px;
 }

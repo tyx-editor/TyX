@@ -17,6 +17,7 @@ import { TyXDocument } from "../models"
 import { onPreview, onSave } from "../backend"
 import { useEffect, useState } from "react"
 import { Loader } from "@mantine/core"
+import { IconDeviceFloppy, IconEye } from "@tabler/icons-react"
 
 export const SaveControl = (props: RichTextEditorControlProps) => {
   return (
@@ -26,7 +27,7 @@ export const SaveControl = (props: RichTextEditorControlProps) => {
       title="Save"
       {...props}
     >
-      <i className="fa-solid fa-save" />
+      <IconDeviceFloppy />
     </RichTextEditor.Control>
   )
 }
@@ -46,7 +47,7 @@ export const PreviewControl = (props: RichTextEditorControlProps) => {
       title="Preview as PDF"
       {...props}
     >
-      {loading ? <Loader size={10} /> : <i className="fa-solid fa-eye" />}
+      {loading ? <Loader size={10} /> : <IconEye />}
     </RichTextEditor.Control>
   )
 }
@@ -91,54 +92,28 @@ const Editor = ({
       <RichTextEditor editor={editor}>
         <RichTextEditor.Toolbar sticky>
           <RichTextEditor.ControlsGroup>
-            <RichTextEditor.Bold
-              icon={() => <i className="fa-solid fa-bold" />}
-            />
-            <RichTextEditor.Italic
-              icon={() => <i className="fa-solid fa-italic" />}
-            />
-            <RichTextEditor.Underline
-              icon={() => <i className="fa-solid fa-underline" />}
-            />
-            <RichTextEditor.Strikethrough
-              icon={() => <i className="fa-solid fa-strikethrough" />}
-            />
-            <RichTextEditor.ClearFormatting
-              icon={() => <i className="fa-solid fa-text-slash" />}
-            />
+            <RichTextEditor.Bold />
+            <RichTextEditor.Italic />
+            <RichTextEditor.Underline />
+            <RichTextEditor.Strikethrough />
+            <RichTextEditor.ClearFormatting />
           </RichTextEditor.ControlsGroup>
 
           <RichTextEditor.ControlsGroup>
-            <RichTextEditor.Link
-              icon={() => <i className="fa-solid fa-link" />}
-            />
-            <RichTextEditor.Unlink
-              icon={() => <i className="fa-solid fa-link-slash" />}
-            />
+            <RichTextEditor.Link />
+            <RichTextEditor.Unlink />
           </RichTextEditor.ControlsGroup>
 
           <RichTextEditor.ControlsGroup>
-            <RichTextEditor.AlignLeft
-              icon={() => <i className="fa-solid fa-align-left" />}
-            />
-            <RichTextEditor.AlignCenter
-              icon={() => <i className="fa-solid fa-align-center" />}
-            />
-            <RichTextEditor.AlignRight
-              icon={() => <i className="fa-solid fa-align-right" />}
-            />
-            <RichTextEditor.AlignJustify
-              icon={() => <i className="fa-solid fa-align-justify" />}
-            />
+            <RichTextEditor.AlignLeft />
+            <RichTextEditor.AlignCenter />
+            <RichTextEditor.AlignRight />
+            <RichTextEditor.AlignJustify />
           </RichTextEditor.ControlsGroup>
 
           <RichTextEditor.ControlsGroup>
-            <RichTextEditor.Undo
-              icon={() => <i className="fa-solid fa-undo" />}
-            />
-            <RichTextEditor.Redo
-              icon={() => <i className="fa-solid fa-redo" />}
-            />
+            <RichTextEditor.Undo />
+            <RichTextEditor.Redo />
           </RichTextEditor.ControlsGroup>
 
           <RichTextEditor.ControlsGroup>

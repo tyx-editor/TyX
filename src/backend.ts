@@ -5,6 +5,7 @@ import { relaunch } from "@tauri-apps/plugin-process"
 
 import { getLocalStorage, setLocalStorage } from "./hooks"
 import { TyXDocument } from "./models"
+import tiptap2typst from "./compilers/tiptap2typst"
 
 export const initialize = () => {
   listen<[string, string]>("open", (e) => onOpen(...e.payload))
@@ -40,7 +41,7 @@ export const onPreview = async () => {
   const document = openDocuments[currentDocument]
   await invoke("preview", {
     filename: document.filename,
-    content: JSON.stringify(document.content),
+    content: tiptap2typst(document.content),
   })
   document.dirty = false
   setLocalStorage("Open Documents", openDocuments)
