@@ -19,3 +19,13 @@ p {
   width: 18px;
   height: 18px;
 }
+
+.mantine-RichTextEditor-content table td {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #666666;
+}
+
+.mantine-RichTextEditor-content table {
+  table-layout: fixed;
+}

@@ -1,11 +1,12 @@
-import { listen } from "@tauri-apps/api/event"
 import { invoke } from "@tauri-apps/api/core"
-import { check } from "@tauri-apps/plugin-updater"
+import { listen } from "@tauri-apps/api/event"
 import { relaunch } from "@tauri-apps/plugin-process"
+import { check } from "@tauri-apps/plugin-updater"
 
+import tiptap2typst from "./compilers/tiptap2typst"
 import { getLocalStorage, setLocalStorage } from "./hooks"
 import { TyXDocument } from "./models"
-import tiptap2typst from "./compilers/tiptap2typst"
+import { showFailureMessage } from "./utilities"
 
 export const initialize = () => {
   listen<[string, string]>("open", (e) => onOpen(...e.payload))
@@ -39,10 +40,15 @@ export const onPreview = async () => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
-  await invoke("preview", {
-    filename: document.filename,
-    content: tiptap2typst(document.content),
-  })
+  try {
+    await invoke("preview", {
+      filename: document.filename,
+      content: tiptap2typst(document.content),
+    })
+  } catch (e: any) {
+    showFailureMessage(e.message)
+  }
+
   document.dirty = false
   setLocalStorage("Open Documents", openDocuments)
 }

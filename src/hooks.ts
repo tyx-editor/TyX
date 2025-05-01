@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export const getLocalStorage = <T>(key: string, defaultValue = {}): T => {
   return JSON.parse(localStorage.getItem(key) ?? JSON.stringify(defaultValue))
@@ -42,6 +42,7 @@ export const useLocalStorage = <T>({
   }, [key])
 
   const userSetValue = (newValue: any) => {
+    console.log("Hi", newValue)
     setValue(newValue)
     if (typeof newValue === "function") {
       newValue = newValue(value)

@@ -1,25 +1,39 @@
 import {
-  RichTextEditor,
   Link,
+  RichTextEditor,
   RichTextEditorControlProps,
+  useRichTextEditorContext,
 } from "@mantine/tiptap"
 import { JSONContent, useEditor } from "@tiptap/react"
 
-import StarterKit from "@tiptap/starter-kit"
-import Underline from "@tiptap/extension-underline"
-import TextAlign from "@tiptap/extension-text-align"
-import Superscript from "@tiptap/extension-superscript"
-import SubScript from "@tiptap/extension-subscript"
 import Highlight from "@tiptap/extension-highlight"
+import SubScript from "@tiptap/extension-subscript"
+import Superscript from "@tiptap/extension-superscript"
+import Table from "@tiptap/extension-table"
+import TableCell from "@tiptap/extension-table-cell"
+import TableHeader from "@tiptap/extension-table-header"
+import TableRow from "@tiptap/extension-table-row"
+import TextAlign from "@tiptap/extension-text-align"
+import Underline from "@tiptap/extension-underline"
+import StarterKit from "@tiptap/starter-kit"
 import TextDirection from "tiptap-text-direction"
 
-import { TyXDocument } from "../models"
-import { onPreview, onSave } from "../backend"
-import { useEffect, useState } from "react"
 import { Loader } from "@mantine/core"
-import { IconDeviceFloppy, IconEye } from "@tabler/icons-react"
+import {
+  IconColumnInsertLeft,
+  IconColumnRemove,
+  IconDeviceFloppy,
+  IconEye,
+  IconRowInsertBottom,
+  IconRowRemove,
+  IconTableMinus,
+  IconTablePlus,
+} from "@tabler/icons-react"
+import { useEffect, useState } from "react"
+import { onPreview, onSave } from "../backend"
+import { TyXDocument } from "../models"
 
-export const SaveControl = (props: RichTextEditorControlProps) => {
+const SaveControl = (props: RichTextEditorControlProps) => {
   return (
     <RichTextEditor.Control
       onClick={onSave}
@@ -32,7 +46,7 @@ export const SaveControl = (props: RichTextEditorControlProps) => {
   )
 }
 
-export const PreviewControl = (props: RichTextEditorControlProps) => {
+const PreviewControl = (props: RichTextEditorControlProps) => {
   const [loading, setLoading] = useState(false)
 
   return (
@@ -49,6 +63,76 @@ export const PreviewControl = (props: RichTextEditorControlProps) => {
     >
       {loading ? <Loader size={10} /> : <IconEye />}
     </RichTextEditor.Control>
+  )
+}
+
+const TableControls = () => {
+  const { editor } = useRichTextEditorContext()
+
+  return (
+    <RichTextEditor.ControlsGroup>
+      <RichTextEditor.Control
+        title="Insert table"
+        aria-label="Insert table"
+        onClick={() =>
+          editor
+            ?.chain()
+            .focus()
+            .insertTable({ rows: 3, cols: 3, withHeaderRow: false })
+            .run()
+        }
+      >
+        <IconTablePlus />
+      </RichTextEditor.Control>
+      {editor?.isActive("table") === true && (
+        <>
+          <RichTextEditor.Control
+            title="Remove table"
+            aria-label="Remove table"
+            onClick={() => editor?.chain().focus().deleteTable().run()}
+          >
+            <IconTableMinus />
+          </RichTextEditor.Control>
+          <RichTextEditor.Control
+            title="Insert row below"
+            aria-label="Insert row below"
+            onClick={() => editor?.chain().focus().addRowAfter().run()}
+          >
+            <IconRowInsertBottom />
+          </RichTextEditor.Control>
+          <RichTextEditor.Control
+            title="Insert column on the left"
+            aria-label="Insert column on the left"
+            onClick={() => editor?.chain().focus().addColumnAfter().run()}
+          >
+            <IconColumnInsertLeft />
+          </RichTextEditor.Control>
+          <RichTextEditor.Control
+            title="Delete row"
+            aria-label="Delete row"
+            onClick={() => editor?.chain().focus().deleteRow().run()}
+          >
+            <IconRowRemove />
+          </RichTextEditor.Control>
+          <RichTextEditor.Control
+            title="Delete column"
+            aria-label="Delete column"
+            onClick={() => editor?.chain().focus().deleteColumn().run()}
+          >
+            <IconColumnRemove />
+          </RichTextEditor.Control>
+        </>
+      )}
+    </RichTextEditor.ControlsGroup>
+  )
+}
+
+const LinkControls = () => {
+  return (
+    <RichTextEditor.ControlsGroup>
+      <RichTextEditor.Link />
+      <RichTextEditor.Unlink />
+    </RichTextEditor.ControlsGroup>
   )
 }
 
@@ -76,6 +160,10 @@ const Editor = ({
           types: ["heading", "paragraph"],
           defaultDirection: "ltr",
         }),
+        Table.configure({ resizable: false }),
+        TableRow,
+        TableCell,
+        TableHeader,
       ],
       content: Object.keys(doc.content).length > 0 ? doc.content : undefined,
       onUpdate: ({ editor }) => update(editor.getJSON()),
@@ -96,13 +184,19 @@ const Editor = ({
             <RichTextEditor.Italic />
             <RichTextEditor.Underline />
             <RichTextEditor.Strikethrough />
+            <RichTextEditor.Code />
             <RichTextEditor.ClearFormatting />
           </RichTextEditor.ControlsGroup>
 
           <RichTextEditor.ControlsGroup>
-            <RichTextEditor.Link />
-            <RichTextEditor.Unlink />
+            <RichTextEditor.CodeBlock />
+            <RichTextEditor.BulletList />
+            <RichTextEditor.OrderedList />
           </RichTextEditor.ControlsGroup>
+
+          <TableControls />
+
+          <LinkControls />
 
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.AlignLeft />
