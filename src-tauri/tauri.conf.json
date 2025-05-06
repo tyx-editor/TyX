@@ -32,7 +32,14 @@
       "icons/icon.ico"
     ],
     "createUpdaterArtifacts": true,
-    "externalBin": ["bin/typst"]
+    "externalBin": ["bin/typst"],
+    "fileAssociations": [
+      {
+        "ext": ["tyx"],
+        "mimeType": "text/plain",
+        "rank": "Owner"
+      }
+    ]
   },
   "plugins": {
     "updater": {
