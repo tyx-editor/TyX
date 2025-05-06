@@ -2,7 +2,7 @@ import { execSync } from "child_process"
 import { existsSync, mkdirSync, renameSync, writeFileSync } from "fs"
 import { join } from "path"
 
-const version = "0.12.0"
+const version = "0.13.1"
 const links: [string, string][] = {
   win32: [
     [
