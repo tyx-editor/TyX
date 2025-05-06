@@ -1,12 +1,12 @@
 use std::{
     fs::File,
     io::{Read, Write},
-    path::Path,
+    path::{Path, PathBuf},
 };
 
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
 use tauri::menu::{Menu, MenuItemBuilder};
-use tauri::Emitter;
+use tauri::{Emitter, Manager};
 
 use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_shell::ShellExt;
@@ -64,7 +64,7 @@ fn open(handle: tauri::AppHandle) {
 }
 
 #[tauri::command]
-fn preview(handle: tauri::AppHandle, filename: &str, content: &str) {
+fn preview(handle: tauri::AppHandle, filename: &str, content: &str) -> String {
     let basename = filename
         .strip_suffix(".tyx")
         .unwrap_or(filename)
@@ -81,16 +81,39 @@ fn preview(handle: tauri::AppHandle, filename: &str, content: &str) {
         if let Ok(_) = file.write_all(content.as_bytes()) {
             let command = handle.shell().sidecar("typst").unwrap();
 
-            tauri::async_runtime::block_on(async move {
+            let fonts_dir = handle
+                .path()
+                .app_data_dir()
+                .unwrap_or(PathBuf::new())
+                .join("fonts");
+
+            let result = tauri::async_runtime::block_on(async move {
                 command
                     .current_dir(dirname)
-                    .args(["compile", &typst_file, &pdf_file, "--open"])
+                    .args([
+                        "compile",
+                        &typst_file,
+                        &pdf_file,
+                        "--open",
+                        "--font-path",
+                        fonts_dir.to_str().unwrap_or(""),
+                    ])
                     .output()
                     .await
-                    .unwrap()
             });
+
+            if let Err(e) = result {
+                return e.to_string();
+            }
+            if let Ok(output) = result {
+                if let Ok(s) = String::from_utf8(output.stderr) {
+                    return s;
+                }
+            }
         }
     }
+
+    return String::new();
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

@@ -11,12 +11,26 @@ export const showSuccessMessage = (successMessage: string) => {
   })
 }
 
-export const showFailureMessage = (failureMessage: string) => {
+interface MessageOptions {
+  title?: string
+  raw?: boolean
+}
+
+export const showFailureMessage = (
+  failureMessage: string,
+  options?: MessageOptions
+) => {
   notifications.show({
-    title: "Failed!",
+    title: options?.title ?? "Failed!",
     color: "red",
     icon: <IconExclamationMark />,
-    message: failureMessage,
+    message: options?.raw ? (
+      <pre>
+        <code>{failureMessage}</code>
+      </pre>
+    ) : (
+      failureMessage
+    ),
   })
 }
 

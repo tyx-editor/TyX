@@ -54,10 +54,17 @@ export const onPreview = async () => {
     showFailureMessage(e.message)
     return
   }
-  await invoke("preview", {
+  const result: string = await invoke("preview", {
     filename: document.filename,
     content,
   })
+  if (result) {
+    showFailureMessage(result.replace(/\n\n/g, "\n"), {
+      title: "Typst compilation failed!",
+      raw: true,
+    })
+  }
+
   document.dirty = false
   setLocalStorage("Open Documents", openDocuments)
 }

@@ -19,6 +19,7 @@ import StarterKit from "@tiptap/starter-kit"
 import TextDirection from "tiptap-text-direction"
 
 import { Loader } from "@mantine/core"
+import { modals } from "@mantine/modals"
 import {
   IconColumnInsertLeft,
   IconColumnRemove,
@@ -26,13 +27,15 @@ import {
   IconEye,
   IconRowInsertBottom,
   IconRowRemove,
+  IconSettings,
   IconSum,
   IconTableMinus,
   IconTablePlus,
 } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
-import { onPreview, onSave } from "../backend"
+import { isWeb, onPreview, onSave } from "../backend"
 import { TyXDocument } from "../models"
+import DocumentSettingsModal from "./DocumentSettingsModal"
 import { MathBlock, MathInline } from "./MathEditorExtension"
 
 const SaveControl = (props: RichTextEditorControlProps) => {
@@ -179,10 +182,29 @@ const Editor = ({
     editor?.commands.focus()
   }, [editor])
 
+  const basename = (doc.filename ?? "").split("/").pop()!.split("\\").pop()
+
   return (
     <>
       <RichTextEditor editor={editor}>
         <RichTextEditor.Toolbar sticky>
+          <RichTextEditor.ControlsGroup>
+            <SaveControl disabled={doc.filename !== undefined && !doc.dirty} />
+            <PreviewControl disabled={!isWeb && doc.filename === undefined} />
+            <RichTextEditor.Control
+              title="Document settings"
+              aria-label="Document settings"
+              onClick={() =>
+                modals.open({
+                  title: `Document Settings (${basename})`,
+                  children: <DocumentSettingsModal />,
+                })
+              }
+            >
+              <IconSettings />
+            </RichTextEditor.Control>
+          </RichTextEditor.ControlsGroup>
+
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.Bold />
             <RichTextEditor.Italic />
@@ -219,11 +241,6 @@ const Editor = ({
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.Undo />
             <RichTextEditor.Redo />
-          </RichTextEditor.ControlsGroup>
-
-          <RichTextEditor.ControlsGroup>
-            <SaveControl disabled={doc.filename !== undefined && !doc.dirty} />
-            <PreviewControl disabled={doc.filename === undefined} />
           </RichTextEditor.ControlsGroup>
         </RichTextEditor.Toolbar>
 
