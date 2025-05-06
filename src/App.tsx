@@ -5,11 +5,19 @@ import "@mantine/tiptap/styles.css"
 import "mathlive"
 import "./index.css"
 
-import { ActionIcon, Button, MantineProvider, Tabs, Text } from "@mantine/core"
+import {
+  ActionIcon,
+  Anchor,
+  Button,
+  MantineProvider,
+  Tabs,
+  Text,
+} from "@mantine/core"
 import { useColorScheme } from "@mantine/hooks"
 import { ModalsProvider } from "@mantine/modals"
 import { Notifications } from "@mantine/notifications"
 import {
+  IconBrandGithub,
   IconFileText,
   IconFolderOpen,
   IconPlus,
@@ -158,6 +166,98 @@ const App = () => {
               </Button>
             </Button.Group>
             <Text c="grey">v{version}</Text>
+            <Text
+              c="grey"
+              fz="xs"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <ActionIcon
+                variant="light"
+                size="sm"
+                component="a"
+                href="https://github.com/tyx-editor/TyX/"
+                target="_blank"
+                mr={5}
+              >
+                <IconBrandGithub />
+              </ActionIcon>
+              TyX is created with:
+              <Anchor
+                fz="inherit"
+                href="https://github.com/typst/typst/"
+                target="_blank"
+                mx={5}
+              >
+                typst
+              </Anchor>
+              •
+              <Anchor
+                fz="inherit"
+                href="https://github.com/Myriad-Dreamin/typst.ts/"
+                target="_blank"
+                mx={5}
+              >
+                typst.ts
+              </Anchor>
+              •
+              <Anchor
+                fz="inherit"
+                href="https://github.com/arnog/mathlive/"
+                mx={5}
+                target="_blank"
+              >
+                mathlive
+              </Anchor>
+              •
+              <Anchor
+                fz="inherit"
+                href="https://github.com/ueberdosis/tiptap/"
+                mx={5}
+                target="_blank"
+              >
+                tiptap
+              </Anchor>
+              •
+              <Anchor
+                fz="inherit"
+                href="https://github.com/tauri-apps/tauri/"
+                target="_blank"
+                mx={5}
+              >
+                tauri
+              </Anchor>
+              •
+              <Anchor
+                fz="inherit"
+                href="https://github.com/mantinedev/mantine/"
+                target="_blank"
+                mx={5}
+              >
+                mantine
+              </Anchor>
+              •
+              <Anchor
+                fz="inherit"
+                href="https://github.com/tabler/tabler-icons/"
+                target="_blank"
+                mx={5}
+              >
+                tabler
+              </Anchor>
+              •
+              <Anchor
+                fz="inherit"
+                href="https://github.com/vitejs/vite/"
+                target="_blank"
+                mx={5}
+              >
+                vite
+              </Anchor>
+            </Text>
           </div>
         )}
       </ModalsProvider>
