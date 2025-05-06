@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2.0.0",
   "productName": "TyX",
-  "version": "0.1.4",
-  "identifier": "com.noamzaks.tyx",
+  "version": "0.1.5",
+  "identifier": "com.tyx-editor.tyx",
   "build": {
     "beforeDevCommand": "bun run dev",
     "devUrl": "http://localhost:1420",
