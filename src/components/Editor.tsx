@@ -26,12 +26,14 @@ import {
   IconEye,
   IconRowInsertBottom,
   IconRowRemove,
+  IconSum,
   IconTableMinus,
   IconTablePlus,
 } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
 import { onPreview, onSave } from "../backend"
 import { TyXDocument } from "../models"
+import { MathBlock, MathInline } from "./MathEditorExtension"
 
 const SaveControl = (props: RichTextEditorControlProps) => {
   return (
@@ -164,6 +166,8 @@ const Editor = ({
         TableRow,
         TableCell,
         TableHeader,
+        MathBlock,
+        MathInline,
       ],
       content: Object.keys(doc.content).length > 0 ? doc.content : undefined,
       onUpdate: ({ editor }) => update(editor.getJSON()),
@@ -189,9 +193,16 @@ const Editor = ({
           </RichTextEditor.ControlsGroup>
 
           <RichTextEditor.ControlsGroup>
-            <RichTextEditor.CodeBlock />
+            <RichTextEditor.Control
+              title="Insert math"
+              aria-label="Insert math"
+              onClick={() => editor?.chain().focus().insertMathInline().run()}
+            >
+              <IconSum />
+            </RichTextEditor.Control>
             <RichTextEditor.BulletList />
             <RichTextEditor.OrderedList />
+            <RichTextEditor.CodeBlock />
           </RichTextEditor.ControlsGroup>
 
           <TableControls />

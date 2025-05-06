@@ -81,7 +81,7 @@ export const onSave = async () => {
   if (document.filename) {
     document.dirty = false
     setLocalStorage("Open Documents", openDocuments)
-    save(document.filename, JSON.stringify(document.content))
+    save(document.filename, JSON.stringify(document))
   } else {
     saveAs()
   }

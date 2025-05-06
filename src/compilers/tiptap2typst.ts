@@ -1,4 +1,22 @@
 import { JSONContent } from "@tiptap/react"
+import mathjson2typst from "./mathjson2typst"
+
+export const mathConverter = (d: JSONContent, inline = false) => {
+  let result = ""
+  const data = d.attrs?.json
+
+  if (data) {
+    console.log(data)
+    result = mathjson2typst(data)
+    console.log(result)
+  }
+
+  if (inline) {
+    return `$${result}$`
+  } else {
+    return `$ ${result} $`
+  }
+}
 
 export const converters: Record<string, (d: JSONContent) => string> = {
   doc: (d) => {
@@ -84,6 +102,8 @@ export const converters: Record<string, (d: JSONContent) => string> = {
   hardBreak: () => {
     return "#linebreak()"
   },
+  "math-inline": (d) => mathConverter(d, true),
+  "math-block": (d) => mathConverter(d),
 }
 
 export const typstEscape = (text: string) => {

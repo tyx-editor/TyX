@@ -37,6 +37,7 @@
     "@tiptap/pm": "^2.9.1",
     "@tiptap/react": "^2.9.1",
     "@tiptap/starter-kit": "^2.9.1",
+    "mathlive": "^0.105.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tiptap-text-direction": "^0.3.1"

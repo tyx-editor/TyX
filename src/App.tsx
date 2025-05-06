@@ -1,6 +1,8 @@
+import "@cortex-js/compute-engine"
 import "@mantine/core/styles.css"
 import "@mantine/notifications/styles.css"
 import "@mantine/tiptap/styles.css"
+import "mathlive"
 import "./index.css"
 
 import { ActionIcon, Button, MantineProvider, Tabs, Text } from "@mantine/core"

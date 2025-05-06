@@ -6,6 +6,7 @@ import { check } from "@tauri-apps/plugin-updater"
 import { getVersion } from "@tauri-apps/api/app"
 import { getLocalStorage, setLocalStorage } from "../hooks"
 import { TyXDocument } from "../models"
+import { showFailureMessage } from "../utilities"
 import { document2typst } from "./shared"
 
 let version: string
@@ -46,7 +47,13 @@ export const onPreview = async () => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
-  const content = document2typst(document, version)
+  let content = ""
+  try {
+    content = document2typst(document, version)
+  } catch (e: any) {
+    showFailureMessage(e.message)
+    return
+  }
   await invoke("preview", {
     filename: document.filename,
     content,
@@ -59,14 +66,14 @@ export const onSaveAs = (filename: string) => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
-  save(filename, JSON.stringify(document.content))
+  save(filename, JSON.stringify(document))
 
   if (!document.filename) {
     document.filename = filename
     document.dirty = false
     setLocalStorage("Open Documents", openDocuments)
   } else {
-    onOpen(filename, JSON.stringify(document.content))
+    onOpen(filename, JSON.stringify(document))
   }
 }
 
@@ -77,7 +84,7 @@ export const onSave = async () => {
   if (document.filename) {
     document.dirty = false
     setLocalStorage("Open Documents", openDocuments)
-    await save(document.filename, JSON.stringify(document.content))
+    await save(document.filename, JSON.stringify(document))
   } else {
     saveAs()
   }

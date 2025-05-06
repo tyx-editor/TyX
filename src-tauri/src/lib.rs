@@ -38,6 +38,15 @@ fn saveas(handle: tauri::AppHandle) {
         });
 }
 
+fn openfile(handle: &tauri::AppHandle, path: &Path) {
+    let h = handle.clone();
+    if let Ok(mut f) = File::open(path) {
+        let mut buffer = String::new();
+        f.read_to_string(&mut buffer).unwrap();
+        h.emit("open", (path.to_str().unwrap(), buffer)).unwrap();
+    }
+}
+
 #[tauri::command]
 fn open(handle: tauri::AppHandle) {
     let h = handle.clone();
@@ -48,11 +57,7 @@ fn open(handle: tauri::AppHandle) {
         .pick_file(move |f| {
             if let Some(f) = f {
                 if let Some(path) = f.as_path() {
-                    if let Ok(mut f) = File::open(path) {
-                        let mut buffer = String::new();
-                        f.read_to_string(&mut buffer).unwrap();
-                        h.emit("open", (path.to_str().unwrap(), buffer)).unwrap();
-                    }
+                    openfile(&h, path);
                 }
             }
         });
@@ -102,6 +107,8 @@ pub fn run() {
 
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
 pub fn run() {
+    use std::path::PathBuf;
+
     tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
@@ -156,6 +163,25 @@ pub fn run() {
                 handle.emit(event.id().0.as_str(), ()).unwrap()
             }
             _ => {}
+        })
+        .setup(|app| {
+            // TODO: FIXME: this happens before the listeners are set up
+            for maybe_file in std::env::args().skip(1) {
+                // skip flags like -f or --flag
+                if maybe_file.starts_with('-') {
+                    continue;
+                }
+
+                // handle `file://` path urls and skip other urls
+                if let Ok(url) = url::Url::parse(&maybe_file) {
+                    if let Ok(path) = url.to_file_path() {
+                        openfile(app.handle(), path.as_path());
+                    }
+                } else {
+                    openfile(app.handle(), PathBuf::from(maybe_file).as_path());
+                }
+            }
+            Ok(())
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -29,3 +29,8 @@ p {
 .mantine-RichTextEditor-content table {
   table-layout: fixed;
 }
+
+math-field::part(virtual-keyboard-toggle),
+math-field::part(menu-toggle) {
+  display: none;
+}
