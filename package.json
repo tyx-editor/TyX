@@ -8,7 +8,8 @@
     "build": "bun run scripts/download.ts && tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "build-web": "echo 'export * from \"./web\"' > src/backend/index.ts && bun run build && echo 'export * from \"./tauri\"' > src/backend/index.ts"
+    "build-web": "echo 'export * from \"./web\"' > src/backend/index.ts && bun run build && echo 'export * from \"./tauri\"' > src/backend/index.ts",
+    "deploy": "bun run build-web && netlify deploy -d dist --prod --site tyx-editor"
   },
   "dependencies": {
     "@mantine/core": "^7.13.4",

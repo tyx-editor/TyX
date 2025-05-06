@@ -4,10 +4,10 @@ use std::{
     path::Path,
 };
 
-use tauri::{
-    menu::{Menu, MenuItemBuilder},
-    Emitter,
-};
+#[cfg(not(any(target_os = "android", target_os = "ios")))]
+use tauri::menu::{Menu, MenuItemBuilder};
+use tauri::Emitter;
+
 use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_shell::ShellExt;
 
@@ -89,6 +89,18 @@ fn preview(handle: tauri::AppHandle, filename: &str, content: &str) {
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
+#[cfg(any(target_os = "android", target_os = "ios"))]
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_shell::init())
+        .invoke_handler(tauri::generate_handler![open, save, saveas, preview])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+
+#[cfg(not(any(target_os = "android", target_os = "ios")))]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
