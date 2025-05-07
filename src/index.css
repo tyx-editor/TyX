@@ -34,3 +34,7 @@ math-field::part(virtual-keyboard-toggle),
 math-field::part(menu-toggle) {
   display: none;
 }
+
+.mantine-Checkbox-input {
+  cursor: pointer;
+}

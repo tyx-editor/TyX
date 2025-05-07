@@ -182,7 +182,11 @@ const Editor = ({
     editor?.commands.focus()
   }, [editor])
 
-  const basename = (doc.filename ?? "").split("/").pop()!.split("\\").pop()
+  const basename = (doc.filename ?? "Untitled")
+    .split("/")
+    .pop()!
+    .split("\\")
+    .pop()
 
   return (
     <>

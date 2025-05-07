@@ -4,10 +4,10 @@ import { relaunch } from "@tauri-apps/plugin-process"
 import { check } from "@tauri-apps/plugin-updater"
 
 import { getVersion } from "@tauri-apps/api/app"
+import tyx2typst from "../compilers/tyx2typst"
 import { getLocalStorage, setLocalStorage } from "../hooks"
 import { TyXDocument } from "../models"
 import { showFailureMessage } from "../utilities"
-import { document2typst } from "./shared"
 
 let version: string
 
@@ -31,7 +31,12 @@ export const initialize = () => {
 }
 
 export const onNew = () => {
-  const newDocument: TyXDocument = { version, preamble: "", content: {} }
+  const newDocument: TyXDocument = {
+    version,
+    preamble: "",
+    content: {},
+    settings: getLocalStorage("Default Settings", {}),
+  }
   onOpen(undefined, JSON.stringify(newDocument))
 }
 
@@ -49,7 +54,7 @@ export const onPreview = async () => {
   const document = openDocuments[currentDocument]
   let content = ""
   try {
-    content = document2typst(document, version)
+    content = tyx2typst(document, version)
   } catch (e: any) {
     showFailureMessage(e.message)
     return

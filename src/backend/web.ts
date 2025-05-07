@@ -1,8 +1,8 @@
 import { createTypstCompiler, TypstCompiler } from "@myriaddreamin/typst.ts"
 import { version } from "../../src-tauri/tauri.conf.json"
+import tyx2typst from "../compilers/tyx2typst"
 import { getLocalStorage, setLocalStorage } from "../hooks"
 import { TyXDocument } from "../models"
-import { document2typst } from "./shared"
 
 let compiler: TypstCompiler
 
@@ -16,7 +16,12 @@ export const initialize = async () => {
 }
 
 export const onNew = () => {
-  const newDocument: TyXDocument = { version, preamble: "", content: {} }
+  const newDocument: TyXDocument = {
+    version,
+    preamble: "",
+    content: {},
+    settings: getLocalStorage("Default Settings", {}),
+  }
   onOpen(undefined, JSON.stringify(newDocument))
 }
 
@@ -32,7 +37,7 @@ export const onPreview = async () => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
-  compiler.addSource("/main.typ", document2typst(document, version))
+  compiler.addSource("/main.typ", tyx2typst(document, version))
   const result = await compiler.compile({
     format: "pdf",
     mainFilePath: "/main.typ",

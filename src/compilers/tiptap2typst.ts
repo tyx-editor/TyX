@@ -6,9 +6,7 @@ export const mathConverter = (d: JSONContent, inline = false) => {
   const data = d.attrs?.json
 
   if (data) {
-    console.log(data)
     result = mathjson2typst(data)
-    console.log(result)
   }
 
   if (inline) {
