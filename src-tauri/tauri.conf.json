@@ -39,7 +39,10 @@
         "mimeType": "text/plain",
         "rank": "Owner"
       }
-    ]
+    ],
+    "windows": {
+      "signCommand": "relic sign --file %1 --key azure --config relic.conf"
+    }
   },
   "plugins": {
     "updater": {

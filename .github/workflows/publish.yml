@@ -36,11 +36,17 @@ jobs:
         with:
           # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+      - name: install go
+        uses: actions/setup-go@v5
 
       - name: install bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
+
+      - name: install relic for code signing (windows only)
+        if: matrix.platform == 'windows-latest'
+        run: go install github.com/sassoftware/relic/v8@latest
 
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
