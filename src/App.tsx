@@ -24,6 +24,7 @@ import {
   IconX,
 } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
+import { ErrorBoundary } from "react-error-boundary"
 import { getVersion, onNew, open } from "./backend"
 import Editor from "./components/Editor"
 import { useLocalStorage } from "./hooks"
@@ -131,14 +132,25 @@ const App = () => {
                 value={currentDocument.toString()}
               >
                 <div style={{ padding: 10 }}>
-                  <Editor
-                    doc={openDocuments[currentDocument]}
-                    update={(content) => {
-                      openDocuments[currentDocument].content = content
-                      openDocuments[currentDocument].dirty = true
-                      setOpenDocuments([...openDocuments])
-                    }}
-                  />
+                  <ErrorBoundary
+                    fallbackRender={({ error }) => (
+                      <>
+                        <p>This document appears to be corrupted!</p>
+                        <pre>
+                          <code>{error.message}</code>
+                        </pre>
+                      </>
+                    )}
+                  >
+                    <Editor
+                      doc={openDocuments[currentDocument]}
+                      update={(content) => {
+                        openDocuments[currentDocument].content = content
+                        openDocuments[currentDocument].dirty = true
+                        setOpenDocuments([...openDocuments])
+                      }}
+                    />
+                  </ErrorBoundary>
                 </div>
               </Tabs.Panel>
             )}
