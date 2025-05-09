@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:app": "tauri dev",
     "build": "bun run scripts/download.ts && tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
@@ -34,6 +35,7 @@
     "@tiptap/extension-table-row": "^2.12.0",
     "@tiptap/extension-text-align": "^2.12.0",
     "@tiptap/extension-underline": "^2.12.0",
+    "@tiptap/extension-link": "^2.12.0",
     "@tiptap/pm": "^2.12.0",
     "@tiptap/react": "^2.12.0",
     "@tiptap/starter-kit": "^2.12.0",
