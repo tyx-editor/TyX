@@ -24,15 +24,15 @@ bun install
 
 ## Developing
 
-To start the development server, either run:
+To start desktop app in dev mode, either run:
 
-```
+```bash
 bun run dev:app
 ```
 
 Or run:
 
-```
+```bash
 bun run tauri dev
 ```
 
