@@ -182,9 +182,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![open, save, saveas, preview])
         .on_menu_event(|handle, event| match event.id().0.as_str() {
             "open" => open(handle.clone()),
-            "new" | "save" | "saveas" | "preview" | "close" => {
-                handle.emit(event.id().0.as_str(), ()).unwrap()
-            }
+            "saveas" => saveas(handle.clone()),
+            "new" | "save" | "preview" | "close" => handle.emit(event.id().0.as_str(), ()).unwrap(),
             _ => {}
         })
         .setup(|app| {
