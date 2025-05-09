@@ -4,12 +4,12 @@ This project is structured as a monorepo. The main components are:
 
 ```bash
 - tyx
-  ├── src # The tauri frontend
+  ├── src       # The tauri frontend
   ├── src-tauri # The tauri bridge to access the system
-  ├── public # The static assets for the frontend
-  ├── crates # The tauri backend components used by `src-tauri`
+  ├── public    # The static assets for the frontend
+  ├── crates    # The tauri backend components used by `src-tauri`
   │   └── ...
-  └── scripts # The scripts used to build and run the app
+  └── scripts   # The scripts used to build and run the app
 ```
 
 ## Setup
