@@ -1,8 +1,8 @@
 [workspace.package]
 description = "A Tauri App"
-authors = ["Noam Zaks", "Myriad-Dreamin"]
+authors = ["Noam Zaks", "Myriad-Dreamin", "TyX Developers"]
 version = "0.1.0"
-rust-version = "1.85.0"                          # MSRV
+rust-version = "1.85.0"                                     # MSRV
 edition = "2024"
 readme = "README.md"
 license = "MIT"
