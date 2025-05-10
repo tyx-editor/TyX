@@ -49,7 +49,7 @@ const MathEditor = (props: NodeViewProps) => {
           value,
           (mathfieldRef.current!.computeEngine as any).parse(value, {
             canonical: false,
-          })
+          }),
         )
       })
 

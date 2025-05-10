@@ -111,7 +111,7 @@ const App = () => {
                                 ? `the changes to ${openDocuments[docIndex].filename}`
                                 : "the document"
                             }?`,
-                            () => closeDocument(docIndex)
+                            () => closeDocument(docIndex),
                           )
                         }
                       }}

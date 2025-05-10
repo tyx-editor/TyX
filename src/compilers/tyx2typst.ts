@@ -6,13 +6,13 @@ const setProperty = (
   attribute: string,
   setting: any,
   trailing: string | undefined = undefined,
-  transform: ((v: any) => string) | null = JSON.stringify
+  transform: ((v: any) => string) | null = JSON.stringify,
 ) => {
   transform = transform ?? ((v) => v)
 
   if (setting !== undefined) {
     return `#set ${element}(${attribute}: ${transform(
-      trailing ? setting + trailing : setting
+      trailing ? setting + trailing : setting,
     )})\n`
   }
   return ""
@@ -30,7 +30,7 @@ export const tyxSettings2typst = (settings: TyXDocumentSettings) => {
     "first-line-indent",
     settings.indentation,
     "em",
-    null
+    null,
   )
   return result
 }
@@ -40,7 +40,7 @@ const tyx2typst = (document: TyXDocument, version: string) => {
 
 // Settings
 #metadata(json(bytes(${JSON.stringify(
-    JSON.stringify(document.settings ?? {})
+    JSON.stringify(document.settings ?? {}),
   )}))) <tyx-settings>
 ${tyxSettings2typst(document.settings ?? {})}
 `

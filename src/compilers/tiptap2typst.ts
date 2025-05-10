@@ -73,7 +73,8 @@ export const converters: Record<string, (d: JSONContent) => string> = {
     return (
       "#list(" +
       d.content?.map(
-        (child) => `list.item[${child.content?.map(tiptap2typst).join("\n\n")}]`
+        (child) =>
+          `list.item[${child.content?.map(tiptap2typst).join("\n\n")}]`,
       ) +
       ")"
     )
@@ -82,7 +83,8 @@ export const converters: Record<string, (d: JSONContent) => string> = {
     return (
       "#enum(" +
       d.content?.map(
-        (child) => `enum.item[${child.content?.map(tiptap2typst).join("\n\n")}]`
+        (child) =>
+          `enum.item[${child.content?.map(tiptap2typst).join("\n\n")}]`,
       ) +
       ")"
     )
@@ -95,7 +97,7 @@ export const converters: Record<string, (d: JSONContent) => string> = {
         ?.map((child) =>
           child.content
             ?.map((child) => "[" + tiptap2typst(child) + "]")
-            .join(",")
+            .join(","),
         )
         .join(",") +
       ")"

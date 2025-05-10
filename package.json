@@ -10,6 +10,7 @@
     "build": "bun run prebuild && tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
+    "prettier": "prettier",
     "build-web": "echo 'export * from \"./web\"' > src/backend/index.ts && bun run build && echo 'export * from \"./tauri\"' > src/backend/index.ts",
     "deploy": "bun run build-web && netlify deploy -d dist --prod --site tyx-editor"
   },
