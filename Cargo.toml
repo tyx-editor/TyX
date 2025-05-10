@@ -1,0 +1,51 @@
+[workspace.package]
+description = "A Tauri App"
+authors = ["Noam Zaks", "Myriad-Dreamin", "TyX Developers"]
+version = "0.1.0"
+rust-version = "1.85.0"                                     # MSRV
+edition = "2024"
+readme = "README.md"
+license = "MIT"
+homepage = "https://tyx-editor.com/"
+repository = "https://github.com/tyx-editor/TyX"
+
+
+[workspace]
+resolver = "2"
+members = ["src-tauri"]
+
+[profile.release]
+codegen-units = 1 # Reduce number of codegen units to increase optimizations
+opt-level = 3
+panic = "abort"   # Abort on panic
+
+[workspace.dependencies]
+
+[workspace.lints.rustdoc]
+broken_intra_doc_links = "warn"
+
+[workspace.lints.rust]
+missing_docs = "warn"
+
+unexpected_cfgs = { level = "allow", check-cfg = [
+    'cfg(wasm_bindgen_unstable_test_coverage)',
+    'cfg(noop)',
+    'cfg(used_linker)',
+] }
+
+[workspace.lints.clippy]
+uninlined_format_args = "warn"
+missing_safety_doc = "warn"
+undocumented_unsafe_blocks = "warn"
+
+[workspace.metadata.typos.default]
+locale = "en-us"
+
+[workspace.metadata.typos.default.extend-words]
+labelled = "labelled"
+onces = "onces"
+withs = "withs"
+
+[workspace.metadata.typos.files]
+ignore-hidden = false
+extend-exclude = ["/.git", "fixtures"]
