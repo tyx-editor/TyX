@@ -214,8 +214,17 @@ const Editor = ({
             <RichTextEditor.Italic />
             <RichTextEditor.Underline />
             <RichTextEditor.Strikethrough />
+            <RichTextEditor.Subscript />
+            <RichTextEditor.Superscript />
             <RichTextEditor.Code />
             <RichTextEditor.ClearFormatting />
+          </RichTextEditor.ControlsGroup>
+
+          <RichTextEditor.ControlsGroup>
+            <RichTextEditor.H1 />
+            <RichTextEditor.H2 />
+            <RichTextEditor.H3 />
+            <RichTextEditor.H4 />
           </RichTextEditor.ControlsGroup>
 
           <RichTextEditor.ControlsGroup>
@@ -226,6 +235,8 @@ const Editor = ({
             >
               <IconSum />
             </RichTextEditor.Control>
+            <RichTextEditor.Blockquote />
+            <RichTextEditor.Hr />
             <RichTextEditor.BulletList />
             <RichTextEditor.OrderedList />
             <RichTextEditor.CodeBlock />

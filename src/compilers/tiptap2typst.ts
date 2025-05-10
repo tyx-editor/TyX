@@ -16,18 +16,23 @@ export const mathConverter = (d: JSONContent, inline = false) => {
   }
 }
 
+export const applyTextAlignAndDirection = (result: string, d: JSONContent) => {
+  if (d.attrs?.textAlign && d.attrs.textAlign !== "justify") {
+    result = `#align(${d.attrs.textAlign})[${result}]`
+  }
+  if (d.attrs?.dir) {
+    result = `#text(dir: ${d.attrs.dir})[${result}]`
+  }
+  return result
+}
+
 export const converters: Record<string, (d: JSONContent) => string> = {
   doc: (d) => {
     return d.content?.map(tiptap2typst).join("") ?? ""
   },
   paragraph: (d) => {
     let result = d.content?.map(tiptap2typst).join("") ?? "#box[]"
-    if (d.attrs?.textAlign && d.attrs.textAlign !== "justify") {
-      result = `#align(${d.attrs.textAlign})[${result}]`
-    }
-    if (d.attrs?.dir) {
-      result = `#text(dir: ${d.attrs.dir})[${result}]`
-    }
+    result = applyTextAlignAndDirection(result, d)
     return result + "\n#parbreak()\n"
   },
   text: (d) => {
@@ -46,13 +51,18 @@ export const converters: Record<string, (d: JSONContent) => string> = {
           text = `#highlight[${text}]`
         } else if (mark.type === "strike") {
           text = `#strike[${text}]`
-        }
-        if (mark.type === "link") {
+        } else if (mark.type === "link") {
           let href = mark.attrs?.href ?? ""
           if (href !== "" && !href.includes("://")) {
             href = "https://" + href
           }
           text = `#link(${JSON.stringify(href)})[${text}]`
+        } else if (mark.type === "subscript") {
+          text = `#sub[${text}]`
+        } else if (mark.type === "superscript") {
+          text = `#super[${text}]`
+        } else {
+          throw Error(`Unsupported mark "${mark.type}"`)
         }
       }
     }
@@ -99,6 +109,19 @@ export const converters: Record<string, (d: JSONContent) => string> = {
   },
   hardBreak: () => {
     return "#linebreak()"
+  },
+  heading: (d) => {
+    let result = `#heading(level: ${d.attrs?.level ?? 1})[${d.content
+      ?.map(tiptap2typst)
+      .join("")}]`
+    result = applyTextAlignAndDirection(result, d)
+    return result
+  },
+  blockquote: (d) => {
+    return `#quote(block: true)[${d.content?.map(tiptap2typst).join("")}]`
+  },
+  horizontalRule: () => {
+    return `#line(length: 100%)`
   },
   "math-inline": (d) => mathConverter(d, true),
   "math-block": (d) => mathConverter(d),
