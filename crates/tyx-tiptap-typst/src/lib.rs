@@ -21,7 +21,7 @@ pub use tyx_tiptap_schema::TyxNode;
 
 use std::sync::Arc;
 
-use typlite::ast;
+use cmark_writer::ast;
 use tyx_tiptap_schema::{self as s, TyxMark};
 
 /// The settings for the tyx document.
