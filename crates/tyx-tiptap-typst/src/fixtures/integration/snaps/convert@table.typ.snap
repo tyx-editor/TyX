@@ -1,0 +1,645 @@
+---
+source: crates/tyx-tiptap-typst/src/tests.rs
+expression: conv(world)
+input_file: crates/tyx-tiptap-typst/src/fixtures/integration/table.typ
+---
+{
+ "type": "doc",
+ "content": [
+  {
+   "type": "table",
+   "content": [
+    {
+     "type": "table_row",
+     "content": [
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "0"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "1"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "2"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "3"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "4"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "5"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "6"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "7"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "8"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "9"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "10"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "11"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "12"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "13"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "14"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "15"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "16"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "17"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "18"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "19"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "table",
+   "content": [
+    {
+     "type": "table_row",
+     "content": [
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "0"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "1"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "2"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "3"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "4"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_header",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "5"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      }
+     ]
+    },
+    {
+     "type": "table_row",
+     "content": [
+      {
+       "type": "table_cell",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "6"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_cell",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "7"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_cell",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "8"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_cell",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "9"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_cell",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "10"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_cell",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "11"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      }
+     ]
+    },
+    {
+     "type": "table_row",
+     "content": [
+      {
+       "type": "table_cell",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "12"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_cell",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "13"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_cell",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "14"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_cell",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "15"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_cell",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "16"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_cell",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "17"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      }
+     ]
+    },
+    {
+     "type": "table_row",
+     "content": [
+      {
+       "type": "table_cell",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "18"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      },
+      {
+       "type": "table_cell",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "19"
+          }
+         ]
+        }
+       ],
+       "colwidth": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
