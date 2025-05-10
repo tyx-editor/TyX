@@ -112,7 +112,20 @@ export const onOpen = (filename: string | undefined, content: string) => {
 export const open = () => invoke("open")
 
 export const save = (filename: string, content: string) => {
-  return invoke("save", { filename, content })
+  return invoke("save", {
+    filename,
+    content,
+    schema: storeSchema((window as any).schemaSpec),
+  })
+}
+
+function storeSchema(schema: any) {
+  const result: any = {
+    topNode: schema.topNode,
+    nodes: schema.nodes.toObject(),
+    marks: schema.marks.toObject(),
+  }
+  return JSON.stringify(result)
 }
 
 export const saveAs = () => invoke("saveas")

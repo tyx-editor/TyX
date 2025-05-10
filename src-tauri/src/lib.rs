@@ -12,9 +12,12 @@ use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_shell::ShellExt;
 
 #[tauri::command]
-fn save(filename: &str, content: &str) {
+fn save(filename: &str, content: &str, schema: &str) {
     if let Ok(mut f) = File::create(filename) {
         f.write_all(content.as_bytes()).unwrap();
+    }
+    if let Ok(mut f) = File::create(format!("{}.schema.json", filename)) {
+        f.write_all(schema.as_bytes()).unwrap();
     }
 }
 
