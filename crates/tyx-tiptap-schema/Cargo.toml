@@ -1,0 +1,21 @@
+[package]
+name = "tyx-tiptap-schema"
+description = "The strong-typed tiptap JSON schema for TyX."
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+ecow.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+typst.workspace = true
+
+[build-dependencies]
+serde.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true
