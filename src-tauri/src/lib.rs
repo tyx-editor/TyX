@@ -30,7 +30,7 @@ fn saveas(handle: tauri::AppHandle) {
                 if let Some(path) = f.as_path() {
                     let mut path = path.to_str().unwrap().to_string();
                     if !path.ends_with(".tyx") {
-                        path = path + ".tyx";
+                        path += ".tyx";
                     }
                     h.emit("saveas", (path,)).unwrap();
                 }
@@ -78,7 +78,7 @@ fn preview(handle: tauri::AppHandle, filename: &str, content: &str) -> String {
     let pdf_file = basename.clone() + ".pdf";
 
     if let Ok(mut file) = File::create(&typst_file) {
-        if let Ok(_) = file.write_all(content.as_bytes()) {
+        if file.write_all(content.as_bytes()).is_ok() {
             let command = handle.shell().sidecar("typst").unwrap();
 
             let fonts_dir = handle
@@ -113,7 +113,7 @@ fn preview(handle: tauri::AppHandle, filename: &str, content: &str) -> String {
         }
     }
 
-    return String::new();
+    String::new()
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
