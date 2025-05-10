@@ -123,8 +123,8 @@ export const converters: Record<string, (d: JSONContent) => string> = {
   horizontalRule: () => {
     return `#line(length: 100%)`
   },
-  "math-inline": (d) => mathConverter(d, true),
-  "math-block": (d) => mathConverter(d),
+  mathInline: (d) => mathConverter(d, true),
+  mathBlock: (d) => mathConverter(d),
 }
 
 export const typstEscape = (text: string) => {

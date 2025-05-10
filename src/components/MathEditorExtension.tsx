@@ -110,7 +110,7 @@ export interface MathOptions {
 }
 
 export const MathBlock = Node.create<MathOptions>({
-  name: "math-block",
+  name: "mathBlock",
   group: "block",
   defining: true,
   selectable: true,
@@ -169,7 +169,7 @@ export const MathBlock = Node.create<MathOptions>({
 })
 
 export const MathInline = Node.create<MathOptions>({
-  name: "math-inline",
+  name: "mathInline",
   group: "inline",
   inline: true,
   defining: true,
