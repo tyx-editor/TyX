@@ -1,0 +1,103 @@
+---
+source: crates/tyx-tiptap-typst/src/tests.rs
+expression: conv(world)
+input_file: crates/tyx-tiptap-typst/src/fixtures/integration/list.typ
+---
+{
+ "type": "doc",
+ "content": [
+  {
+   "type": "bullet_list",
+   "content": [
+    {
+     "type": "list_item",
+     "content": [
+      {
+       "type": "paragraph",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "Some"
+          }
+         ]
+        },
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": " "
+          }
+         ]
+        },
+        {
+         "type": "mark",
+         "type": "bold",
+         "content": [
+          {
+           "type": "text",
+           "content": [
+            {
+             "type": "plain",
+             "content": "item"
+            }
+           ]
+          }
+         ]
+        }
+       ],
+       "dir": null
+      }
+     ]
+    },
+    {
+     "type": "list_item",
+     "content": [
+      {
+       "type": "paragraph",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "Another"
+          }
+         ]
+        },
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": " "
+          }
+         ]
+        },
+        {
+         "type": "mark",
+         "type": "italic",
+         "content": [
+          {
+           "type": "text",
+           "content": [
+            {
+             "type": "plain",
+             "content": "item"
+            }
+           ]
+          }
+         ]
+        }
+       ],
+       "dir": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

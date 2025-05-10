@@ -1,0 +1,14 @@
+---
+source: crates/tyx-tiptap-typst/src/tests.rs
+expression: conv(world)
+input_file: crates/tyx-tiptap-typst/src/fixtures/integration/figure_caption.typ
+---
+{
+ "type": "doc",
+ "content": [
+  {
+   "type": "plain",
+   "content": ""
+  }
+ ]
+}
