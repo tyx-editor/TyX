@@ -1,0 +1,33 @@
+---
+source: crates/tyx-tiptap-typst/src/tests.rs
+expression: conv(world)
+input_file: crates/tyx-tiptap-typst/src/fixtures/integration/link.typ
+---
+{
+ "type": "doc",
+ "content": [
+  {
+   "type": "paragraph",
+   "content": [
+    {
+     "type": "mark",
+     "type": "link",
+     "content": [
+      {
+       "type": "text",
+       "content": [
+        {
+         "type": "plain",
+         "content": "https://example.com"
+        }
+       ]
+      }
+     ],
+     "class": null,
+     "href": "https://example.com"
+    }
+   ],
+   "dir": null
+  }
+ ]
+}

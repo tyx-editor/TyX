@@ -1,0 +1,41 @@
+---
+source: crates/tyx-tiptap-typst/src/tests.rs
+expression: conv(world)
+input_file: crates/tyx-tiptap-typst/src/fixtures/integration/base.typ
+---
+{
+ "type": "doc",
+ "content": [
+  {
+   "type": "heading",
+   "content": [
+    {
+     "type": "text",
+     "content": [
+      {
+       "type": "plain",
+       "content": "Hello, World!"
+      }
+     ]
+    }
+   ],
+   "dir": null,
+   "level": 2
+  },
+  {
+   "type": "paragraph",
+   "content": [
+    {
+     "type": "text",
+     "content": [
+      {
+       "type": "plain",
+       "content": "This is a typst document."
+      }
+     ]
+    }
+   ],
+   "dir": null
+  }
+ ]
+}
