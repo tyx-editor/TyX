@@ -176,7 +176,9 @@ const Editor = ({
       onUpdate: ({ editor }) => update(editor.getJSON()),
     },
     []
-  )
+  );
+
+  (window as any).schemaSpec = editor?.schema?.spec;
 
   useEffect(() => {
     editor?.commands.focus()

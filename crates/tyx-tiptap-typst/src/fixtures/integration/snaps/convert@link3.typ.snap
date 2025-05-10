@@ -1,0 +1,57 @@
+---
+source: crates/tyx-tiptap-typst/src/tests.rs
+expression: conv(world)
+input_file: crates/tyx-tiptap-typst/src/fixtures/integration/link3.typ
+---
+{
+ "type": "doc",
+ "content": [
+  {
+   "type": "paragraph",
+   "content": [
+    {
+     "type": "mark",
+     "type": "link",
+     "content": [
+      {
+       "type": "text",
+       "content": [
+        {
+         "type": "plain",
+         "content": "Reverse"
+        }
+       ]
+      },
+      {
+       "type": "text",
+       "content": [
+        {
+         "type": "plain",
+         "content": " "
+        }
+       ]
+      },
+      {
+       "type": "mark",
+       "type": "bold",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "the World"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "class": null,
+     "href": "https://example.com"
+    }
+   ],
+   "dir": null
+  }
+ ]
+}

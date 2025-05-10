@@ -1,0 +1,57 @@
+---
+source: crates/tyx-tiptap-typst/src/tests.rs
+expression: conv(world)
+input_file: crates/tyx-tiptap-typst/src/fixtures/integration/enum2.typ
+---
+{
+ "type": "doc",
+ "content": [
+  {
+   "type": "ordered_list",
+   "content": [
+    {
+     "type": "list_item",
+     "content": [
+      {
+       "type": "paragraph",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "A"
+          }
+         ]
+        }
+       ],
+       "dir": null
+      }
+     ]
+    },
+    {
+     "type": "list_item",
+     "content": [
+      {
+       "type": "paragraph",
+       "content": [
+        {
+         "type": "text",
+         "content": [
+          {
+           "type": "plain",
+           "content": "B"
+          }
+         ]
+        }
+       ],
+       "dir": null
+      }
+     ]
+    }
+   ],
+   "start": 1,
+   "type": null
+  }
+ ]
+}
