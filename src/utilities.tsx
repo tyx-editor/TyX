@@ -18,7 +18,7 @@ interface MessageOptions {
 
 export const showFailureMessage = (
   failureMessage: string,
-  options?: MessageOptions
+  options?: MessageOptions,
 ) => {
   notifications.show({
     title: options?.title ?? "Failed!",

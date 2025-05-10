@@ -8,5 +8,5 @@ console.log(
     topNode: spec.topNode,
     nodes: spec.nodes.toObject(),
     marks: spec.marks.toObject(),
-  })
+  }),
 )

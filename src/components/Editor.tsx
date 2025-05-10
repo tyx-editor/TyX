@@ -141,7 +141,7 @@ const Editor = ({
       content: Object.keys(doc.content).length > 0 ? doc.content : undefined,
       onUpdate: ({ editor }) => update(editor.getJSON()),
     },
-    []
+    [],
   )
 
   useEffect(() => {
