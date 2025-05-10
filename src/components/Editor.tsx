@@ -1,22 +1,10 @@
 import {
-  Link,
   RichTextEditor,
   RichTextEditorControlProps,
   useRichTextEditorContext,
 } from "@mantine/tiptap"
 import { JSONContent, useEditor } from "@tiptap/react"
-
-import Highlight from "@tiptap/extension-highlight"
-import SubScript from "@tiptap/extension-subscript"
-import Superscript from "@tiptap/extension-superscript"
-import Table from "@tiptap/extension-table"
-import TableCell from "@tiptap/extension-table-cell"
-import TableHeader from "@tiptap/extension-table-header"
-import TableRow from "@tiptap/extension-table-row"
-import TextAlign from "@tiptap/extension-text-align"
-import Underline from "@tiptap/extension-underline"
-import StarterKit from "@tiptap/starter-kit"
-import TextDirection from "tiptap-text-direction"
+import extensions from "./editor/extensions"
 
 import { Loader } from "@mantine/core"
 import { modals } from "@mantine/modals"
@@ -36,7 +24,6 @@ import { useEffect, useState } from "react"
 import { isWeb, onPreview, onSave } from "../backend"
 import { TyXDocument } from "../models"
 import DocumentSettingsModal from "./DocumentSettingsModal"
-import { MathBlock, MathInline } from "./MathEditorExtension"
 
 const SaveControl = (props: RichTextEditorControlProps) => {
   return (
@@ -150,28 +137,7 @@ const Editor = ({
 }) => {
   const editor = useEditor(
     {
-      extensions: [
-        StarterKit,
-        Superscript,
-        SubScript,
-        Underline,
-        Link,
-        Highlight,
-        TextAlign.configure({
-          types: ["heading", "paragraph"],
-          defaultAlignment: "",
-        }),
-        TextDirection.configure({
-          types: ["heading", "paragraph"],
-          defaultDirection: "ltr",
-        }),
-        Table.configure({ resizable: false }),
-        TableRow,
-        TableCell,
-        TableHeader,
-        MathBlock,
-        MathInline,
-      ],
+      extensions,
       content: Object.keys(doc.content).length > 0 ? doc.content : undefined,
       onUpdate: ({ editor }) => update(editor.getJSON()),
     },

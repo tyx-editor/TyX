@@ -4,9 +4,10 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "bun run prebuild && vite",
     "dev:app": "tauri dev",
-    "build": "bun run scripts/download.ts && tsc && vite build",
+    "prebuild": "bun run scripts/get-schema.ts > crates/tyx-tiptap-schema/assets/tyx.schema.json && prettier -w crates/tyx-tiptap-schema/assets/tyx.schema.json && bun run scripts/download.ts",
+    "build": "bun run prebuild && tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
     "build-web": "echo 'export * from \"./web\"' > src/backend/index.ts && bun run build && echo 'export * from \"./tauri\"' > src/backend/index.ts",
@@ -51,6 +52,7 @@
     "@types/react": "^18.3.21",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^4.4.1",
+    "prettier": "^3.5.3",
     "typescript": "^5.8.3",
     "vite": "^5.4.19"
   },
