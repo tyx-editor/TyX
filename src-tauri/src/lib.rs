@@ -11,7 +11,11 @@ use tauri::{Emitter, Manager};
 
 use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_shell::ShellExt;
-use tinymist_project::{CompileOnceArgs, EntryReader, LspUniverse, TaskInputs, WorldProvider};
+use tinymist_project::{
+    CompileOnceArgs, EntryReader, LspUniverse, TaskInputs, WorldProvider, base::ShadowApi,
+    vfs::Bytes,
+};
+use typst_pdf::PdfOptions;
 
 /// A global shared instance to process typst in a workspace.
 // todo: load compile arguments
@@ -24,6 +28,24 @@ static VERSE: LazyLock<LspUniverse> = LazyLock::new(|| {
     .resolve()
     .unwrap()
 });
+
+//
+#[tauri::command]
+fn compile_pdf(content: &str) {
+    let mut world = VERSE.snapshot();
+    let Some(main) = world.main_id() else {
+        eprintln!("no main id");
+        return;
+    };
+    let _ = world.map_shadow_by_id(main, Bytes::from_string(content.to_owned()));
+    // todo: unwraps will cause panic here and there, which is unfriendly
+    let doc = typst::compile(&world).output.unwrap();
+    let pdf = typst_pdf::pdf(&doc, &PdfOptions::default()).unwrap();
+
+    // todo: the path to save
+    let mut f = File::create("out.pdf").unwrap();
+    f.write_all(&pdf).unwrap();
+}
 
 //
 #[tauri::command]

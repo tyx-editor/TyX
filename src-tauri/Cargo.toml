@@ -30,5 +30,8 @@ tinymist-project = { workspace = true, features = ["lsp"] }
 tyx-tiptap-typst.workspace = true
 url = "2.5.4"
 
+typst.workspace = true
+typst-pdf = "0.13.1"
+
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
 tauri-plugin-updater = "2"
