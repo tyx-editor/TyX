@@ -1,3 +1,4 @@
+import { type ComputeEngine } from "@cortex-js/compute-engine"
 import {
   mergeAttributes,
   Node,
@@ -6,8 +7,15 @@ import {
   NodeViewWrapper,
   ReactNodeViewRenderer,
 } from "@tiptap/react"
-import { type MathfieldElement } from "mathlive"
+import { MathfieldElement } from "mathlive"
 import { useEffect, useId, useRef, useState } from "react"
+
+let computeEngine: ComputeEngine
+if (typeof window !== "undefined") {
+  import("mathlive").then(
+    ({ MathfieldElement }) => (computeEngine = MathfieldElement.computeEngine!),
+  )
+}
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
@@ -47,7 +55,7 @@ const MathEditor = (props: NodeViewProps) => {
         const value = target.getValue()
         setValue(
           value,
-          (mathfieldRef.current!.computeEngine as any).parse(value, {
+          computeEngine.parse(value, {
             canonical: false,
           }),
         )
@@ -87,7 +95,7 @@ const MathEditor = (props: NodeViewProps) => {
     <NodeViewWrapper
       key={`math-editor-${uniqueId}`}
       style={
-        props.node.type.name === "math-inline"
+        props.node.type.name === "mathInline"
           ? { display: "inline-block" }
           : { display: "block", textAlign: "center", fontSize: 24 }
       }
