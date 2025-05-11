@@ -17,6 +17,7 @@
         "@tauri-apps/plugin-process": "~2.2.1",
         "@tauri-apps/plugin-shell": "^2.2.1",
         "@tauri-apps/plugin-updater": "~2.7.1",
+        "@tiptap/extension-color": "^2.12.0",
         "@tiptap/extension-highlight": "^2.12.0",
         "@tiptap/extension-link": "^2.12.0",
         "@tiptap/extension-subscript": "^2.12.0",
@@ -26,6 +27,7 @@
         "@tiptap/extension-table-header": "^2.12.0",
         "@tiptap/extension-table-row": "^2.12.0",
         "@tiptap/extension-text-align": "^2.12.0",
+        "@tiptap/extension-text-style": "^2.12.0",
         "@tiptap/extension-underline": "^2.12.0",
         "@tiptap/pm": "^2.12.0",
         "@tiptap/react": "^2.12.0",
@@ -268,6 +270,8 @@
     "@tiptap/extension-code": ["@tiptap/extension-code@2.12.0", "", { "peerDependencies": { "@tiptap/core": "^2.7.0" } }, "sha512-R7RaS+hJeHFim7alImQ9L9CSWSMjWXvz0Ote568x9ea5gdBGUYW8PcH+5a91lh8e1XGYWBM12a8oJZRyxg/tQA=="],
 
     "@tiptap/extension-code-block": ["@tiptap/extension-code-block@2.12.0", "", { "peerDependencies": { "@tiptap/core": "^2.7.0", "@tiptap/pm": "^2.7.0" } }, "sha512-1D7cYAjgxEFHdfC/35Ooi4GqWKB5sszbW8iI7N16XILNln26xb0d5KflXqYrwr9CN/ZnZoCl2o6YsP7xEObcZA=="],
+
+    "@tiptap/extension-color": ["@tiptap/extension-color@2.12.0", "", { "peerDependencies": { "@tiptap/core": "^2.7.0", "@tiptap/extension-text-style": "^2.7.0" } }, "sha512-tb3KDhH2Hf3Pwm7pIEH80TKBOLmHU+T/0seR3R+6flamPC7t9S4mcehDX35qvTQTqDU9v429Rw5SL40FRW7AMg=="],
 
     "@tiptap/extension-document": ["@tiptap/extension-document@2.12.0", "", { "peerDependencies": { "@tiptap/core": "^2.7.0" } }, "sha512-sA1Q+mxDIv0Y3qQTBkYGwknNbDcGFiJ/fyAFholXpqbrcRx3GavwR/o0chBdsJZlFht0x7AWGwUYWvIo7wYilA=="],
 

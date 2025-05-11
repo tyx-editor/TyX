@@ -74,6 +74,16 @@ pub struct Superscript {
     pub content: Option<Content>,
 }
 
+/// A `textStyle` mark.
+#[derive(Debug, Clone, Hash, Serialize, Deserialize)]
+pub struct TextStyle {
+    /// The node's content.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub content: Option<Content>,
+    /// The `color` attribute.
+    pub color: serde_json::Value,
+}
+
 /// A `underline` mark.
 #[derive(Debug, Clone, Hash, Serialize, Deserialize)]
 pub struct Underline {

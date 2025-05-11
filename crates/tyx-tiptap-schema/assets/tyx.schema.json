@@ -126,6 +126,10 @@
       },
       "parseDOM": [{ "tag": "a[href]" }]
     },
+    "textStyle": {
+      "attrs": { "color": { "default": null } },
+      "parseDOM": [{ "tag": "span" }]
+    },
     "bold": {
       "parseDOM": [
         { "tag": "strong" },

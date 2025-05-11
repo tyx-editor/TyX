@@ -61,6 +61,14 @@ export const converters: Record<string, (d: JSONContent) => string> = {
           text = `#sub[${text}]`
         } else if (mark.type === "superscript") {
           text = `#super[${text}]`
+        } else if (mark.type === "textStyle") {
+          for (const key in mark.attrs ?? {}) {
+            if (key === "color") {
+              text = `#text(rgb(${JSON.stringify(mark.attrs!.color)}))[${text}]`
+            } else {
+              throw Error(`Unsupported text style "${key}"`)
+            }
+          }
         } else {
           throw Error(`Unsupported mark "${mark.type}"`)
         }
