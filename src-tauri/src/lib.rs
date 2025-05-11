@@ -1,7 +1,8 @@
 use std::{
     fs::File,
-    io::{Read, Write},
+    io::Write,
     path::{Path, PathBuf},
+    sync::{Arc, LazyLock},
 };
 
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
@@ -10,7 +11,21 @@ use tauri::{Emitter, Manager};
 
 use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_shell::ShellExt;
+use tinymist_project::{CompileOnceArgs, EntryReader, LspUniverse, TaskInputs, WorldProvider};
 
+/// A global shared instance to process typst in a workspace.
+// todo: load compile arguments
+static VERSE: LazyLock<LspUniverse> = LazyLock::new(|| {
+    CompileOnceArgs {
+        root: Some(PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap()).join("..")),
+        input: Some("../main.typ".to_string()),
+        ..CompileOnceArgs::default()
+    }
+    .resolve()
+    .unwrap()
+});
+
+//
 #[tauri::command]
 fn save(filename: &str, content: &str) {
     if let Ok(mut f) = File::create(filename) {
@@ -39,12 +54,35 @@ fn saveas(handle: tauri::AppHandle) {
 }
 
 fn openfile(handle: &tauri::AppHandle, path: &Path) {
-    let h = handle.clone();
-    if let Ok(mut f) = File::open(path) {
-        let mut buffer = String::new();
-        f.read_to_string(&mut buffer).unwrap();
-        h.emit("open", (path.to_str().unwrap(), buffer)).unwrap();
-    }
+    let buffer = if path.extension().is_some_and(|ext| ext == "typ") {
+        let Ok(entry) = VERSE.entry_state().try_select_path_in_workspace(path) else {
+            eprintln!("not selected path {:?}", VERSE.entry_state());
+            return;
+        };
+        let world = VERSE.snapshot_with(Some(TaskInputs {
+            entry,
+            ..TaskInputs::default()
+        }));
+        if world.main_id().is_none() {
+            eprintln!("no main id");
+            return;
+        }
+
+        let Some(mut doc) = tyx_tiptap_typst::convert(Arc::new(world)) else {
+            return;
+        };
+        doc.filename = path.to_str().unwrap().to_string();
+        // todo: we serialize it here.
+        serde_json::to_string(&doc).unwrap()
+    } else {
+        // tyx
+        std::fs::read_to_string(path).unwrap()
+    };
+    // eprintln!("open tyx file: {buffer:?}");
+
+    handle
+        .emit("open", (path.to_str().unwrap(), buffer))
+        .unwrap();
 }
 
 #[tauri::command]
@@ -53,7 +91,7 @@ fn open(handle: tauri::AppHandle) {
     handle
         .dialog()
         .file()
-        .add_filter("tyx", &["tyx"])
+        .add_filter("tyx", &["tyx", "typ"])
         .pick_file(move |f| {
             if let Some(f) = f {
                 if let Some(path) = f.as_path() {
