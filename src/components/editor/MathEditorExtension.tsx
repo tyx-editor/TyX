@@ -6,7 +6,7 @@ import {
   NodeViewWrapper,
   ReactNodeViewRenderer,
 } from "@tiptap/react"
-import { MathfieldElement } from "mathlive"
+import { type MathfieldElement } from "mathlive"
 import { useEffect, useId, useRef, useState } from "react"
 
 declare module "@tiptap/core" {
@@ -47,7 +47,9 @@ const MathEditor = (props: NodeViewProps) => {
         const value = target.getValue()
         setValue(
           value,
-          MathfieldElement.computeEngine!.parse(value, { canonical: false })
+          (mathfieldRef.current!.computeEngine as any).parse(value, {
+            canonical: false,
+          }),
         )
       })
 
@@ -110,7 +112,7 @@ export interface MathOptions {
 }
 
 export const MathBlock = Node.create<MathOptions>({
-  name: "math-block",
+  name: "mathBlock",
   group: "block",
   defining: true,
   selectable: true,
@@ -169,7 +171,7 @@ export const MathBlock = Node.create<MathOptions>({
 })
 
 export const MathInline = Node.create<MathOptions>({
-  name: "math-inline",
+  name: "mathInline",
   group: "inline",
   inline: true,
   defining: true,

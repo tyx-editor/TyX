@@ -16,18 +16,23 @@ export const mathConverter = (d: JSONContent, inline = false) => {
   }
 }
 
+export const applyTextAlignAndDirection = (result: string, d: JSONContent) => {
+  if (d.attrs?.textAlign && d.attrs.textAlign !== "justify") {
+    result = `#align(${d.attrs.textAlign})[${result}]`
+  }
+  if (d.attrs?.dir) {
+    result = `#text(dir: ${d.attrs.dir})[${result}]`
+  }
+  return result
+}
+
 export const converters: Record<string, (d: JSONContent) => string> = {
   doc: (d) => {
     return d.content?.map(tiptap2typst).join("") ?? ""
   },
   paragraph: (d) => {
     let result = d.content?.map(tiptap2typst).join("") ?? "#box[]"
-    if (d.attrs?.textAlign && d.attrs.textAlign !== "justify") {
-      result = `#align(${d.attrs.textAlign})[${result}]`
-    }
-    if (d.attrs?.dir) {
-      result = `#text(dir: ${d.attrs.dir})[${result}]`
-    }
+    result = applyTextAlignAndDirection(result, d)
     return result + "\n#parbreak()\n"
   },
   text: (d) => {
@@ -35,6 +40,10 @@ export const converters: Record<string, (d: JSONContent) => string> = {
     if (d.marks?.some((mark) => mark.type === "code")) {
       text = `#raw(${text.slice(1)})`
     } else {
+      if (d.marks?.some((mark) => mark.type === "typstCode")) {
+        return `\n${tiptap2text(d)}\n`
+      }
+
       for (const mark of d.marks ?? []) {
         if (mark.type === "bold") {
           text = `*${text}*`
@@ -46,13 +55,26 @@ export const converters: Record<string, (d: JSONContent) => string> = {
           text = `#highlight[${text}]`
         } else if (mark.type === "strike") {
           text = `#strike[${text}]`
-        }
-        if (mark.type === "link") {
+        } else if (mark.type === "link") {
           let href = mark.attrs?.href ?? ""
           if (href !== "" && !href.includes("://")) {
             href = "https://" + href
           }
           text = `#link(${JSON.stringify(href)})[${text}]`
+        } else if (mark.type === "subscript") {
+          text = `#sub[${text}]`
+        } else if (mark.type === "superscript") {
+          text = `#super[${text}]`
+        } else if (mark.type === "textStyle") {
+          for (const key in mark.attrs ?? {}) {
+            if (key === "color") {
+              text = `#text(rgb(${JSON.stringify(mark.attrs!.color)}))[${text}]`
+            } else {
+              throw Error(`Unsupported text style "${key}"`)
+            }
+          }
+        } else {
+          throw Error(`Unsupported mark "${mark.type}"`)
         }
       }
     }
@@ -63,7 +85,8 @@ export const converters: Record<string, (d: JSONContent) => string> = {
     return (
       "#list(" +
       d.content?.map(
-        (child) => `list.item[${child.content?.map(tiptap2typst).join("\n\n")}]`
+        (child) =>
+          `list.item[${child.content?.map(tiptap2typst).join("\n\n")}]`,
       ) +
       ")"
     )
@@ -72,7 +95,8 @@ export const converters: Record<string, (d: JSONContent) => string> = {
     return (
       "#enum(" +
       d.content?.map(
-        (child) => `enum.item[${child.content?.map(tiptap2typst).join("\n\n")}]`
+        (child) =>
+          `enum.item[${child.content?.map(tiptap2typst).join("\n\n")}]`,
       ) +
       ")"
     )
@@ -85,7 +109,7 @@ export const converters: Record<string, (d: JSONContent) => string> = {
         ?.map((child) =>
           child.content
             ?.map((child) => "[" + tiptap2typst(child) + "]")
-            .join(",")
+            .join(","),
         )
         .join(",") +
       ")"
@@ -95,13 +119,26 @@ export const converters: Record<string, (d: JSONContent) => string> = {
     return d.content?.map(tiptap2typst).join("") ?? ""
   },
   codeBlock: (d) => {
-    return "`" + tiptap2text(d) + "`"
+    return `#raw(lang: ${d.attrs?.language ? JSON.stringify(d.attrs.language) : "none"}, ${JSON.stringify(tiptap2text(d))})`
   },
   hardBreak: () => {
     return "#linebreak()"
   },
-  "math-inline": (d) => mathConverter(d, true),
-  "math-block": (d) => mathConverter(d),
+  heading: (d) => {
+    let result = `#heading(level: ${d.attrs?.level ?? 1})[${d.content
+      ?.map(tiptap2typst)
+      .join("")}]`
+    result = applyTextAlignAndDirection(result, d)
+    return result
+  },
+  blockquote: (d) => {
+    return `#quote(block: true)[${d.content?.map(tiptap2typst).join("")}]`
+  },
+  horizontalRule: () => {
+    return `#line(length: 100%)`
+  },
+  mathInline: (d) => mathConverter(d, true),
+  mathBlock: (d) => mathConverter(d),
 }
 
 export const typstEscape = (text: string) => {

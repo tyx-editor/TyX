@@ -40,7 +40,7 @@ if (!existsSync(binFolder)) {
 for (const [targetTriple, link] of links) {
   const output = join(
     binFolder,
-    `typst-${targetTriple.replace("musl", "gnu")}${extension}`
+    `typst-${targetTriple.replace("musl", "gnu")}${extension}`,
   )
 
   if (existsSync(output)) {
