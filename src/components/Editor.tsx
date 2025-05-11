@@ -21,7 +21,7 @@ import TextDirection from "tiptap-text-direction"
 import { Loader } from "@mantine/core"
 import { modals } from "@mantine/modals"
 import {
-  IconColumnInsertLeft,
+  IconColumnInsertRight,
   IconColumnRemove,
   IconDeviceFloppy,
   IconEye,
@@ -106,11 +106,11 @@ const TableControls = () => {
             <IconRowInsertBottom />
           </RichTextEditor.Control>
           <RichTextEditor.Control
-            title="Insert column on the left"
-            aria-label="Insert column on the left"
+            title="Insert column to the right"
+            aria-label="Insert column to the right"
             onClick={() => editor?.chain().focus().addColumnAfter().run()}
           >
-            <IconColumnInsertLeft />
+            <IconColumnInsertRight />
           </RichTextEditor.Control>
           <RichTextEditor.Control
             title="Delete row"
