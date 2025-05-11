@@ -36,4 +36,22 @@ Or run:
 bun run tauri dev
 ```
 
+## Testing
+
+To run rust tests, run:
+
+```bash
+cargo test --workspace
+```
+
+## Developing the typst-tiptap Converter
+
+TyX uses tiptap to build its wysiwyg editor. To convert typst documents into tiptap format, TyX adopts a custom converter. The converter is located in [`crates/tyx-tiptap-typst`](./crates/tyx-tiptap-typst).
+
+To perform snapshot testing about the converter, please run:
+
+```bash
+cargo insta test -p tyx-tiptap-typst --accept
+```
+
 <!-- todo: build locally -->

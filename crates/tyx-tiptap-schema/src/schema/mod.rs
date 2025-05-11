@@ -10,8 +10,8 @@ use prelude::*;
 #[derive(Debug, Clone, Hash, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "camelCase")]
 pub enum TyxNode {
-    /// A mark.
-    Mark(TyxMark),
+    /// A marked content.
+    Mark(TyxMarked),
     /// A `Blockquote` node.
     Blockquote(Blockquote),
     /// A `BulletList` node.
