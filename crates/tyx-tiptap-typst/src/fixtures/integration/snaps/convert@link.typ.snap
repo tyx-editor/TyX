@@ -10,21 +10,15 @@ input_file: crates/tyx-tiptap-typst/src/fixtures/integration/link.typ
    "type": "paragraph",
    "content": [
     {
-     "type": "mark",
-     "type": "link",
-     "content": [
+     "type": "text",
+     "marks": [
       {
-       "type": "text",
-       "content": [
-        {
-         "type": "plain",
-         "content": "https://example.com"
-        }
-       ]
+       "type": "link",
+       "class": null,
+       "href": "https://example.com"
       }
      ],
-     "class": null,
-     "href": "https://example.com"
+     "text": "https://example.com"
     }
    ],
    "dir": null

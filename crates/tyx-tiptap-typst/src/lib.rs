@@ -4,14 +4,16 @@
 //!
 //! Building a world, documented [here](https://github.com/Myriad-Dreamin/tinymist/tree/main/crates/tinymist-world#example-resolves-a-system-universe-from-system-arguments):
 //!
-//! ```no-run
-//! let args = CompileOnceArgs::parse();
-//! let verse = args
-//!     .resolve_system()
+//! ```no_run
+//! use std::sync::Arc;
+//! use tinymist_project::{CompileOnceArgs, WorldProvider};
+//!
+//! let verse = CompileOnceArgs::default()
+//!     .resolve()
 //!     .expect("failed to resolve system universe");
 //!
 //! let world = verse.snapshot();
-//! let tyx_document = tyx_tiptap_typst::convert(world);
+//! let tyx_document = tyx_tiptap_typst::convert(Arc::new(world));
 //! ```
 
 use ecow::EcoString;
@@ -58,11 +60,13 @@ pub fn convert(world: Arc<LspWorld>) -> Option<TyxDocument> {
 
     // todo: more settings using `typst query`
     let settings = TyxSettings {
+        // The base typst document used for introspection.
         title: md_doc.base.info.title.clone(),
     };
 
     // Generates the tyx output by walking the node
-    let content = TyxConverter { _base: md_doc.base }.work(node)?;
+    let mut content = Stage1Converter.work(node)?;
+    Stage2Converter::default().work(&mut content);
 
     Some(TyxDocument {
         version: "0.1.7".into(),
@@ -75,12 +79,9 @@ pub fn convert(world: Arc<LspWorld>) -> Option<TyxDocument> {
 }
 
 /// Converts a typst document to a tiptap node
-struct TyxConverter {
-    /// The base typst document used for introspection.
-    _base: typst::html::HtmlDocument,
-}
+struct Stage1Converter;
 
-impl TyxConverter {
+impl Stage1Converter {
     /// The main work function.
     fn work(&self, node: ast::Node) -> Option<TyxNode> {
         match node {
@@ -313,92 +314,99 @@ impl TyxConverter {
 
     /// Converts an inline code.
     fn inline_code(&self, code: String) -> Option<TyxNode> {
-        Some(TyxNode::Mark(TyxMark::Code(s::Code {
-            content: Some(vec![TyxNode::plain(code.into())]),
-        })))
+        Some(TyxNode::marked(
+            vec![TyxNode::plain(code.into())],
+            TyxMark::Code(s::Code {}),
+        ))
     }
 
-    /// Converts a emphasis.
+    /// Converts an emphasis.
     fn emphasis(&self, nodes: Vec<ast::Node>) -> Option<TyxNode> {
-        // todo: we loss semantics here, as an `emphasis` can be configured to be `bold`
-        // or `italic`.
-        Some(TyxNode::Mark(TyxMark::Italic(s::Italic {
-            content: Some(self.children(nodes)),
-        })))
+        Some(TyxNode::marked(
+            self.children(nodes),
+            // todo: we loss semantics here, assuming `emphasis` => `italic`.
+            TyxMark::Italic(s::Italic {}),
+        ))
     }
 
-    /// Converts a strong emphasis.
+    /// Converts a strong.
     fn strong(&self, nodes: Vec<ast::Node>) -> Option<TyxNode> {
-        Some(TyxNode::Mark(TyxMark::Bold(s::Bold {
-            content: Some(self.children(nodes)),
-        })))
+        Some(TyxNode::marked(
+            self.children(nodes),
+            // todo: we loss semantics here, assuming `strong` => `bold`.
+            TyxMark::Bold(s::Bold {}),
+        ))
     }
 
     /// Converts a strikethrough.
     fn strikethrough(&self, nodes: Vec<ast::Node>) -> Option<TyxNode> {
-        Some(TyxNode::Mark(TyxMark::Strike(s::Strike {
-            content: Some(self.children(nodes)),
-        })))
+        Some(TyxNode::marked(
+            self.children(nodes),
+            // todo: we loss semantics here, assuming `strong` => `bold`.
+            TyxMark::Strike(s::Strike {}),
+        ))
     }
 
     /// Converts a link.
     fn link(&self, url: String, title: Option<String>, content: Vec<ast::Node>) -> Option<TyxNode> {
         let _ = title;
-        Some(TyxNode::Mark(TyxMark::Link(s::Link {
-            content: Some(self.children(content)),
+        let link = TyxMark::Link(s::Link {
             rel: None,
             class: serde_json::Value::Null,
             target: None,
             href: serde_json::Value::String(url),
-        })))
+        });
+        Some(TyxNode::marked(self.children(content), link))
     }
 
     /// Converts a reference link.
     fn reference_link(&self, label: String, content: Vec<ast::Node>) -> Option<TyxNode> {
         let _ = label;
-        Some(TyxNode::Mark(TyxMark::Link(s::Link {
-            content: Some(self.children(content)),
+        let link = TyxMark::Link(s::Link {
             rel: None,
             class: serde_json::Value::Null,
             target: None,
             href: serde_json::Value::String(format!("#{label}")),
-        })))
+        });
+        Some(TyxNode::marked(self.children(content), link))
     }
 
     /// Converts an image.
     fn image(&self, url: String, title: Option<String>, alt: Vec<ast::Node>) -> Option<TyxNode> {
         let _ = title;
         // todo: there is no image support in tyx yet.
-        Some(TyxNode::Mark(TyxMark::Link(s::Link {
-            content: Some(self.children(alt)),
+        let link = TyxMark::Link(s::Link {
             rel: None,
             class: serde_json::Value::Null,
             target: None,
             href: serde_json::Value::String(url),
-        })))
+        });
+        Some(TyxNode::marked(self.children(alt), link))
     }
 
     /// Converts an autolink.
     fn autolink(&self, url: String, is_email: bool) -> Option<TyxNode> {
         let _ = is_email;
-        Some(TyxNode::Mark(TyxMark::Link(s::Link {
-            content: Some(vec![TyxNode::plain(url.as_str().into())]),
+        let content = vec![TyxNode::plain(url.as_str().into())];
+        let link = TyxMark::Link(s::Link {
             rel: None,
             class: serde_json::Value::Null,
             target: None,
             href: serde_json::Value::String(url),
-        })))
+        });
+        Some(TyxNode::marked(content, link))
     }
 
     /// Converts an extended autolink.
     fn extended_autolink(&self, link: String) -> Option<TyxNode> {
-        Some(TyxNode::Mark(TyxMark::Link(s::Link {
-            content: Some(vec![TyxNode::plain(link.as_str().into())]),
+        let content = vec![TyxNode::plain(link.as_str().into())];
+        let link = TyxMark::Link(s::Link {
             rel: None,
             class: serde_json::Value::Null,
             target: None,
             href: serde_json::Value::String(link),
-        })))
+        });
+        Some(TyxNode::marked(content, link))
     }
 
     /// Converts a typst html element.
@@ -421,6 +429,113 @@ impl TyxConverter {
     /// Converts a text node.
     fn text(&self, content: String) -> Option<TyxNode> {
         Some(TyxNode::plain(content.into()))
+    }
+}
+
+/// This stage handles the issue mentioned in the issue [#30](https://github.com/tyx-editor/TyX/issues/30).
+#[derive(Default)]
+struct Stage2Converter {
+    marks: Vec<TyxMark>,
+}
+
+impl Stage2Converter {
+    /// Runs the main work function.
+    fn work(&mut self, node: &mut TyxNode) {
+        match node {
+            // Process a marked node
+            TyxNode::Mark(mark) => {
+                let mark_type = std::mem::replace(&mut mark.mark, TyxMark::Bold(s::Bold {}));
+                self.marks.push(mark_type);
+                self.propagate_mark(&mut mark.content);
+                self.marks.pop();
+            }
+            // Process a text node
+            TyxNode::Text(node) => {
+                node.marks.extend(self.marks.clone());
+            }
+            // Process result ones
+            TyxNode::Doc(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::Blockquote(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::BulletList(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::CodeBlock(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::HardBreak(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::Heading(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::HorizontalRule(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::ListItem(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::MathBlock(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::MathInline(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::OrderedList(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::Paragraph(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::Table(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::TableCell(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::TableHeader(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+            TyxNode::TableRow(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
+        };
+    }
+
+    /// The common function to optionally propagate marks
+    fn propagate_mark_opt(&mut self, content: &mut Option<Vec<TyxNode>>) {
+        if let Some(content) = content {
+            self.propagate_mark(content);
+        }
+    }
+
+    /// The common function to propagate marks
+    fn propagate_mark(&mut self, content: &mut Vec<TyxNode>) {
+        // If there is a mark in the content, we need to reallocate the content
+        let realloc = content.iter().any(|node| matches!(node, TyxNode::Mark(_)));
+        if realloc {
+            let old_content = std::mem::take(content);
+
+            let mut new_content = vec![];
+            for mut node in old_content {
+                self.work(&mut node);
+                if let TyxNode::Mark(m) = node {
+                    // Flat to parent node
+                    new_content.extend(m.content);
+                } else {
+                    new_content.push(node);
+                }
+            }
+
+            *content = new_content;
+        } else {
+            for node in content.iter_mut() {
+                self.work(node);
+            }
+        }
     }
 }
 

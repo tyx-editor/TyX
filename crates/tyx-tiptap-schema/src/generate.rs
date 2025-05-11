@@ -54,8 +54,8 @@ pub fn run() {
         writer.push_str("#[derive(Debug, Clone, Hash, Serialize, Deserialize)]\n");
         writer.push_str("#[serde(tag = \"type\", rename_all = \"camelCase\")]\n");
         writer.push_str("pub enum TyxNode {\n");
-        writer.push_str("    /// A mark.\n");
-        writer.push_str("    Mark(TyxMark),\n");
+        writer.push_str("    /// A marked content.\n");
+        writer.push_str("    Mark(TyxMarked),\n");
         for node in schema.nodes.values() {
             let name = &node.rust_name;
             writer.push_str(&format!("    /// A `{name}` node.\n"));
@@ -224,17 +224,17 @@ fn generate_node(node: &NodeSchema, writer: &mut Writer) {
     let rust_name = &node.rust_name;
     writer.push_str(&format!("\n/// A `{name}` node.\n"));
     writer.push_str("#[derive(Debug, Clone, Hash, Serialize, Deserialize)]\n");
-    writer.push_str(&format!("pub struct {rust_name} {{\n"));
+    writer.push_str(&format!("pub struct {rust_name} {{"));
     let _ = node;
 
     if node.name == "text" {
-        writer.push_str("    /// The text's mark.\n");
+        writer.push_str("\n    /// The text's mark.\n");
         writer.push_str("    #[serde(skip_serializing_if = \"Vec::is_empty\")]\n");
         writer.push_str("    pub marks: Vec<TyxMark>,\n");
         writer.push_str("    /// The text's content.\n");
         writer.push_str("    pub text: EcoString,\n");
     } else {
-        writer.push_str("    /// The node's content.\n");
+        writer.push_str("\n    /// The node's content.\n");
         writer.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
         writer.push_str("    pub content: Option<Content>,\n");
     }
@@ -249,10 +249,7 @@ fn generate_mark(mark: &MarkSchema, writer: &mut Writer) {
     let rust_name = &mark.rust_name;
     writer.push_str(&format!("\n/// A `{name}` mark.\n"));
     writer.push_str("#[derive(Debug, Clone, Hash, Serialize, Deserialize)]\n");
-    writer.push_str(&format!("pub struct {rust_name} {{\n"));
-    writer.push_str("    /// The node's content.\n");
-    writer.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-    writer.push_str("    pub content: Option<Content>,\n");
+    writer.push_str(&format!("pub struct {rust_name} {{"));
     generate_attrs(&mark.attrs, writer);
     writer.push_str("}\n");
 }
@@ -264,7 +261,7 @@ fn generate_attrs(attrs: &Option<BTreeMap<String, Attr>>, writer: &mut Writer) {
     };
     for (name, attr) in attrs {
         let rust_name = make_rust_field(name);
-        writer.push_str(&format!("    /// The `{name}` attribute.\n"));
+        writer.push_str(&format!("\n    /// The `{name}` attribute.\n"));
         let rust_type = match attr.default {
             Some(ref default) => match default {
                 serde_json::Value::Bool(_) => "bool",

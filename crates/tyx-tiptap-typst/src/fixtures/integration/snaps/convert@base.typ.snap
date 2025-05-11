@@ -11,12 +11,7 @@ input_file: crates/tyx-tiptap-typst/src/fixtures/integration/base.typ
    "content": [
     {
      "type": "text",
-     "content": [
-      {
-       "type": "plain",
-       "content": "Hello, World!"
-      }
-     ]
+     "text": "Hello, World!"
     }
    ],
    "dir": null,
@@ -27,12 +22,7 @@ input_file: crates/tyx-tiptap-typst/src/fixtures/integration/base.typ
    "content": [
     {
      "type": "text",
-     "content": [
-      {
-       "type": "plain",
-       "content": "This is a typst document."
-      }
-     ]
+     "text": "This is a typst document."
     }
    ],
    "dir": null
