@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "bun run prebuild && vite",
+    "dev": "bun run setup && vite",
     "dev:app": "tauri dev",
-    "prebuild": "bun run scripts/get-schema.ts > crates/tyx-tiptap-schema/assets/tyx.schema.json && prettier --log-level warn -w crates/tyx-tiptap-schema/assets/tyx.schema.json && bun run scripts/download.ts",
-    "build": "bun run prebuild && tsc && vite build",
+    "setup": "bun run scripts/get-schema.ts > crates/tyx-tiptap-schema/assets/tyx.schema.json && prettier --log-level warn -w crates/tyx-tiptap-schema/assets/tyx.schema.json && bun run scripts/download.ts",
+    "build": "bun run setup && tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
     "prettier": "prettier",
