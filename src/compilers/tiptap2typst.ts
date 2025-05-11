@@ -115,7 +115,7 @@ export const converters: Record<string, (d: JSONContent) => string> = {
     return d.content?.map(tiptap2typst).join("") ?? ""
   },
   codeBlock: (d) => {
-    return "`" + tiptap2text(d) + "`"
+    return `#raw(lang: ${d.attrs?.language ? JSON.stringify(d.attrs.language) : "none"}, ${JSON.stringify(tiptap2text(d))})`
   },
   hardBreak: () => {
     return "#linebreak()"
