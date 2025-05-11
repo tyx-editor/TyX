@@ -104,6 +104,10 @@ export const onSave = async () => {
 
 export const onOpen = (filename: string | undefined, content: string) => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
+  if (filename && !filename.endsWith(".tyx")) {
+    const lastDot = filename?.lastIndexOf(".")
+    filename = filename.slice(0, lastDot) + " (Imported).tyx"
+  }
   openDocuments.push({ ...JSON.parse(content), filename })
   setLocalStorage("Open Documents", openDocuments)
   setLocalStorage("Current Document", openDocuments.length - 1)

@@ -68,17 +68,15 @@ fn openfile(handle: &tauri::AppHandle, path: &Path) {
             return;
         }
 
-        let Some(mut doc) = tyx_tiptap_typst::convert(Arc::new(world)) else {
+        let Some(doc) = tyx_tiptap_typst::convert(Arc::new(world)) else {
             return;
         };
-        doc.filename = path.to_str().unwrap().to_string();
         // todo: we serialize it here.
         serde_json::to_string(&doc).unwrap()
     } else {
         // tyx
         std::fs::read_to_string(path).unwrap()
     };
-    // eprintln!("open tyx file: {buffer:?}");
 
     handle
         .emit("open", (path.to_str().unwrap(), buffer))
