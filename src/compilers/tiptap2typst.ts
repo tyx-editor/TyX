@@ -104,7 +104,7 @@ export const converters: Record<string, (d: JSONContent) => string> = {
   table: (d) => {
     const columnCount = d.content![0].content!.length
     return (
-      `#table(columns: ${columnCount} * (1fr,),` +
+      `#text(dir: ltr)[#table(columns: ${columnCount} * (1fr,),` +
       d.content
         ?.map((child) =>
           child.content
@@ -112,7 +112,7 @@ export const converters: Record<string, (d: JSONContent) => string> = {
             .join(","),
         )
         .join(",") +
-      ")"
+      ")]"
     )
   },
   tableCell: (d) => {
