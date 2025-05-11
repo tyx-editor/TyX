@@ -84,6 +84,14 @@ pub struct TextStyle {
     pub color: serde_json::Value,
 }
 
+/// A `typstCode` mark.
+#[derive(Debug, Clone, Hash, Serialize, Deserialize)]
+pub struct TypstCode {
+    /// The node's content.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub content: Option<Content>,
+}
+
 /// A `underline` mark.
 #[derive(Debug, Clone, Hash, Serialize, Deserialize)]
 pub struct Underline {

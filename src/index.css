@@ -38,3 +38,7 @@ math-field::part(menu-toggle) {
 .mantine-Checkbox-input {
   cursor: pointer;
 }
+
+code[data-kind="typstCode"] {
+  border: 1px solid pink;
+}

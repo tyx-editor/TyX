@@ -167,6 +167,17 @@
         { "style": "text-decoration", "consuming": false }
       ]
     },
-    "highlight": { "parseDOM": [{ "tag": "mark" }] }
+    "highlight": { "parseDOM": [{ "tag": "mark" }] },
+    "typstCode": {
+      "excludes": "_",
+      "code": true,
+      "parseDOM": [
+        {
+          "tag": "code",
+          "attrs": { "data-kind": "typstCode" },
+          "preserveWhitespace": "full"
+        }
+      ]
+    }
   }
 }

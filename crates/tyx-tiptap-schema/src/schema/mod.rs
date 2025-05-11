@@ -70,6 +70,8 @@ pub enum TyxMark {
     Superscript(Superscript),
     /// A `TextStyle` node.
     TextStyle(TextStyle),
+    /// A `TypstCode` node.
+    TypstCode(TypstCode),
     /// A `Underline` node.
     Underline(Underline),
 }

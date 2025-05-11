@@ -9,6 +9,7 @@ import extensions from "./editor/extensions"
 import { Loader } from "@mantine/core"
 import { modals } from "@mantine/modals"
 import {
+  IconCodeAsterisk,
   IconColumnInsertLeft,
   IconColumnRemove,
   IconDeviceFloppy,
@@ -212,6 +213,13 @@ const Editor = ({
           </RichTextEditor.ControlsGroup>
 
           <RichTextEditor.ControlsGroup>
+            <RichTextEditor.Control
+              title="Insert typst code"
+              aria-label="Insert typst code"
+              onClick={() => editor?.chain().focus().toggleTypstCode().run()}
+            >
+              <IconCodeAsterisk />
+            </RichTextEditor.Control>
             <RichTextEditor.Control
               title="Insert math"
               aria-label="Insert math"

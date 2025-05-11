@@ -13,6 +13,7 @@ import Underline from "@tiptap/extension-underline"
 import StarterKit from "@tiptap/starter-kit"
 import TextDirectionX from "tiptap-text-direction"
 import { MathBlock, MathInline } from "./MathEditorExtension"
+import { TypstCode } from "./TypstCodeExtension"
 
 let TextDirection = TextDirectionX
 
@@ -45,6 +46,7 @@ const extensions = [
   TableHeader,
   MathBlock,
   MathInline,
+  TypstCode,
 ]
 
 export default extensions

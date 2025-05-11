@@ -40,6 +40,10 @@ export const converters: Record<string, (d: JSONContent) => string> = {
     if (d.marks?.some((mark) => mark.type === "code")) {
       text = `#raw(${text.slice(1)})`
     } else {
+      if (d.marks?.some((mark) => mark.type === "typstCode")) {
+        return `\n${tiptap2text(d)}\n`
+      }
+
       for (const mark of d.marks ?? []) {
         if (mark.type === "bold") {
           text = `*${text}*`
