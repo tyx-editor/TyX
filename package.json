@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "bun run prebuild && vite",
     "dev:app": "tauri dev",
-    "prebuild": "bun run scripts/get-schema.ts > crates/tyx-tiptap-schema/assets/tyx.schema.json && prettier -w crates/tyx-tiptap-schema/assets/tyx.schema.json && bun run scripts/download.ts",
+    "prebuild": "bun run scripts/get-schema.ts > crates/tyx-tiptap-schema/assets/tyx.schema.json && prettier --log-level warn -w crates/tyx-tiptap-schema/assets/tyx.schema.json && bun run scripts/download.ts",
     "build": "bun run prebuild && tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
