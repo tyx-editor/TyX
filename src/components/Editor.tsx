@@ -9,8 +9,8 @@ import extensions from "./editor/extensions"
 import { Loader } from "@mantine/core"
 import { modals } from "@mantine/modals"
 import {
-  IconColumnInsertRight,
   IconCodeAsterisk,
+  IconColumnInsertRight,
   IconColumnRemove,
   IconDeviceFloppy,
   IconEye,
@@ -23,6 +23,7 @@ import {
 } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
 import { isWeb, onPreview, onSave } from "../backend"
+import { useLocalStorage } from "../hooks"
 import { TyXDocument } from "../models"
 import DocumentSettingsModal from "./DocumentSettingsModal"
 
@@ -129,21 +130,31 @@ const LinkControls = () => {
   )
 }
 
-const Editor = ({
-  doc,
-  update,
-}: {
-  doc: TyXDocument
-  update: (content: JSONContent) => void
-}) => {
-  const editor = useEditor(
-    {
-      extensions,
-      content: Object.keys(doc.content).length > 0 ? doc.content : undefined,
-      onUpdate: ({ editor }) => update(editor.getJSON()),
-    },
-    [],
-  )
+const Editor = () => {
+  const [openDocuments, setOpenDocuments] = useLocalStorage<TyXDocument[]>({
+    key: "Open Documents",
+    defaultValue: [],
+    silent: true,
+  })
+  const [currentDocument] = useLocalStorage<number>({
+    key: "Current Document",
+    defaultValue: 0,
+    silent: true,
+  })
+
+  const doc = openDocuments[currentDocument]
+  const update = (content: JSONContent) => {
+    openDocuments[currentDocument].content = content
+    openDocuments[currentDocument].dirty = true
+    setOpenDocuments(openDocuments)
+  }
+
+  const editor = useEditor({
+    extensions,
+    content: Object.keys(doc.content).length > 0 ? doc.content : undefined,
+    onUpdate: ({ editor }) => update(editor.getJSON()),
+    shouldRerenderOnTransaction: false,
+  })
 
   useEffect(() => {
     editor?.commands.focus()
@@ -156,104 +167,102 @@ const Editor = ({
     .pop()
 
   return (
-    <>
-      <RichTextEditor editor={editor}>
-        <RichTextEditor.Toolbar sticky>
-          <RichTextEditor.ControlsGroup>
-            <SaveControl disabled={doc.filename !== undefined && !doc.dirty} />
-            <PreviewControl disabled={!isWeb && doc.filename === undefined} />
-            <RichTextEditor.Control
-              title="Document settings"
-              aria-label="Document settings"
-              onClick={() =>
-                modals.open({
-                  title: `Document Settings (${basename})`,
-                  children: <DocumentSettingsModal />,
-                })
-              }
-            >
-              <IconSettings />
-            </RichTextEditor.Control>
-          </RichTextEditor.ControlsGroup>
+    <RichTextEditor editor={editor}>
+      <RichTextEditor.Toolbar sticky>
+        <RichTextEditor.ControlsGroup>
+          <SaveControl disabled={doc.filename !== undefined && !doc.dirty} />
+          <PreviewControl disabled={!isWeb && doc.filename === undefined} />
+          <RichTextEditor.Control
+            title="Document settings"
+            aria-label="Document settings"
+            onClick={() =>
+              modals.open({
+                title: `Document Settings (${basename})`,
+                children: <DocumentSettingsModal />,
+              })
+            }
+          >
+            <IconSettings />
+          </RichTextEditor.Control>
+        </RichTextEditor.ControlsGroup>
 
-          <RichTextEditor.ControlsGroup>
-            <RichTextEditor.ColorPicker
-              colors={[
-                "#25262b",
-                "#868e96",
-                "#fa5252",
-                "#e64980",
-                "#be4bdb",
-                "#7950f2",
-                "#4c6ef5",
-                "#228be6",
-                "#15aabf",
-                "#12b886",
-                "#40c057",
-                "#82c91e",
-                "#fab005",
-                "#fd7e14",
-              ]}
-            />
-            <RichTextEditor.Bold />
-            <RichTextEditor.Italic />
-            <RichTextEditor.Underline />
-            <RichTextEditor.Strikethrough />
-            <RichTextEditor.Subscript />
-            <RichTextEditor.Superscript />
-            <RichTextEditor.Code />
-            <RichTextEditor.ClearFormatting />
-          </RichTextEditor.ControlsGroup>
+        <RichTextEditor.ControlsGroup>
+          <RichTextEditor.ColorPicker
+            colors={[
+              "#25262b",
+              "#868e96",
+              "#fa5252",
+              "#e64980",
+              "#be4bdb",
+              "#7950f2",
+              "#4c6ef5",
+              "#228be6",
+              "#15aabf",
+              "#12b886",
+              "#40c057",
+              "#82c91e",
+              "#fab005",
+              "#fd7e14",
+            ]}
+          />
+          <RichTextEditor.Bold />
+          <RichTextEditor.Italic />
+          <RichTextEditor.Underline />
+          <RichTextEditor.Strikethrough />
+          <RichTextEditor.Subscript />
+          <RichTextEditor.Superscript />
+          <RichTextEditor.Code />
+          <RichTextEditor.ClearFormatting />
+        </RichTextEditor.ControlsGroup>
 
-          <RichTextEditor.ControlsGroup>
-            <RichTextEditor.H1 />
-            <RichTextEditor.H2 />
-            <RichTextEditor.H3 />
-            <RichTextEditor.H4 />
-          </RichTextEditor.ControlsGroup>
+        <RichTextEditor.ControlsGroup>
+          <RichTextEditor.H1 />
+          <RichTextEditor.H2 />
+          <RichTextEditor.H3 />
+          <RichTextEditor.H4 />
+        </RichTextEditor.ControlsGroup>
 
-          <RichTextEditor.ControlsGroup>
-            <RichTextEditor.Control
-              title="Insert typst code"
-              aria-label="Insert typst code"
-              onClick={() => editor?.chain().focus().toggleTypstCode().run()}
-            >
-              <IconCodeAsterisk />
-            </RichTextEditor.Control>
-            <RichTextEditor.Control
-              title="Insert math"
-              aria-label="Insert math"
-              onClick={() => editor?.chain().focus().insertMathInline().run()}
-            >
-              <IconSum />
-            </RichTextEditor.Control>
-            <RichTextEditor.Blockquote />
-            <RichTextEditor.Hr />
-            <RichTextEditor.BulletList />
-            <RichTextEditor.OrderedList />
-            <RichTextEditor.CodeBlock />
-          </RichTextEditor.ControlsGroup>
+        <RichTextEditor.ControlsGroup>
+          <RichTextEditor.Control
+            title="Insert typst code"
+            aria-label="Insert typst code"
+            onClick={() => editor?.chain().focus().toggleTypstCode().run()}
+          >
+            <IconCodeAsterisk />
+          </RichTextEditor.Control>
+          <RichTextEditor.Control
+            title="Insert math"
+            aria-label="Insert math"
+            onClick={() => editor?.chain().focus().insertMathInline().run()}
+          >
+            <IconSum />
+          </RichTextEditor.Control>
+          <RichTextEditor.Blockquote />
+          <RichTextEditor.Hr />
+          <RichTextEditor.BulletList />
+          <RichTextEditor.OrderedList />
+          <RichTextEditor.CodeBlock />
+        </RichTextEditor.ControlsGroup>
 
-          <TableControls />
+        <TableControls />
 
-          <LinkControls />
+        <LinkControls />
 
-          <RichTextEditor.ControlsGroup>
-            <RichTextEditor.AlignLeft />
-            <RichTextEditor.AlignCenter />
-            <RichTextEditor.AlignRight />
-            <RichTextEditor.AlignJustify />
-          </RichTextEditor.ControlsGroup>
+        <RichTextEditor.ControlsGroup>
+          <RichTextEditor.AlignLeft />
+          <RichTextEditor.AlignCenter />
+          <RichTextEditor.AlignRight />
+          <RichTextEditor.AlignJustify />
+        </RichTextEditor.ControlsGroup>
 
-          <RichTextEditor.ControlsGroup>
-            <RichTextEditor.Undo />
-            <RichTextEditor.Redo />
-          </RichTextEditor.ControlsGroup>
-        </RichTextEditor.Toolbar>
+        <RichTextEditor.ControlsGroup>
+          <RichTextEditor.Undo />
+          <RichTextEditor.Redo />
+        </RichTextEditor.ControlsGroup>
+      </RichTextEditor.Toolbar>
 
-        <RichTextEditor.Content />
-      </RichTextEditor>
-    </>
+      <RichTextEditor.Content />
+    </RichTextEditor>
   )
 }
 

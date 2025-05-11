@@ -124,6 +124,15 @@ const App = () => {
                     "Untitled"}
                 </Tabs.Tab>
               ))}
+              <Button
+                variant="subtle"
+                mt={1.25}
+                ml={5}
+                leftSection={<IconPlus />}
+                onClick={onNew}
+              >
+                New
+              </Button>
             </Tabs.List>
 
             {openDocuments[currentDocument] !== undefined && (
@@ -142,14 +151,7 @@ const App = () => {
                       </>
                     )}
                   >
-                    <Editor
-                      doc={openDocuments[currentDocument]}
-                      update={(content) => {
-                        openDocuments[currentDocument].content = content
-                        openDocuments[currentDocument].dirty = true
-                        setOpenDocuments([...openDocuments])
-                      }}
-                    />
+                    <Editor />
                   </ErrorBoundary>
                 </div>
               </Tabs.Panel>

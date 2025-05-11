@@ -13,9 +13,11 @@ export const setLocalStorage = (key: string, item: any) => {
 export const useLocalStorage = <T>({
   key,
   defaultValue,
+  silent,
 }: {
   key: string
   defaultValue?: any
+  silent?: boolean
 }): [T, React.Dispatch<React.SetStateAction<T>>] => {
   const [value, setValue] = useState<T>(
     getLocalStorage(key, defaultValue ?? null),
@@ -46,14 +48,17 @@ export const useLocalStorage = <T>({
     if (typeof newValue === "function") {
       newValue = newValue(value)
     }
+
     if (newValue !== undefined) {
       localStorage.setItem(key, JSON.stringify(newValue))
-      window.dispatchEvent(
-        new StorageEvent("storage", {
-          key,
-          newValue: JSON.stringify(newValue),
-        }),
-      )
+      if (!silent) {
+        window.dispatchEvent(
+          new StorageEvent("storage", {
+            key,
+            newValue: JSON.stringify(newValue),
+          }),
+        )
+      }
     }
   }
 
