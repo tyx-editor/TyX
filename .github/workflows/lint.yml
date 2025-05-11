@@ -32,5 +32,8 @@ jobs:
       - name: run clippy
         run: cargo clippy --all-targets --all-features
 
+      - name: run tests (Rust)
+        run: cargo test --workspace
+
       - name: run prettier
         run: bun run prettier --check .
