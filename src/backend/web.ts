@@ -54,7 +54,7 @@ export const onPreview = async () => {
     if (filename && filename.endsWith(".tyx")) {
       filename = filename.slice(0, -4)
     }
-    a.download = filename + ".pdf"
+    a.download = (filename ?? "Untitled") + ".pdf"
     window.document.body.appendChild(a)
     a.click()
     window.document.body.removeChild(a)
