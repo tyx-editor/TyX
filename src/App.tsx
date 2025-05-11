@@ -220,6 +220,15 @@ const App = () => {
               •
               <Anchor
                 fz="inherit"
+                href="https://github.com/Myriad-Dreamin/tinymist/"
+                target="_blank"
+                mx={5}
+              >
+                tinymist
+              </Anchor>
+              •
+              <Anchor
+                fz="inherit"
                 href="https://github.com/arnog/mathlive/"
                 mx={5}
                 target="_blank"
