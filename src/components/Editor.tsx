@@ -14,6 +14,7 @@ import {
   IconColumnRemove,
   IconDeviceFloppy,
   IconEye,
+  IconFileFunction,
   IconRowInsertBottom,
   IconRowRemove,
   IconSettings,
@@ -22,23 +23,12 @@ import {
   IconTablePlus,
 } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
-import { isWeb, onPreview, onSave } from "../backend"
+import { isWeb, onPreview, onSave, save } from "../backend"
+import tyx2typst from "../compilers/tyx2typst"
 import { useLocalStorage } from "../hooks"
 import { TyXDocument } from "../models"
+import { showSuccessMessage } from "../utilities"
 import DocumentSettingsModal from "./DocumentSettingsModal"
-
-const SaveControl = (props: RichTextEditorControlProps) => {
-  return (
-    <RichTextEditor.Control
-      onClick={onSave}
-      aria-label="Save"
-      title="Save"
-      {...props}
-    >
-      <IconDeviceFloppy />
-    </RichTextEditor.Control>
-  )
-}
 
 const PreviewControl = (props: RichTextEditorControlProps) => {
   const [loading, setLoading] = useState(false)
@@ -170,7 +160,29 @@ const Editor = () => {
     <RichTextEditor editor={editor}>
       <RichTextEditor.Toolbar sticky>
         <RichTextEditor.ControlsGroup>
-          <SaveControl disabled={doc.filename !== undefined && !doc.dirty} />
+          <RichTextEditor.Control
+            onClick={onSave}
+            aria-label="Save"
+            title="Save"
+            disabled={doc.filename !== undefined && !doc.dirty}
+          >
+            <IconDeviceFloppy />
+          </RichTextEditor.Control>
+          <RichTextEditor.Control
+            onClick={() => {
+              const filename = (doc.filename ?? "Untitled.tyx").replace(
+                ".tyx",
+                ".typ",
+              )
+              save(filename, tyx2typst(doc)).then(() =>
+                showSuccessMessage(`Document exported to ${filename}.`),
+              )
+            }}
+            aria-label="Export to Typst"
+            title="Export to Typst"
+          >
+            <IconFileFunction />
+          </RichTextEditor.Control>
           <PreviewControl disabled={!isWeb && doc.filename === undefined} />
           <RichTextEditor.Control
             title="Document settings"

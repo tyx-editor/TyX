@@ -1,6 +1,8 @@
+import { modals } from "@mantine/modals"
 import { createTypstCompiler, TypstCompiler } from "@myriaddreamin/typst.ts"
 import { version } from "../../src-tauri/tauri.conf.json"
 import tyx2typst from "../compilers/tyx2typst"
+import SaveAsModal from "../components/SaveAsModal"
 import { getLocalStorage, setLocalStorage } from "../hooks"
 import { TyXDocument } from "../models"
 
@@ -124,7 +126,7 @@ export const open = () => {
   input.click()
 }
 
-export const save = (filename: string, content: string) => {
+export const save = async (filename: string, content: string) => {
   const a = document.createElement("a")
   a.download = filename
   a.href = "data:text/json;charset=utf-8," + encodeURIComponent(content)
@@ -134,15 +136,8 @@ export const save = (filename: string, content: string) => {
   document.body.removeChild(a)
 }
 
-export const saveAs = () => {
-  let name = prompt("Enter a name for the document")
-  if (name) {
-    if (!name.endsWith(".tyx")) {
-      name += ".tyx"
-    }
-    onSaveAs(name)
-  }
-}
+export const saveAs = () =>
+  modals.open({ title: "Save Document", children: <SaveAsModal /> })
 
 export const getVersion = async () => version
 
