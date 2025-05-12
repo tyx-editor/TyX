@@ -2,7 +2,6 @@ use std::{
     fs::File,
     io::Write,
     path::{Path, PathBuf},
-    sync::Arc,
 };
 
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
@@ -67,7 +66,7 @@ fn openfile(handle: &tauri::AppHandle, path: &Path) {
             return;
         }
 
-        let Some(doc) = tyx_tiptap_typst::convert(Arc::new(world)) else {
+        let Some(doc) = tyx_tiptap_typst::convert(world) else {
             return;
         };
         // todo: we serialize it here.
