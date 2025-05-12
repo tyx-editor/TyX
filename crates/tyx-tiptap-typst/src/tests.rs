@@ -1,4 +1,4 @@
-use std::{path::PathBuf, sync::Arc};
+use std::path::PathBuf;
 
 use serde::Serialize;
 use tinymist_project::LspWorld;
@@ -21,7 +21,7 @@ fn convert() {
 
 /// Converts the given main document in the world to a string.
 fn conv(world: LspWorld) -> String {
-    let doc = crate::convert(Arc::new(world));
+    let doc = crate::convert(world);
     // to pretty with indent 1
     let mut w = Vec::new();
     let mut s = serde_json::Serializer::with_formatter(
