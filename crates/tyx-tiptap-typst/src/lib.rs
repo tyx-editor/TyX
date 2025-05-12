@@ -2,7 +2,7 @@
 //!
 //! ## Overview
 //!
-//! ### PreStage: Instrument
+//! ### Pre-Stage: Instrument
 //!
 //! The main document is instrumented to mark special nodes, like func calls. We
 //! also get a syntax-form document in this stage.
@@ -17,7 +17,7 @@
 //!
 //! The document is post-processed to fit in the tiptap's requirement. See [issue #30](https://github.com/tyx-editor/TyX/issues/30).
 //!
-//! ### Post-Stage: Synth
+//! ### Post-Stage: Synthesizing
 //!
 //! Combining the _syntax form_ and the _concrete form_ into a single document.
 //!
@@ -115,7 +115,7 @@
 //! a popup with the source code and let the user edit it. All the `Markup` can
 //! be still edit in wysiwyg way, because it is supported by tiptap officially.
 //!
-//! ## Conversion vice versa
+//! ## Conversion back
 //!
 //! We can convert typst to tiptap with the above way. Optionally, we can
 //! convert tiptap back to typst by diff and merge the changes using the
