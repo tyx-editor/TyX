@@ -308,8 +308,8 @@ impl Writer {
     /// `original == self.output` is usually true so we don't need to write the
     /// file.
     fn write_to_file(&self, arg: &str) {
-        let original = std::fs::read_to_string(arg).unwrap();
-        if original == self.output {
+        let original = std::fs::read_to_string(arg).ok();
+        if original.is_some_and(|original| original == self.output) {
             return;
         }
 
