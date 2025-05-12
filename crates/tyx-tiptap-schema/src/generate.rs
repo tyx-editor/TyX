@@ -28,8 +28,7 @@ pub fn run() {
         for node in schema.nodes.values() {
             generate_node(node, &mut writer);
         }
-        let inner = writer.output;
-        std::fs::write("src/schema/node.rs", inner).unwrap();
+        writer.write_to_file("src/schema/node.rs");
     }
     {
         let mut writer = Writer::new();
@@ -37,8 +36,7 @@ pub fn run() {
         for mark in schema.marks.values() {
             generate_mark(mark, &mut writer);
         }
-        let inner = writer.output;
-        std::fs::write("src/schema/mark.rs", inner).unwrap();
+        writer.write_to_file("src/schema/mark.rs");
     }
 
     // Generates the node and mark enums.
@@ -74,8 +72,7 @@ pub fn run() {
         }
         writer.push_str("}\n");
 
-        let inner = writer.output;
-        std::fs::write("src/schema/mod.rs", inner).unwrap();
+        writer.write_to_file("src/schema/mod.rs");
     }
 }
 
@@ -304,5 +301,18 @@ impl Writer {
     /// Pushes a string to the output.
     fn push_str(&mut self, text: &str) {
         self.output.push_str(text);
+    }
+
+    /// Writes the output to a file if the file's content is different.
+    ///
+    /// `original == self.output` is usually true so we don't need to write the
+    /// file.
+    fn write_to_file(&self, arg: &str) {
+        let original = std::fs::read_to_string(arg).ok();
+        if original.is_some_and(|original| original == self.output) {
+            return;
+        }
+
+        std::fs::write(arg, &self.output).unwrap();
     }
 }
