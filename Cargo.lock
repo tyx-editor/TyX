@@ -6342,6 +6342,8 @@ dependencies = [
  "tauri-plugin-shell",
  "tauri-plugin-updater",
  "tinymist-project",
+ "typst",
+ "typst-pdf",
  "tyx-tiptap-typst",
  "url",
 ]

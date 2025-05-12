@@ -39,6 +39,7 @@ tinymist-tests = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev =
 tinymist-vfs = "0.13.12"
 tinymist-world = "0.13.12"
 typst = "0.13.1"
+typst-pdf = "0.13.1"
 typlite = "0.13.12"
 
 [workspace.lints.rustdoc]
