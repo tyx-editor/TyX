@@ -2,7 +2,7 @@ use std::{
     fs::File,
     io::Write,
     path::{Path, PathBuf},
-    sync::{Arc, LazyLock},
+    sync::Arc,
 };
 
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
@@ -11,19 +11,7 @@ use tauri::{Emitter, Manager};
 
 use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_shell::ShellExt;
-use tinymist_project::{CompileOnceArgs, EntryReader, LspUniverse, TaskInputs, WorldProvider};
-
-/// A global shared instance to process typst in a workspace.
-// todo: load compile arguments
-static VERSE: LazyLock<LspUniverse> = LazyLock::new(|| {
-    CompileOnceArgs {
-        root: Some(PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap()).join("..")),
-        input: Some("../main.typ".to_string()),
-        ..CompileOnceArgs::default()
-    }
-    .resolve()
-    .unwrap()
-});
+use tinymist_project::{CompileOnceArgs, EntryReader, TaskInputs, WorldProvider};
 
 //
 #[tauri::command]
@@ -55,11 +43,22 @@ fn saveas(handle: tauri::AppHandle) {
 
 fn openfile(handle: &tauri::AppHandle, path: &Path) {
     let buffer = if path.extension().is_some_and(|ext| ext == "typ") {
-        let Ok(entry) = VERSE.entry_state().try_select_path_in_workspace(path) else {
-            eprintln!("not selected path {:?}", VERSE.entry_state());
+        let Some(dir) = path.parent() else {
+            eprintln!("failed to get the base directory of the file to open");
             return;
         };
-        let world = VERSE.snapshot_with(Some(TaskInputs {
+        let universe = CompileOnceArgs {
+            root: Some(PathBuf::from(dir)),
+            input: Some(path.to_str().unwrap().into()),
+            ..CompileOnceArgs::default()
+        }
+        .resolve()
+        .unwrap();
+        let Ok(entry) = universe.entry_state().try_select_path_in_workspace(path) else {
+            eprintln!("not selected path {:?}", universe.entry_state());
+            return;
+        };
+        let world = universe.snapshot_with(Some(TaskInputs {
             entry,
             ..TaskInputs::default()
         }));

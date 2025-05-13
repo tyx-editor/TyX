@@ -54,7 +54,13 @@ pub struct TyxDocument {
 pub fn convert(world: Arc<LspWorld>) -> Option<TyxDocument> {
     // Converts the source code into a markdown document
     let converter = typlite::Typlite::new(world);
-    let md_doc = converter.convert_doc(typlite::common::Format::Md).ok()?;
+    let md_doc = match converter.convert_doc(typlite::common::Format::Md) {
+        Ok(md_doc) => md_doc,
+        Err(err) => {
+            eprintln!("{err:?}");
+            return None;
+        }
+    };
     // Gets the ast representation
     let node = md_doc.parse().ok()?;
 
@@ -69,6 +75,7 @@ pub fn convert(world: Arc<LspWorld>) -> Option<TyxDocument> {
     Stage2Converter::default().work(&mut content);
 
     Some(TyxDocument {
+        // TODO: use the version from Tauri
         version: "0.1.7".into(),
         preamble: "".into(),
         content,
