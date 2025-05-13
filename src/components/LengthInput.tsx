@@ -25,7 +25,7 @@ const LengthInput = ({
         ml="xs"
         flex="min-content"
         display="inline-block"
-        data={["pt", "mm", "cm", "in", "em", "fr"]}
+        data={["pt", "mm", "cm", "in", "em", "fr", "%"]}
         value={value.unit ?? null}
         onChange={(unit) =>
           onChange({ unit: unit ?? undefined, value: value.value })
