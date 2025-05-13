@@ -5,15 +5,12 @@ const setProperty = (
   element: string,
   attribute: string,
   setting: any,
-  trailing: string | undefined = undefined,
   transform: ((v: any) => string) | null = JSON.stringify,
 ) => {
   transform = transform ?? ((v) => v)
 
   if (setting !== undefined) {
-    return `#set ${element}(${attribute}: ${transform(
-      trailing ? setting + trailing : setting,
-    )})\n`
+    return `#set ${element}(${attribute}: ${transform(setting)})\n`
   }
   return ""
 }
@@ -22,16 +19,20 @@ export const tyxSettings2typst = (settings: TyXDocumentSettings) => {
   let result = ""
   result += setProperty("page", "paper", settings.paper)
   result += setProperty("page", "flipped", settings.flipped)
-  result += setProperty("page", "columns", settings.columns, undefined, null)
+  result += setProperty("page", "columns", settings.columns, null)
   result += setProperty("text", "lang", settings.language)
   result += setProperty("par", "justify", settings.justified)
-  result += setProperty(
-    "par",
-    "first-line-indent",
-    settings.indentation,
-    "em",
-    null,
-  )
+  if (
+    settings.indentation?.unit !== undefined &&
+    settings.indentation?.value !== undefined
+  ) {
+    result += setProperty(
+      "par",
+      "first-line-indent",
+      settings.indentation.value + settings.indentation.unit,
+      null,
+    )
+  }
   return result
 }
 

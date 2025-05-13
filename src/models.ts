@@ -1,11 +1,16 @@
 import type { JSONContent } from "@tiptap/react"
 
+export interface TyXLength {
+  unit?: string
+  value?: string
+}
+
 export interface TyXDocumentSettings {
   language?: string
   paper?: string
   flipped?: boolean
   justified?: boolean
-  indentation?: string
+  indentation?: { unit?: string; value?: string }
   columns?: number
 }
 

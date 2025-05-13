@@ -5,7 +5,6 @@ import {
   NumberInput,
   Select,
   Textarea,
-  TextInput,
 } from "@mantine/core"
 import {
   IconColumns,
@@ -16,6 +15,7 @@ import {
 } from "@tabler/icons-react"
 import { setLocalStorage, useLocalStorage } from "../hooks"
 import { TyXDocument, TyXDocumentSettings } from "../models"
+import LengthInput from "./LengthInput"
 
 const DocumentSettingsModal = () => {
   const [openDocuments, setOpenDocuments] = useLocalStorage<TyXDocument[]>({
@@ -666,17 +666,21 @@ const DocumentSettingsModal = () => {
             })
           }
         />
-        <TextInput
-          mt="xs"
-          label="Indentation"
-          leftSection={<IconIndentIncrease />}
-          value={currentSettings.indentation ?? ""}
-          onChange={(e) =>
+        <LengthInput
+          props={{
+            mt: "xs",
+            label: "Indentation",
+            leftSection: <IconIndentIncrease />,
+          }}
+          value={
+            typeof currentSettings.indentation === "object"
+              ? currentSettings.indentation
+              : {}
+          }
+          onChange={(indentation) =>
             setSettings({
               ...currentSettings,
-              indentation: e.currentTarget.value
-                ? e.currentTarget.value
-                : undefined,
+              indentation,
             })
           }
         />
