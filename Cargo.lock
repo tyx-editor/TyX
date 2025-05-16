@@ -6719,6 +6719,7 @@ dependencies = [
  "tinymist-project",
  "typst",
  "typst-html",
+ "tyx-edit",
  "tyx-tiptap-typst",
  "url",
 ]

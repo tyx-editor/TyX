@@ -73,11 +73,12 @@ pub fn jump_from_html_path(
 
 /// Performs click reaction.
 pub fn click(world: &LspWorld, doc: &HtmlDocument, span: &SourceSpanOffset) -> Option<String> {
-    let _ = world;
     let _ = doc;
     let _ = span;
 
-    None
+    // todo: real patch impl
+    let (_, html_content) = preview(world)?;
+    Some(html_content)
 }
 
 #[cfg(test)]
