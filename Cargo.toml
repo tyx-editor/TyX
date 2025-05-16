@@ -38,6 +38,7 @@ tinymist-task = "0.13.12"
 tinymist-tests = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev = "38974a3b5e43837c1982c707465abfb27d233302" }
 tinymist-vfs = "0.13.12"
 tinymist-world = "0.13.12"
+tinymist-query = "0.13.12"
 typst = "0.13.1"
 typst-library = "0.13.1"
 typst-html = "0.13.1"
@@ -93,6 +94,7 @@ tinymist-std = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev = "
 tinymist-task = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev = "38974a3b5e43837c1982c707465abfb27d233302" }
 tinymist-vfs = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev = "38974a3b5e43837c1982c707465abfb27d233302" }
 tinymist-world = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev = "38974a3b5e43837c1982c707465abfb27d233302" }
+tinymist-query = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev = "38974a3b5e43837c1982c707465abfb27d233302" }
 typlite = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev = "38974a3b5e43837c1982c707465abfb27d233302" }
 
 # tinymist-project = { path = "../tinymist/crates/tinymist-project" }

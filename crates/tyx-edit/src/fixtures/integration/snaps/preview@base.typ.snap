@@ -1,7 +1,7 @@
 ---
 source: crates/tyx-edit/src/tests.rs
-description: "siphash128_13: 79b6c2afd5aaf8ebcc549a237dd359ed"
-expression: result.into_bytes()
+description: "siphash128_13: b52246c9643c6d06261c8fe723eb5065"
+expression: html_content
 input_file: crates/tyx-edit/src/fixtures/integration/base.typ
 extension: html
 snapshot_kind: binary

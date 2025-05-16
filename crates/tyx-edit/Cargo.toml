@@ -13,6 +13,7 @@ ecow.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tinymist-project = { workspace = true, features = ["lsp"] }
+tinymist-query.workspace = true
 typlite.workspace = true
 typst.workspace = true
 typst-html.workspace = true
