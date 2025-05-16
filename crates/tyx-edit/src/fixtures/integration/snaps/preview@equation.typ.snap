@@ -1,0 +1,8 @@
+---
+source: crates/tyx-edit/src/tests.rs
+description: "siphash128_13: a82f9a1279c8d8ed826f35cc47fc70d8"
+expression: result.into_bytes()
+input_file: crates/tyx-edit/src/fixtures/integration/equation.typ
+extension: html
+snapshot_kind: binary
+---

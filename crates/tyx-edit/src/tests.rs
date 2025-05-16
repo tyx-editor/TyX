@@ -15,6 +15,11 @@ fn snapshot_testing(name: &str, f: &impl Fn(LspWorld, PathBuf)) {
 fn test_preview() {
     snapshot_testing("integration", &|world, _path| {
         let result = preview(&world).unwrap_or_else(|| "null".into());
-        insta::assert_binary_snapshot!(".html", result.into_bytes());
+        let hash = tinymist_std::hash::hash128(&result);
+        insta::with_settings!({
+            description => format!("siphash128_13: {hash:016x}"),
+        }, {
+            insta::assert_binary_snapshot!(".html", result.into_bytes());
+        })
     });
 }

@@ -14,14 +14,14 @@ serde.workspace = true
 serde_json.workspace = true
 tinymist-project = { workspace = true, features = ["lsp"] }
 typlite.workspace = true
-clap = "4"
 typst.workspace = true
-# typst-library.workspace = true
 typst-html.workspace = true
+typst-svg.workspace = true
 tyx-tiptap-schema.workspace = true
 
 [dev-dependencies]
 insta.workspace = true
+tinymist-std.workspace = true
 tinymist-tests.workspace = true
 
 [lints]
