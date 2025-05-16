@@ -1,4 +1,3 @@
-import "@cortex-js/compute-engine"
 import "@mantine/core/styles.css"
 import "@mantine/notifications/styles.css"
 import "@mantine/tiptap/styles.css"

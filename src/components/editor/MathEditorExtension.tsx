@@ -1,4 +1,3 @@
-import { type ComputeEngine } from "@cortex-js/compute-engine"
 import {
   mergeAttributes,
   Node,
@@ -9,13 +8,6 @@ import {
 } from "@tiptap/react"
 import { MathfieldElement } from "mathlive"
 import { useEffect, useId, useRef, useState } from "react"
-
-let computeEngine: ComputeEngine
-if (typeof window !== "undefined") {
-  import("mathlive").then(
-    ({ MathfieldElement }) => (computeEngine = MathfieldElement.computeEngine!),
-  )
-}
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
@@ -52,13 +44,7 @@ const MathEditor = (props: NodeViewProps) => {
     if (mathfieldRef.current) {
       mathfieldRef.current.addEventListener("input", (e) => {
         const target = e.target as MathfieldElement
-        const value = target.getValue()
-        setValue(
-          value,
-          computeEngine.parse(value, {
-            canonical: false,
-          }),
-        )
+        setValue(target.getValue(), target.getValue("ascii-math"))
       })
 
       mathfieldRef.current.addEventListener("move-out", (e) => {
@@ -86,8 +72,8 @@ const MathEditor = (props: NodeViewProps) => {
     }
   }, [props.selected])
 
-  const setValue = (value: string, json: any) => {
-    props.updateAttributes({ value, json })
+  const setValue = (value: string, asciimath: any) => {
+    props.updateAttributes({ value, asciimath })
     setFormula(value)
   }
 
@@ -134,8 +120,8 @@ export const MathBlock = Node.create<MathOptions>({
       value: {
         default: "",
       },
-      json: {
-        default: {},
+      asciimath: {
+        default: "",
       },
     }
   },
@@ -193,8 +179,8 @@ export const MathInline = Node.create<MathOptions>({
       value: {
         default: "",
       },
-      json: {
-        default: {},
+      asciimath: {
+        default: "",
       },
     }
   },

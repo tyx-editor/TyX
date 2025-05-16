@@ -86,9 +86,9 @@ pub struct MathBlock {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub content: Option<Content>,
 
-    /// The `json` attribute.
+    /// The `asciimath` attribute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub json: Option<serde_json::Value>,
+    pub asciimath: Option<String>,
 
     /// The `value` attribute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -102,9 +102,9 @@ pub struct MathInline {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub content: Option<Content>,
 
-    /// The `json` attribute.
+    /// The `asciimath` attribute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub json: Option<serde_json::Value>,
+    pub asciimath: Option<String>,
 
     /// The `value` attribute.
     #[serde(skip_serializing_if = "Option::is_none")]

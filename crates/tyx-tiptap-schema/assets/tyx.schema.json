@@ -104,14 +104,14 @@
       "group": "block",
       "selectable": true,
       "defining": true,
-      "attrs": { "value": { "default": "" }, "json": { "default": {} } },
+      "attrs": { "value": { "default": "" }, "asciimath": { "default": "" } },
       "parseDOM": [{ "tag": "math-block" }]
     },
     "mathInline": {
       "group": "inline",
       "inline": true,
       "defining": true,
-      "attrs": { "value": { "default": "" }, "json": { "default": {} } },
+      "attrs": { "value": { "default": "" }, "asciimath": { "default": "" } },
       "parseDOM": [{ "tag": "math-inline" }]
     }
   },

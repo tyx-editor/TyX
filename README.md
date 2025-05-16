@@ -28,3 +28,4 @@ TyX would not be possible without the following open-source libraries:
 - [mantine](https://github.com/mantinedev/mantine/) (MIT License)
 - [tabler](https://github.com/tabler/tabler-icons/) (MIT License)
 - [vite](https://github.com/vitejs/vite/) (MIT License)
+- [asciimath-parser](https://github.com/widcardw/asciimath-parser/) (MIT License)

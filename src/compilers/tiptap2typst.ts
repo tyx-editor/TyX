@@ -1,12 +1,12 @@
 import { JSONContent } from "@tiptap/react"
-import mathjson2typst from "./mathjson2typst"
+import asciimath2typst from "./asciimath2typst"
 
 export const mathConverter = (d: JSONContent, inline = false) => {
   let result = ""
-  const data = d.attrs?.json
+  const asciimath = d.attrs?.asciimath
 
-  if (data) {
-    result = mathjson2typst(data)
+  if (asciimath) {
+    result = asciimath2typst(asciimath)
   }
 
   if (inline) {
