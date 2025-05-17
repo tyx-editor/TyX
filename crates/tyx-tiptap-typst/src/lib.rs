@@ -76,7 +76,7 @@ pub fn convert(world: Arc<LspWorld>) -> Option<TyxDocument> {
 
     Some(TyxDocument {
         // TODO: use the version from Tauri
-        version: "0.1.7".into(),
+        version: "0.1.11".into(),
         preamble: "".into(),
         content,
         settings,
