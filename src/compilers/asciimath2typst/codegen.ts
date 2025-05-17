@@ -50,7 +50,19 @@ function codegen(node: ChildNode | RootNode): string {
       const [arrayBegin, arrayEnd] = getArrayBoundary(node)
       return [
         arrayBegin,
-        node.params.map((i) => i.map(codegen).join(" ; ")).join(" \\\\ "),
+        node.params
+          .map((i) =>
+            i
+              .map((j) => {
+                if (j.type === NodeTypes.Flat) {
+                  const result = j.body.slice(1, -1).map(codegen).join(" ")
+                  return result.replaceAll("( )", "")
+                }
+                return codegen(j)
+              })
+              .join(" ; "),
+          )
+          .join(" \\\\ "),
         arrayEnd,
       ].join("")
     }

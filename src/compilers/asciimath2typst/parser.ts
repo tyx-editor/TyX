@@ -175,12 +175,12 @@ function readParenedExpression2(
   node: MatrixNode | FlatNode
   current: number
 } {
-  const { closingIndex, hasMore } = findPairedClosingParen(current, tokens)
+  const { closingIndex, isMatrix } = findPairedClosingParen(current, tokens)
   if (closingIndex === -1) {
     return parenStartedNoClosingNode(tokens, current)
   }
 
-  if (hasMore === -1 || hasMore > closingIndex) {
+  if (!isMatrix) {
     // process the expression as an array
     return parenedArrayNode(tokens, current, closingIndex)
   }
@@ -349,16 +349,12 @@ function parenStartedNoClosingNode(tokens: TokenizedValue[], current: number) {
 }
 
 function findPairedClosingParen(current: number, tokens: TokenizedValue[]) {
-  let hasMore = -1
   let closingIndex = -1
   const stack: string[] = []
   // find the paired closing paren and whether there is any `;` within the parens
   for (let i = current + 1; i < tokens.length; i++) {
     if (tokens[i].type === TokenTypes.LParen) {
       stack.push("")
-      if (tokens[i].typst === tokens[current].typst) {
-        if (hasMore === -1) hasMore = i
-      }
       continue
     }
     if (stack.length === 0) {
@@ -370,7 +366,12 @@ function findPairedClosingParen(current: number, tokens: TokenizedValue[]) {
       if (tokens[i].type === TokenTypes.RParen) stack.pop()
     }
   }
-  return { closingIndex, hasMore }
+  const m = tokens
+    .slice(current + 1, closingIndex)
+    .map((token) => token.value)
+    .join("")
+  const isMatrix = /^(\(.*\),?)+$/.test(m)
+  return { closingIndex, isMatrix }
 }
 
 function findPairedBar(
