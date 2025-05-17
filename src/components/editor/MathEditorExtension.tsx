@@ -6,7 +6,7 @@ import {
   NodeViewWrapper,
   ReactNodeViewRenderer,
 } from "@tiptap/react"
-import { MathfieldElement } from "mathlive"
+import { type MathfieldElement } from "mathlive"
 import { useEffect, useId, useRef, useState } from "react"
 
 declare module "@tiptap/core" {
@@ -34,8 +34,6 @@ declare global {
     }
   }
 }
-
-MathfieldElement.fontsDirectory = "/fonts"
 
 const MathEditor = (props: NodeViewProps) => {
   const mathfieldRef = useRef<MathfieldElement>(null)
