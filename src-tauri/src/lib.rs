@@ -2,7 +2,7 @@ use std::{
     fs::File,
     io::Write,
     path::{Path, PathBuf},
-    sync::Arc,
+    sync::{Arc, LazyLock, Mutex},
 };
 
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
@@ -11,9 +11,74 @@ use tauri::{Emitter, Manager};
 
 use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_shell::ShellExt;
-use tinymist_project::{CompileOnceArgs, EntryReader, TaskInputs, WorldProvider};
+use tinymist_project::{
+    CompileOnceArgs, EntryReader, LspUniverse, TaskInputs, WorldProvider, base::ShadowApi,
+    vfs::Bytes,
+};
+use tyx_edit::HtmlPath;
 
-//
+static VERSE: LazyLock<LspUniverse> = LazyLock::new(|| {
+    let mut verse = CompileOnceArgs {
+        input: Some("main.typ".to_owned()),
+        ..CompileOnceArgs::default()
+    }
+    .resolve()
+    .unwrap();
+
+    let content = Bytes::from_string(include_str!("main.typ"));
+
+    verse
+        .map_shadow_by_id(verse.main_id().expect("set main"), content)
+        .unwrap();
+
+    verse
+});
+
+static DOC: Mutex<Option<typst::html::HtmlDocument>> = Mutex::new(None);
+
+#[tauri::command]
+fn eq_preview(_filename: &str) -> Option<String> {
+    let world = VERSE.snapshot();
+
+    let (doc, html_content) = tyx_edit::preview(&world)?;
+
+    DOC.lock().unwrap().replace(doc);
+    Some(html_content)
+}
+
+#[tauri::command]
+fn eq_preview_click(handle: tauri::AppHandle, x: f64, y: f64) -> Option<()> {
+    let _ = x;
+    let _ = y;
+    let doc = DOC.lock().unwrap();
+    let doc = doc.as_ref()?;
+    let mut world = VERSE.snapshot();
+
+    let span = tyx_edit::jump_from_html_path(
+        &world,
+        doc,
+        &HtmlPath {
+            element_path: vec![1, 0, 0],
+            frame_pos: Some((1., 1.)),
+        },
+    )?;
+
+    let content = Bytes::from_string(include_str!("main-changed.typ"));
+
+    // todo: I found a bug...
+    world.take_db();
+    world.take_source_cache();
+
+    world
+        .map_shadow_by_id(world.main_id().expect("set main"), content.clone())
+        .unwrap();
+
+    let change = tyx_edit::click(&world, doc, &span)?;
+
+    handle.emit("eqPreviewChange", change).unwrap();
+    Some(())
+}
+
 #[tauri::command]
 fn save(filename: &str, content: &str) {
     if let Ok(mut f) = File::create(filename) {
@@ -214,7 +279,14 @@ pub fn run() {
 
             Ok(menu)
         })
-        .invoke_handler(tauri::generate_handler![open, save, saveas, preview])
+        .invoke_handler(tauri::generate_handler![
+            open,
+            save,
+            saveas,
+            preview,
+            eq_preview,
+            eq_preview_click
+        ])
         .on_menu_event(|handle, event| match event.id().0.as_str() {
             "open" => open(handle.clone()),
             "saveas" => saveas(handle.clone()),

@@ -1,0 +1,7 @@
+---
+source: crates/tyx-edit/src/tests.rs
+description: "siphash128_13: 934698791abd57f728c8a3fb7d3cb4c3"
+expression: jumps
+input_file: crates/tyx-edit/src/fixtures/integration/equation.typ
+---
+HtmlPath { element_path: [1, 0, 0], frame_pos: Some((1.0, 1.0)) } => 20..21 x

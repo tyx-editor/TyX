@@ -1,0 +1,72 @@
+---
+source: crates/tyx-tiptap-typst/src/tests.rs
+expression: conv(world)
+input_file: crates/tyx-tiptap-typst/src/fixtures/integration/raw_inline.typ
+---
+{
+ "type": "doc",
+ "content": [
+  {
+   "type": "paragraph",
+   "content": [
+    {
+     "type": "text",
+     "content": [
+      {
+       "type": "plain",
+       "content": "Some inlined raw"
+      }
+     ]
+    },
+    {
+     "type": "text",
+     "content": [
+      {
+       "type": "plain",
+       "content": " "
+      }
+     ]
+    },
+    {
+     "type": "mark",
+     "type": "code",
+     "content": [
+      {
+       "type": "plain",
+       "content": "a"
+      }
+     ]
+    },
+    {
+     "type": "text",
+     "content": [
+      {
+       "type": "plain",
+       "content": ","
+      }
+     ]
+    },
+    {
+     "type": "text",
+     "content": [
+      {
+       "type": "plain",
+       "content": " "
+      }
+     ]
+    },
+    {
+     "type": "mark",
+     "type": "code",
+     "content": [
+      {
+       "type": "plain",
+       "content": "b"
+      }
+     ]
+    }
+   ],
+   "dir": null
+  }
+ ]
+}

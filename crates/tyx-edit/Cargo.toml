@@ -1,0 +1,29 @@
+[package]
+name = "tyx-edit"
+description = "Editing support for TyX."
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+cmark-writer.workspace = true
+ecow.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tinymist-project = { workspace = true, features = ["lsp"] }
+tinymist-query.workspace = true
+typlite.workspace = true
+typst.workspace = true
+typst-html.workspace = true
+typst-svg.workspace = true
+tyx-tiptap-schema.workspace = true
+
+[dev-dependencies]
+insta.workspace = true
+tinymist-std.workspace = true
+tinymist-tests.workspace = true
+
+[lints]
+workspace = true
