@@ -147,7 +147,7 @@ function createParamTwoNode(): ParamTwoNode {
 
 function createParenOfFlatNodeFrom(
   token: TokenizedValue,
-  left: boolean,
+  _: boolean,
 ): ConstNode {
   return {
     type: NodeTypes.Const,

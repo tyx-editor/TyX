@@ -42,12 +42,28 @@ const MathEditor = (props: NodeViewProps) => {
 
   useEffect(() => {
     if (mathfieldRef.current) {
-      mathfieldRef.current.addEventListener("input", (e) => {
+      const mf = mathfieldRef.current
+      mf.menuItems = []
+      mf.defaultMode =
+        props.node.type.name === "mathInline" ? "inline-math" : "math"
+
+      mf.addEventListener(
+        "keydown",
+        (ev) => {
+          if (ev.key === "\\") {
+            ev.preventDefault()
+            mf.executeCommand(["insert", "\\backslash"])
+          } else if (ev.key === "Escape") ev.preventDefault()
+        },
+        { capture: true },
+      )
+
+      mf.addEventListener("input", (e) => {
         const target = e.target as MathfieldElement
         setValue(target.getValue(), target.getValue("ascii-math"))
       })
 
-      mathfieldRef.current.addEventListener("move-out", (e) => {
+      mf.addEventListener("move-out", (e) => {
         if (
           e.detail.direction === "forward" ||
           e.detail.direction === "downward"
@@ -58,7 +74,7 @@ const MathEditor = (props: NodeViewProps) => {
         }
       })
 
-      mathfieldRef.current.addEventListener("beforeinput", (e: any) => {
+      mf.addEventListener("beforeinput", (e: any) => {
         if (!e.target.value && e.inputType === "deleteContentBackward") {
           props.editor.chain().deleteSelection().run()
         }

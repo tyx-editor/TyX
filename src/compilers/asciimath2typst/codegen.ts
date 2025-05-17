@@ -2,7 +2,7 @@ import type { ChildNode, MatrixNode, RootNode } from "./parser"
 import { NodeTypes } from "./parser"
 
 function getArrayBoundary(node: MatrixNode) {
-  const div = node.dividerIndices
+  // const div = node.dividerIndices
   let beginArray = `mat(delim: "${node.lparen}", `
   // const ch = node.alignment
 

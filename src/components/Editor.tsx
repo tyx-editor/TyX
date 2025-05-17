@@ -18,6 +18,7 @@ import {
   IconRowInsertBottom,
   IconRowRemove,
   IconSettings,
+  IconSum,
   IconTableMinus,
   IconTablePlus,
 } from "@tabler/icons-react"
@@ -241,13 +242,13 @@ const Editor = () => {
           >
             <IconCodeAsterisk />
           </RichTextEditor.Control>
-          {/* <RichTextEditor.Control
+          <RichTextEditor.Control
             title="Insert math"
             aria-label="Insert math"
             onClick={() => editor?.chain().focus().insertMathInline().run()}
           >
             <IconSum />
-          </RichTextEditor.Control> */}
+          </RichTextEditor.Control>
           <RichTextEditor.Blockquote />
           <RichTextEditor.Hr />
           <RichTextEditor.BulletList />
