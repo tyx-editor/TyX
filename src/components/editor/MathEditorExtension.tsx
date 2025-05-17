@@ -35,6 +35,8 @@ declare global {
   }
 }
 
+MathfieldElement.fontsDirectory = "/fonts"
+
 const MathEditor = (props: NodeViewProps) => {
   const mathfieldRef = useRef<MathfieldElement>(null)
   const uniqueId = useId()
@@ -43,7 +45,6 @@ const MathEditor = (props: NodeViewProps) => {
   useEffect(() => {
     if (mathfieldRef.current) {
       const mf = mathfieldRef.current
-      mf.menuItems = []
       mf.defaultMode =
         props.node.type.name === "mathInline" ? "inline-math" : "math"
 
@@ -79,8 +80,12 @@ const MathEditor = (props: NodeViewProps) => {
           props.editor.chain().deleteSelection().run()
         }
       })
+
+      if (mf.isConnected) {
+        mf.menuItems = []
+      }
     }
-  }, [mathfieldRef])
+  }, [mathfieldRef, mathfieldRef.current?.isConnected])
 
   useEffect(() => {
     if (props.selected && props.editor.state.selection.content().size === 1) {
