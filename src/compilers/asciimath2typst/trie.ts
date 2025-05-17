@@ -55,7 +55,7 @@ class Trie {
     nodes.forEach((n) => {
       if (n.length !== 1)
         throw new Error(
-          `Value \`${n}\` is invalid, the length of char must be 1`
+          `Value \`${n}\` is invalid, the length of char must be 1`,
         )
     })
 
@@ -113,7 +113,7 @@ class Trie {
   public tryParsing(
     letters: string[],
     start = 0,
-    pos: Position = { line: 1, ch: 0 }
+    pos: Position = { line: 1, ch: 0 },
   ): TokenizedValue {
     let value = ""
     let root = this._root
@@ -151,7 +151,7 @@ class Trie {
   public tryParsingNumber(
     letters: string[],
     current: number,
-    pos: Position
+    pos: Position,
   ): TokenizedValue {
     let ch = letters[current]
     let value = ""
@@ -180,7 +180,7 @@ class Trie {
   public tryParsingString(
     letters: string[],
     current: number,
-    pos: Position
+    pos: Position,
   ): TokenizedValue {
     let ch = letters[current]
     let value = ""
@@ -204,7 +204,7 @@ class Trie {
   public tryParsingNewLines(
     letters: string[],
     current: number,
-    pos: Position
+    pos: Position,
   ): TokenizedValue {
     let ch = letters[current]
     let value = ""
@@ -237,7 +237,7 @@ class Trie {
   private getPlainTextInDoubleQuote(
     letters: string[],
     current: number,
-    pos: Position
+    pos: Position,
   ): EatenResult {
     let value = ""
     let ch = letters[current]
@@ -258,12 +258,12 @@ class Trie {
   public tryParsingText(
     letters: string[],
     current: number,
-    pos: Position
+    pos: Position,
   ): TokenizedValue {
     const { value, current: newCurrent } = this.getPlainTextInDoubleQuote(
       letters,
       current,
-      pos
+      pos,
     )
     return {
       value,
@@ -287,7 +287,7 @@ class Trie {
   private eatNext(
     letters: string[],
     current: number,
-    pos: Position
+    pos: Position,
   ): TokenizedValue {
     current = this.skipSpaces(letters, current)
     const res = createConstToken({ current, pos })
@@ -416,7 +416,7 @@ function createTrie(
   config: {
     // extConst?: Array<[string, string]>
     symbols?: Array<[string, SymbolValueType]> | Record<string, SymbolValueType>
-  } = {}
+  } = {},
 ) {
   const charset: Set<string> = new Set([])
   if (config.symbols) {
