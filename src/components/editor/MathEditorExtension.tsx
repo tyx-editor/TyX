@@ -1,4 +1,5 @@
 import {
+  isNodeSelection,
   mergeAttributes,
   Node,
   NodeViewContent,
@@ -63,13 +64,26 @@ const MathEditor = (props: NodeViewProps) => {
       })
 
       mf.addEventListener("move-out", (e) => {
+        const position = props.getPos()
         if (
           e.detail.direction === "forward" ||
           e.detail.direction === "downward"
         ) {
-          props.editor.chain().selectNodeForward().focus().run()
+          const chain =
+            position + props.node.nodeSize ===
+            props.editor.state.doc.content.size
+              ? props.editor
+                  .chain()
+                  .insertContentAt(position + props.node.nodeSize, {
+                    type: "paragraph",
+                  })
+                  .setTextSelection(position + props.node.nodeSize + 1)
+              : props.editor
+                  .chain()
+                  .setTextSelection(position + props.node.nodeSize)
+          chain.focus().run()
         } else {
-          props.editor.chain().selectNodeBackward().focus().run()
+          props.editor.chain().setTextSelection(position).focus().run()
         }
       })
 
@@ -86,10 +100,11 @@ const MathEditor = (props: NodeViewProps) => {
   }, [mathfieldRef, mathfieldRef.current?.isConnected])
 
   useEffect(() => {
-    if (props.selected && props.editor.state.selection.content().size === 1) {
+    const selection = props.editor.state.selection
+    if (isNodeSelection(selection) && selection.from === props.getPos()) {
       mathfieldRef.current?.focus()
     }
-  }, [props.selected])
+  }, [props.editor.state.selection, props.selected])
 
   const setValue = (value: string, asciimath: any) => {
     props.updateAttributes({ value, asciimath })
@@ -128,7 +143,6 @@ export const MathBlock = Node.create<MathOptions>({
   name: "mathBlock",
   group: "block",
   defining: true,
-  selectable: true,
 
   addOptions() {
     return { exitOnArrowDown: true, HTMLAttributes: {} }
@@ -224,16 +238,22 @@ export const MathInline = Node.create<MathOptions>({
     return {
       insertMathInline:
         (options) =>
-        ({ commands }) => {
-          return commands.insertContent({
-            type: this.name,
-            attrs: options,
-          })
+        ({ chain, state }) => {
+          return chain()
+            .insertContent({
+              type: this.name,
+              attrs: options,
+            })
+            .setNodeSelection(state.selection.from)
+            .focus()
+            .run()
         },
     }
   },
 
   addKeyboardShortcuts() {
-    return { "mod-m": () => this.editor.commands.insertMathInline() }
+    return {
+      "mod-m": () => this.editor.commands.insertMathInline(),
+    }
   },
 })

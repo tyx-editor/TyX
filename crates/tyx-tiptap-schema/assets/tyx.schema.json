@@ -102,7 +102,6 @@
     },
     "mathBlock": {
       "group": "block",
-      "selectable": true,
       "defining": true,
       "attrs": { "value": { "default": "" }, "asciimath": { "default": "" } },
       "parseDOM": [{ "tag": "math-block" }]
