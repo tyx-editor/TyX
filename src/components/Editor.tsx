@@ -15,6 +15,8 @@ import {
   IconDeviceFloppy,
   IconEye,
   IconFileFunction,
+  IconIndentDecrease,
+  IconIndentIncrease,
   IconRowInsertBottom,
   IconRowRemove,
   IconSettings,
@@ -25,7 +27,7 @@ import {
 import { useEffect, useState } from "react"
 import { isWeb, onPreview, onSave, save } from "../backend"
 import tyx2typst from "../compilers/tyx2typst"
-import { useLocalStorage } from "../hooks"
+import { useLocalStorage, useUpdateOnTransaction } from "../hooks"
 import { TyXDocument } from "../models"
 import { showSuccessMessage } from "../utilities"
 import DocumentSettingsModal from "./DocumentSettingsModal"
@@ -52,6 +54,7 @@ const PreviewControl = (props: RichTextEditorControlProps) => {
 
 const TableControls = () => {
   const { editor } = useRichTextEditorContext()
+  useUpdateOnTransaction(editor)
 
   return (
     <RichTextEditor.ControlsGroup>
@@ -107,6 +110,34 @@ const TableControls = () => {
           </RichTextEditor.Control>
         </>
       )}
+    </RichTextEditor.ControlsGroup>
+  )
+}
+
+const ListControls = () => {
+  const { editor } = useRichTextEditorContext()
+  useUpdateOnTransaction(editor)
+
+  if (!editor?.isActive("bulletList") && !editor?.isActive("orderedList")) {
+    return <></>
+  }
+
+  return (
+    <RichTextEditor.ControlsGroup>
+      <RichTextEditor.Control
+        title="Lift list item"
+        aria-label="Lift list item"
+        onClick={() => editor?.chain().focus().liftListItem("listItem").run()}
+      >
+        <IconIndentDecrease />
+      </RichTextEditor.Control>
+      <RichTextEditor.Control
+        title="Sink list item"
+        aria-label="Sink list item"
+        onClick={() => editor?.chain().focus().sinkListItem("listItem").run()}
+      >
+        <IconIndentIncrease />
+      </RichTextEditor.Control>
     </RichTextEditor.ControlsGroup>
   )
 }
@@ -257,6 +288,8 @@ const Editor = () => {
         </RichTextEditor.ControlsGroup>
 
         <TableControls />
+
+        <ListControls />
 
         <LinkControls />
 

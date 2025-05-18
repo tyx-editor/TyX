@@ -1,3 +1,5 @@
+import { useForceUpdate } from "@mantine/hooks"
+import { Editor } from "@tiptap/react"
 import { useEffect, useState } from "react"
 
 export const getLocalStorage = <T>(key: string, defaultValue = {}): T => {
@@ -63,4 +65,11 @@ export const useLocalStorage = <T>({
   }
 
   return [value, userSetValue]
+}
+
+export const useUpdateOnTransaction = (editor: Editor | null) => {
+  const forceUpdate = useForceUpdate()
+  useEffect(() => {
+    editor?.on("transaction", forceUpdate)
+  }, [editor])
 }
