@@ -28,7 +28,11 @@ tauri-plugin-dialog = "2"
 tauri-plugin-process = "2"
 tinymist-project = { workspace = true, features = ["lsp"] }
 tyx-tiptap-typst.workspace = true
+tyx-edit.workspace = true
 url = "2.5.4"
+
+typst.workspace = true
+typst-html.workspace = true
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
 tauri-plugin-updater = "2"

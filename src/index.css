@@ -3,6 +3,8 @@ body,
 #root {
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  background-color: rgb(31, 31, 31);
 }
 
 h1,
@@ -41,4 +43,23 @@ math-field::part(menu-toggle) {
 
 code[data-kind="typstCode"] {
   border: 1px solid pink;
+}
+
+.poc {
+  width: 90vw;
+  height: 90vh;
+  margin: 5vh 5vw;
+}
+
+g[data-typst-label="tyx-edit-box"] {
+  cursor: pointer;
+  pointer-events: all;
+}
+
+g[data-typst-label="tyx-edit-box"] path {
+  transition: stroke 0.2s ease-in-out;
+}
+
+g[data-typst-label="tyx-edit-box"]:hover path {
+  stroke: #158bb8;
 }

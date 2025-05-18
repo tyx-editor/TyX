@@ -121,6 +121,14 @@ export const save = (filename: string, content: string) => {
 
 export const saveAs = () => invoke("saveas")
 
+export const eqPreview = (filename: string) => {
+  return invoke<string>("eq_preview", { filename })
+}
+
+export const clickPreview = (x: number, y: number) => {
+  return invoke<void>("eq_preview_click", { x, y })
+}
+
 export { getVersion }
 
 export const isWeb = false

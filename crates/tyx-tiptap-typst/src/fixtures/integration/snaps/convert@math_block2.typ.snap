@@ -1,0 +1,15 @@
+---
+source: crates/tyx-tiptap-typst/src/tests.rs
+expression: conv(world)
+input_file: crates/tyx-tiptap-typst/src/fixtures/integration/math_block2.typ
+---
+{
+ "type": "doc",
+ "content": [
+  {
+   "type": "paragraph",
+   "content": [],
+   "dir": null
+  }
+ ]
+}
