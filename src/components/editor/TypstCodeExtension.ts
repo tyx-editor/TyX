@@ -10,18 +10,9 @@ export interface TypstCodeOptions {
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     typstCode: {
-      /**
-       * Set to typst code
-       */
       setTypstCode: () => ReturnType
-      /**
-       * Toggle typst code
-       */
-      toggleTypstCode: () => ReturnType
-      /**
-       * Unset from typst code
-       */
       unsetTypstCode: () => ReturnType
+      toggleTypstCode: () => ReturnType
     }
   }
 }
