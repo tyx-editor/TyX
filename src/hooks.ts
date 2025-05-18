@@ -67,9 +67,11 @@ export const useLocalStorage = <T>({
   return [value, userSetValue]
 }
 
-export const useUpdateOnTransaction = (editor: Editor | null) => {
+export const useUpdateOnChange = (editor: Editor | null) => {
   const forceUpdate = useForceUpdate()
   useEffect(() => {
-    editor?.on("transaction", forceUpdate)
+    editor?.on("selectionUpdate", forceUpdate)
+    editor?.on("focus", forceUpdate)
+    editor?.on("blur", forceUpdate)
   }, [editor])
 }

@@ -42,3 +42,20 @@ math-field::part(menu-toggle) {
 code[data-kind="typstCode"] {
   border: 1px solid pink;
 }
+
+math-field {
+  background-color: transparent;
+  color: var(--mantine-color-blue-7);
+}
+
+math-field:empty {
+  min-width: 1em;
+}
+
+math-field:not(:empty) {
+  border-color: transparent;
+}
+
+math-field::part(container) {
+  padding: 0px;
+}

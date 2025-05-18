@@ -350,8 +350,9 @@ function parenStartedNoClosingNode(tokens: TokenizedValue[], current: number) {
 
 function findPairedClosingParen(current: number, tokens: TokenizedValue[]) {
   let closingIndex = -1
+  let isMatrix = true
   const stack: string[] = []
-  // find the paired closing paren and whether there is any `;` within the parens
+  // find the paired closing paren and whether the content is comma-separated parened parts
   for (let i = current + 1; i < tokens.length; i++) {
     if (tokens[i].type === TokenTypes.LParen) {
       stack.push("")
@@ -363,14 +364,21 @@ function findPairedClosingParen(current: number, tokens: TokenizedValue[]) {
       }
       if (closingIndex !== -1) break
     } else {
-      if (tokens[i].type === TokenTypes.RParen) stack.pop()
+      if (tokens[i].type === TokenTypes.RParen) {
+        stack.pop()
+      }
+    }
+
+    if (
+      stack.length === 0 &&
+      tokens[i].type !== TokenTypes.RParen &&
+      tokens[i].type !== TokenTypes.Split &&
+      isMatrix
+    ) {
+      isMatrix = false
     }
   }
-  const m = tokens
-    .slice(current + 1, closingIndex)
-    .map((token) => token.value)
-    .join("")
-  const isMatrix = /^(\(.*\),?)+$/.test(m)
+
   return { closingIndex, isMatrix }
 }
 

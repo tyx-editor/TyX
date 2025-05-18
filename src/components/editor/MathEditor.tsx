@@ -7,16 +7,37 @@ import {
 import { type MathfieldElement } from "mathlive"
 import { useEffect, useId, useRef, useState } from "react"
 
+declare global {
+  interface Window {
+    currentMathEditor?: MathfieldElement
+  }
+}
+
 const MathEditor = (props: NodeViewProps) => {
   const mathfieldRef = useRef<MathfieldElement>(null)
   const uniqueId = useId()
   const [formula, setFormula] = useState(props.node.attrs.value ?? "")
 
+  const mf = mathfieldRef.current
+
+  const updateCurrentMathEditor = () => {
+    if (mf && mf.hasFocus() && window.currentMathEditor !== mf) {
+      window.currentMathEditor = mf
+      window.dispatchEvent(new Event("mathEditorChanged"))
+    } else if (mf && !mf.hasFocus() && window.currentMathEditor === mf) {
+      delete window.currentMathEditor
+      window.dispatchEvent(new Event("mathEditorChanged"))
+    }
+  }
+
   useEffect(() => {
-    if (mathfieldRef.current) {
-      const mf = mathfieldRef.current
+    if (mf) {
       mf.defaultMode =
         props.node.type.name === "mathInline" ? "inline-math" : "math"
+      mf.mathVirtualKeyboardPolicy = "manual"
+
+      mf.addEventListener("focus", updateCurrentMathEditor)
+      mf.addEventListener("blur", updateCurrentMathEditor)
 
       mf.addEventListener(
         "keydown",
@@ -73,8 +94,9 @@ const MathEditor = (props: NodeViewProps) => {
   useEffect(() => {
     const selection = props.editor.state.selection
     if (isNodeSelection(selection) && selection.from === props.getPos()) {
-      mathfieldRef.current?.focus()
+      mf?.focus()
     }
+    updateCurrentMathEditor()
   }, [props.editor.state.selection, props.selected])
 
   const setValue = (value: string, asciimath: any) => {

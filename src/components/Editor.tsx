@@ -7,6 +7,7 @@ import { JSONContent, useEditor } from "@tiptap/react"
 import extensions from "./editor/extensions"
 
 import { Loader } from "@mantine/core"
+import { useForceUpdate, useWindowEvent } from "@mantine/hooks"
 import { modals } from "@mantine/modals"
 import {
   IconCodeAsterisk,
@@ -17,6 +18,7 @@ import {
   IconFileFunction,
   IconIndentDecrease,
   IconIndentIncrease,
+  IconMatrix,
   IconRowInsertBottom,
   IconRowRemove,
   IconSettings,
@@ -27,7 +29,7 @@ import {
 import { useEffect, useState } from "react"
 import { isWeb, onPreview, onSave, save } from "../backend"
 import tyx2typst from "../compilers/tyx2typst"
-import { useLocalStorage, useUpdateOnTransaction } from "../hooks"
+import { useLocalStorage, useUpdateOnChange } from "../hooks"
 import { TyXDocument } from "../models"
 import { showSuccessMessage } from "../utilities"
 import DocumentSettingsModal from "./DocumentSettingsModal"
@@ -54,7 +56,7 @@ const PreviewControl = (props: RichTextEditorControlProps) => {
 
 const TableControls = () => {
   const { editor } = useRichTextEditorContext()
-  useUpdateOnTransaction(editor)
+  useUpdateOnChange(editor)
 
   return (
     <RichTextEditor.ControlsGroup>
@@ -71,7 +73,7 @@ const TableControls = () => {
       >
         <IconTablePlus />
       </RichTextEditor.Control>
-      {editor?.isActive("table") === true && (
+      {editor?.isFocused && editor?.isActive("table") && (
         <>
           <RichTextEditor.Control
             title="Remove table"
@@ -116,9 +118,12 @@ const TableControls = () => {
 
 const ListControls = () => {
   const { editor } = useRichTextEditorContext()
-  useUpdateOnTransaction(editor)
+  useUpdateOnChange(editor)
 
-  if (!editor?.isActive("bulletList") && !editor?.isActive("orderedList")) {
+  if (
+    !editor?.isFocused ||
+    (!editor?.isActive("bulletList") && !editor?.isActive("orderedList"))
+  ) {
     return <></>
   }
 
@@ -147,6 +152,63 @@ const LinkControls = () => {
     <RichTextEditor.ControlsGroup>
       <RichTextEditor.Link />
       <RichTextEditor.Unlink />
+    </RichTextEditor.ControlsGroup>
+  )
+}
+
+const MathControls = () => {
+  const forceUpdate = useForceUpdate()
+
+  useWindowEvent("mathEditorChanged", forceUpdate)
+
+  if (!window.currentMathEditor) {
+    return <></>
+  }
+
+  return (
+    <RichTextEditor.ControlsGroup>
+      <RichTextEditor.Control
+        title="Insert matrix"
+        aria-label="Insert matrix"
+        onClick={() =>
+          window.currentMathEditor?.executeCommand(
+            "insert",
+            "\\begin{pmatrix} #0 & #1 \\\\ #2 & #3 \\end{pmatrix}",
+          )
+        }
+      >
+        <IconMatrix />
+      </RichTextEditor.Control>
+      <RichTextEditor.Control
+        title="Insert row below"
+        aria-label="Insert row below"
+        onClick={() => window.currentMathEditor?.executeCommand("addRowAfter")}
+      >
+        <IconRowInsertBottom />
+      </RichTextEditor.Control>
+      <RichTextEditor.Control
+        title="Insert column to the right"
+        aria-label="Insert column to the right"
+        onClick={() =>
+          window.currentMathEditor?.executeCommand("addColumnAfter")
+        }
+      >
+        <IconColumnInsertRight />
+      </RichTextEditor.Control>
+      <RichTextEditor.Control
+        title="Delete row"
+        aria-label="Delete row"
+        onClick={() => window.currentMathEditor?.executeCommand("removeRow")}
+      >
+        <IconRowRemove />
+      </RichTextEditor.Control>
+      <RichTextEditor.Control
+        title="Delete column"
+        aria-label="Delete column"
+        onClick={() => window.currentMathEditor?.executeCommand("removeColumn")}
+      >
+        <IconColumnRemove />
+      </RichTextEditor.Control>
     </RichTextEditor.ControlsGroup>
   )
 }
@@ -304,6 +366,8 @@ const Editor = () => {
           <RichTextEditor.Undo />
           <RichTextEditor.Redo />
         </RichTextEditor.ControlsGroup>
+
+        <MathControls />
       </RichTextEditor.Toolbar>
 
       <RichTextEditor.Content />
