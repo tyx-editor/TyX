@@ -33,14 +33,20 @@ fn conv(world: LspWorld) -> String {
 #[test]
 fn instrument() {
     snapshot_testing("instrument", &|world, _path| {
-        insta::assert_snapshot!(instr(world));
+        let (tree, instrumented) = instr(world).unwrap_or_default();
+        insta::assert_snapshot!("tree", tree);
+        insta::assert_snapshot!("instrument", instrumented);
     });
 }
 
 /// Converts the given main document in the world to a string.
-fn instr(world: LspWorld) -> String {
-    let doc = crate::instrument(&world).map(|(doc, _)| resolve_span(&world, doc));
-    serialize(&doc)
+fn instr(world: LspWorld) -> Option<(String, String)> {
+    crate::instrument(&world).map(|(tree, t)| {
+        (
+            serialize(&resolve_span(&world, tree)),
+            t.as_str().unwrap().to_owned(),
+        )
+    })
 }
 
 fn resolve_span(world: &LspWorld, doc: SyntaxTree) -> SyntaxTree {

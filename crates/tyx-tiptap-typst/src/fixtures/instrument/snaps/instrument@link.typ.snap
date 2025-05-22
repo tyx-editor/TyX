@@ -1,16 +1,6 @@
 ---
 source: crates/tyx-tiptap-typst/src/tests.rs
-expression: instr(world)
+expression: changed
 input_file: crates/tyx-tiptap-typst/src/fixtures/instrument/link.typ
 ---
-{
- "Content": [
-  {
-   "Markup": {
-    "span": "0..19",
-    "content": "https://example.com",
-    "semi": false
-   }
-  }
- ]
-}
+https://example.com

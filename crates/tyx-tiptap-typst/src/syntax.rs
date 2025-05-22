@@ -33,6 +33,7 @@ impl InstrumentWorker {
                 let mut children = vec![];
                 for child in node.children() {
                     if matches!(child.kind(), SyntaxKind::Hash) {
+                        self.out.push_str(child.text());
                         continue;
                     }
                     if matches!(child.kind(), SyntaxKind::Semicolon) {
@@ -42,6 +43,7 @@ impl InstrumentWorker {
                             decl.semi = true
                         }
 
+                        self.out.push_str(child.text());
                         continue;
                     }
 
@@ -56,18 +58,13 @@ impl InstrumentWorker {
 
     // Trivial transform
     fn generic(&mut self, node: &SyntaxNode) -> SyntaxTree {
-        let mut out = String::new();
-
         if node.children().as_slice().is_empty() {
-            out.push_str(node.text());
+            self.out.push_str(node.text());
         } else {
             for child in node.children() {
                 self.generic(child);
-                out.push_str(child.text());
             }
         }
-
-        self.out.push_str(&out);
 
         let decl = SyntaxDecl {
             span: eco_format!("{:x}", node.span().into_raw()),

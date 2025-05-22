@@ -1,51 +1,9 @@
 ---
 source: crates/tyx-tiptap-typst/src/tests.rs
-expression: instr(world)
+expression: changed
 input_file: crates/tyx-tiptap-typst/src/fixtures/instrument/func.typ
 ---
-{
- "Content": [
-  {
-   "Decl": {
-    "span": "1..17",
-    "content": "let f(x) = x + 1",
-    "semi": true
-   }
-  },
-  {
-   "Markup": {
-    "span": "18..20",
-    "content": "\n\n",
-    "semi": false
-   }
-  },
-  {
-   "Markup": {
-    "span": "21..25",
-    "content": "f(2)",
-    "semi": false
-   }
-  },
-  {
-   "Markup": {
-    "span": "25..26",
-    "content": "\n",
-    "semi": false
-   }
-  },
-  {
-   "Markup": {
-    "span": "27..31",
-    "content": "f(3)",
-    "semi": false
-   }
-  },
-  {
-   "Markup": {
-    "span": "31..32",
-    "content": "\n",
-    "semi": false
-   }
-  }
- ]
-}
+#let f(x) = x + 1;
+
+#f(2)
+#f(3)
