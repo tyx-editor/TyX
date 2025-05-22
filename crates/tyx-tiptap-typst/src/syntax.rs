@@ -1,18 +1,20 @@
-use ecow::EcoString;
-use tinymist_project::{LspWorld, base::ShadowApi};
-use typst::syntax::{Source, SyntaxNode};
+use ecow::{EcoString, eco_format};
+use serde::{Deserialize, Serialize};
+use tinymist_project::LspWorld;
+use typst::syntax::{Source, SyntaxKind, SyntaxNode};
 use typst::{World, foundations::Bytes};
 use tyx_tiptap_schema::TyxNode;
 
 /// Instruments the main document in a [`LspWorld`] and constructs a
 /// [`SyntaxTree`] for wysiwyg editing.
-pub fn instrument(world: &mut LspWorld) -> Option<SyntaxTree> {
+pub fn instrument(world: &LspWorld) -> Option<(SyntaxTree, Bytes)> {
     let src = world.source(world.main()).ok()?;
 
-    let changed = Bytes::from_string(InstrumentWorker::default().convert(&src));
-    world.map_shadow_by_id(src.id(), changed).ok()?;
+    let mut worker = InstrumentWorker::default();
+    let node = worker.convert(&src);
+    let changed = Bytes::from_string(worker.out);
 
-    Some(SyntaxTree::Markup(EcoString::new()))
+    Some((node, changed))
 }
 
 #[derive(Default)]
@@ -21,34 +23,84 @@ struct InstrumentWorker {
 }
 
 impl InstrumentWorker {
-    fn convert(mut self, src: &Source) -> String {
-        self.node(src.root());
-        self.out
+    fn convert(&mut self, src: &Source) -> SyntaxTree {
+        self.node(src.root())
     }
 
-    fn node(&mut self, node: &SyntaxNode) {
+    fn node(&mut self, node: &SyntaxNode) -> SyntaxTree {
+        match node.kind() {
+            SyntaxKind::Markup => {
+                let mut children = vec![];
+                for child in node.children() {
+                    if matches!(child.kind(), SyntaxKind::Hash) {
+                        continue;
+                    }
+                    if matches!(child.kind(), SyntaxKind::Semicolon) {
+                        if let Some(SyntaxTree::Markup(decl) | SyntaxTree::Decl(decl)) =
+                            children.last_mut()
+                        {
+                            decl.semi = true
+                        }
+
+                        continue;
+                    }
+
+                    let child = self.node(child);
+                    children.push(child);
+                }
+                SyntaxTree::Content(children)
+            }
+            _ => self.generic(node),
+        }
+    }
+
+    // Trivial transform
+    fn generic(&mut self, node: &SyntaxNode) -> SyntaxTree {
         let mut out = String::new();
 
-        // Trivial transform
         if node.children().as_slice().is_empty() {
             out.push_str(node.text());
         } else {
             for child in node.children() {
-                self.node(child);
+                self.generic(child);
                 out.push_str(child.text());
             }
         }
 
         self.out.push_str(&out);
+
+        let decl = SyntaxDecl {
+            span: eco_format!("{:x}", node.span().into_raw()),
+            content: node.clone().into_text(),
+            semi: false,
+        };
+
+        use SyntaxKind::*;
+        match node.kind() {
+            Bool | Str | Int | Float | Ident | LetBinding | ShowRule | SetRule | ModuleImport
+            | ModuleInclude | Binary | Unary | DestructAssignment => SyntaxTree::Decl(decl),
+            _ => SyntaxTree::Markup(decl),
+        }
     }
 }
 
 /// A syntax tree for wysiwyg editing.
+#[derive(Debug, Clone, Hash, Serialize, Deserialize)]
 pub enum SyntaxTree {
-    /// A text node.
-    Markup(EcoString),
+    /// A content block.
+    Content(Vec<SyntaxTree>),
+    /// A markup node.
+    Markup(SyntaxDecl),
     /// A block node.
-    Decl(SyntaxNode),
+    Decl(SyntaxDecl),
+}
+
+/// A syntax declaration.
+#[derive(Debug, Clone, Hash, Serialize, Deserialize)]
+pub struct SyntaxDecl {
+    pub span: EcoString,
+    pub content: EcoString,
+    pub semi: bool,
 }
 
 pub(crate) struct SyntaxConverter;

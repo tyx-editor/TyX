@@ -1,0 +1,44 @@
+---
+source: crates/tyx-tiptap-typst/src/tests.rs
+expression: instr(world)
+input_file: crates/tyx-tiptap-typst/src/fixtures/instrument/code.typ
+---
+{
+ "Content": [
+  {
+   "Decl": {
+    "span": "1..13",
+    "content": "let x = [ha]",
+    "semi": true
+   }
+  },
+  {
+   "Markup": {
+    "span": "14..15",
+    "content": "\n",
+    "semi": false
+   }
+  },
+  {
+   "Decl": {
+    "span": "16..17",
+    "content": "x",
+    "semi": false
+   }
+  },
+  {
+   "Decl": {
+    "span": "18..19",
+    "content": "x",
+    "semi": false
+   }
+  },
+  {
+   "Markup": {
+    "span": "19..20",
+    "content": "\n",
+    "semi": false
+   }
+  }
+ ]
+}

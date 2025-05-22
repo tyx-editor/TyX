@@ -163,9 +163,10 @@
 //!     .expect("failed to resolve system universe");
 //!
 //! let world = verse.snapshot();
-//! let tyx_document = tyx_tiptap_typst::convert(Arc::new(world));
+//! let tyx_document = tyx_tiptap_typst::convert(world);
 //! ```
 
+pub use syntax::{SyntaxTree, instrument};
 pub use tinymist_project::LspWorld;
 pub use tyx_tiptap_schema::TyxNode;
 
@@ -176,14 +177,15 @@ use std::sync::Arc;
 
 use ecow::EcoString;
 use serde::{Deserialize, Serialize};
+use tinymist_project::base::ShadowApi;
+use typst::World;
 
 use crate::{concrete::*, syntax::*};
 
-pub use syntax::{SyntaxTree, instrument};
-
 /// Converts the main document in a [`LspWorld`] to a [`TyxNode`]
 pub fn convert(mut world: LspWorld) -> Option<TyxDocument> {
-    instrument(&mut world)?;
+    let (_tree, changed) = instrument(&world)?;
+    world.map_shadow_by_id(world.main(), changed).ok()?;
 
     // Converts the source code into a markdown document
     let converter = typlite::Typlite::new(Arc::new(world));

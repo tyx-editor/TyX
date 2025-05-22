@@ -1,0 +1,37 @@
+---
+source: crates/tyx-tiptap-typst/src/tests.rs
+expression: instr(world)
+input_file: crates/tyx-tiptap-typst/src/fixtures/instrument/base.typ
+---
+{
+ "Content": [
+  {
+   "Markup": {
+    "span": "0..15",
+    "content": "= Hello, World!",
+    "semi": false
+   }
+  },
+  {
+   "Markup": {
+    "span": "15..16",
+    "content": "\n",
+    "semi": false
+   }
+  },
+  {
+   "Markup": {
+    "span": "16..41",
+    "content": "This is a typst document.",
+    "semi": false
+   }
+  },
+  {
+   "Markup": {
+    "span": "41..42",
+    "content": "\n",
+    "semi": false
+   }
+  }
+ ]
+}

@@ -1,0 +1,51 @@
+---
+source: crates/tyx-tiptap-typst/src/tests.rs
+expression: instr(world)
+input_file: crates/tyx-tiptap-typst/src/fixtures/instrument/import.typ
+---
+{
+ "Content": [
+  {
+   "Decl": {
+    "span": "1..21",
+    "content": "import \"func.typ\": f",
+    "semi": false
+   }
+  },
+  {
+   "Markup": {
+    "span": "21..22",
+    "content": "\n",
+    "semi": false
+   }
+  },
+  {
+   "Markup": {
+    "span": "23..27",
+    "content": "f(1)",
+    "semi": false
+   }
+  },
+  {
+   "Markup": {
+    "span": "27..28",
+    "content": "\n",
+    "semi": false
+   }
+  },
+  {
+   "Markup": {
+    "span": "29..33",
+    "content": "f(2)",
+    "semi": false
+   }
+  },
+  {
+   "Markup": {
+    "span": "33..34",
+    "content": "\n",
+    "semi": false
+   }
+  }
+ ]
+}
