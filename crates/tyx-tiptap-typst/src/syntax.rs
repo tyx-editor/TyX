@@ -1,3 +1,5 @@
+use std::fmt::Write;
+
 use ecow::{EcoString, eco_format};
 use serde::{Deserialize, Serialize};
 use tinymist_project::LspWorld;
@@ -58,25 +60,51 @@ impl InstrumentWorker {
 
     // Trivial transform
     fn generic(&mut self, node: &SyntaxNode) -> SyntaxTree {
-        if node.children().as_slice().is_empty() {
-            self.out.push_str(node.text());
-        } else {
-            for child in node.children() {
-                self.generic(child);
+        enum Kind {
+            Decl,
+            CodeExpr,
+            Other,
+        }
+
+        use SyntaxKind::*;
+        let kind = match node.kind() {
+            LetBinding | ShowRule | SetRule | ModuleImport => Kind::Decl,
+            Bool | Str | Int | Float | Ident | ModuleInclude | Binary | Unary
+            | DestructAssignment | FuncCall => Kind::CodeExpr,
+            _ => Kind::Other,
+        };
+        let span = eco_format!("{:x}", node.span().into_raw());
+
+        match kind {
+            Kind::CodeExpr => {
+                self.out.push_str("_tyx_instr(");
+                self.out.push_str(&node.clone().into_text());
+                write!(&mut self.out, ", span: {span:?})").unwrap();
+            }
+            Kind::Decl => {
+                self.out.push_str(&node.clone().into_text());
+            }
+            Kind::Other => {
+                if node.children().as_slice().is_empty() {
+                    self.out.push_str(node.text());
+                } else {
+                    for child in node.children() {
+                        self.generic(child);
+                    }
+                }
             }
         }
 
         let decl = SyntaxDecl {
-            span: eco_format!("{:x}", node.span().into_raw()),
+            span,
             content: node.clone().into_text(),
             semi: false,
         };
 
-        use SyntaxKind::*;
-        match node.kind() {
-            Bool | Str | Int | Float | Ident | LetBinding | ShowRule | SetRule | ModuleImport
-            | ModuleInclude | Binary | Unary | DestructAssignment => SyntaxTree::Decl(decl),
-            _ => SyntaxTree::Markup(decl),
+        if matches!(kind, Kind::Decl | Kind::CodeExpr) {
+            SyntaxTree::Decl(decl)
+        } else {
+            SyntaxTree::Markup(decl)
         }
     }
 }

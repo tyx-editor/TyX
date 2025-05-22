@@ -1,9 +1,9 @@
 ---
 source: crates/tyx-tiptap-typst/src/tests.rs
-expression: changed
+expression: instrumented
 input_file: crates/tyx-tiptap-typst/src/fixtures/instrument/func.typ
 ---
 #let f(x) = x + 1;
 
-#f(2)
-#f(3)
+#_tyx_instr(f(2), span: "127286bca1ade")
+#_tyx_instr(f(3), span: "134a1af286bae")

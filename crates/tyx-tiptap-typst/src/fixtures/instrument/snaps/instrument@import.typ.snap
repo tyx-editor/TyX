@@ -1,8 +1,8 @@
 ---
 source: crates/tyx-tiptap-typst/src/tests.rs
-expression: changed
+expression: instrumented
 input_file: crates/tyx-tiptap-typst/src/fixtures/instrument/import.typ
 ---
 #import "func.typ": f
-#f(1)
-#f(2)
+#_tyx_instr(f(1), span: "61e492492491f")
+#_tyx_instr(f(2), span: "630924924923f")

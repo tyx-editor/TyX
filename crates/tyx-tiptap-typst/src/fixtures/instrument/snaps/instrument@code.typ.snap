@@ -1,7 +1,7 @@
 ---
 source: crates/tyx-tiptap-typst/src/tests.rs
-expression: changed
+expression: instrumented
 input_file: crates/tyx-tiptap-typst/src/fixtures/instrument/code.typ
 ---
 #let x = [ha];
-#x#x
+#_tyx_instr(x, span: "135555555554a")#_tyx_instr(x, span: "13b6db6db6daa")

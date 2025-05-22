@@ -20,7 +20,7 @@ input_file: crates/tyx-tiptap-typst/src/fixtures/instrument/import.typ
    }
   },
   {
-   "Markup": {
+   "Decl": {
     "span": "23..27",
     "content": "f(1)",
     "semi": false
@@ -34,7 +34,7 @@ input_file: crates/tyx-tiptap-typst/src/fixtures/instrument/import.typ
    }
   },
   {
-   "Markup": {
+   "Decl": {
     "span": "29..33",
     "content": "f(2)",
     "semi": false
