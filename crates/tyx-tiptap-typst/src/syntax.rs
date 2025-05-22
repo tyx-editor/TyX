@@ -26,6 +26,8 @@ struct InstrumentWorker {
 
 impl InstrumentWorker {
     fn convert(&mut self, src: &Source) -> SyntaxTree {
+        self.out.push_str(include_str!("instr-header.typ"));
+
         self.node(src.root())
     }
 

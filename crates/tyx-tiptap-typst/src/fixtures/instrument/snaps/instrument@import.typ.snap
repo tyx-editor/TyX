@@ -3,6 +3,11 @@ source: crates/tyx-tiptap-typst/src/tests.rs
 expression: instrumented
 input_file: crates/tyx-tiptap-typst/src/fixtures/instrument/import.typ
 ---
+#let _tyx_instr(body, span: "1") = {
+  html.elem("span", attrs: ("data-instr": "l", "data-span": span))
+  [#body]
+  html.elem("span", attrs: ("data-instr": "r", "data-span": span))
+}
 #import "func.typ": f
 #_tyx_instr(f(1), span: "61e492492491f")
 #_tyx_instr(f(2), span: "630924924923f")
