@@ -32,7 +32,6 @@
       "icons/icon.ico"
     ],
     "createUpdaterArtifacts": true,
-    "externalBin": ["bin/typst"],
     "fileAssociations": [
       {
         "ext": ["tyx"],

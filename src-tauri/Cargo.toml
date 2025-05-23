@@ -23,12 +23,14 @@ tauri-build = { version = "2", features = [] }
 serde.workspace = true
 serde_json.workspace = true
 tauri = { version = "2", features = [] }
-tauri-plugin-shell = "2"
 tauri-plugin-dialog = "2"
 tauri-plugin-process = "2"
 tinymist-project = { workspace = true, features = ["lsp"] }
+typst.workspace = true
+typst-pdf.workspace = true
 tyx-tiptap-typst.workspace = true
 url = "2.5.4"
+open = "5"
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
 tauri-plugin-updater = "2"

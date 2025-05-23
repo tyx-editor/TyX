@@ -5,13 +5,13 @@ use std::{
     sync::Arc,
 };
 
+use tauri::Emitter;
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
 use tauri::menu::{Menu, MenuItemBuilder};
-use tauri::{Emitter, Manager};
 
 use tauri_plugin_dialog::DialogExt;
-use tauri_plugin_shell::ShellExt;
-use tinymist_project::{CompileOnceArgs, EntryReader, TaskInputs, WorldProvider};
+use tinymist_project::{CompileOnceArgs, EntryReader, TaskInputs, WorldProvider, base::ShadowApi};
+use typst_pdf::PdfOptions;
 
 //
 #[tauri::command]
@@ -99,7 +99,7 @@ fn open(handle: tauri::AppHandle) {
 }
 
 #[tauri::command]
-fn preview(handle: tauri::AppHandle, filename: &str, content: &str) -> String {
+fn preview(filename: &str, content: &str) -> String {
     let basename = filename
         .strip_suffix(".tyx")
         .unwrap_or(filename)
@@ -109,44 +109,41 @@ fn preview(handle: tauri::AppHandle, filename: &str, content: &str) -> String {
         .unwrap()
         .to_str()
         .unwrap();
-    let typst_file = basename.clone() + ".typ";
     let pdf_file = basename.clone() + ".pdf";
 
-    if let Ok(mut file) = File::create(&typst_file) {
-        if file.write_all(content.as_bytes()).is_ok() {
-            let command = handle.shell().sidecar("typst").unwrap();
-
-            let fonts_dir = handle
-                .path()
-                .app_data_dir()
-                .unwrap_or(PathBuf::new())
-                .join("fonts");
-
-            let result = tauri::async_runtime::block_on(async move {
-                command
-                    .current_dir(dirname)
-                    .args([
-                        "compile",
-                        &typst_file,
-                        &pdf_file,
-                        "--open",
-                        "--font-path",
-                        fonts_dir.to_str().unwrap_or(""),
-                    ])
-                    .output()
-                    .await
-            });
-
-            if let Err(e) = result {
-                return e.to_string();
-            }
-            if let Ok(output) = result {
-                if let Ok(s) = String::from_utf8(output.stderr) {
-                    return s;
-                }
-            }
-        }
+    let universe = CompileOnceArgs {
+        root: Some(PathBuf::from(dirname)),
+        input: Some(filename.into()),
+        ..CompileOnceArgs::default()
     }
+    .resolve()
+    .unwrap();
+    let entry = universe
+        .entry_state()
+        .try_select_path_in_workspace(Path::new(filename))
+        .unwrap();
+    let mut world = universe.snapshot_with(Some(TaskInputs {
+        entry,
+        ..TaskInputs::default()
+    }));
+    let main = world.main_id().unwrap();
+    let _ = world.map_shadow_by_id(
+        main,
+        typst::foundations::Bytes::from_string(content.to_owned()),
+    );
+    let doc = match typst::compile(&world).output {
+        Ok(doc) => doc,
+        Err(e) => {
+            if e.len() == 0 {
+                return String::new();
+            }
+            return e[0].message.to_string();
+        }
+    };
+    let pdf = typst_pdf::pdf(&doc, &PdfOptions::default()).unwrap();
+    let mut f = File::create(&pdf_file).unwrap();
+    f.write_all(&pdf).unwrap();
+    let _ = open::that(&pdf_file);
 
     String::new()
 }
@@ -171,7 +168,6 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
-        .plugin(tauri_plugin_shell::init())
         .menu(|handle| {
             let menu = Menu::default(handle)?;
 
