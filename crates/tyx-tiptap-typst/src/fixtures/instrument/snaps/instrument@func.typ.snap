@@ -1,0 +1,14 @@
+---
+source: crates/tyx-tiptap-typst/src/tests.rs
+expression: instrumented
+input_file: crates/tyx-tiptap-typst/src/fixtures/instrument/func.typ
+---
+#let _tyx_instr(body, span: "1") = {
+  html.elem("span", attrs: ("data-instr": "l", "data-span": span))
+  [#body]
+  html.elem("span", attrs: ("data-instr": "r", "data-span": span))
+}
+#let f(x) = x + 1;
+
+#_tyx_instr(f(2), span: "127286bca1ade")
+#_tyx_instr(f(3), span: "134a1af286bae")
