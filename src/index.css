@@ -48,12 +48,17 @@ math-field {
   color: var(--mantine-color-blue-7);
 }
 
-math-field:empty {
-  min-width: 1em;
+.mathBlock math-field:empty {
+  padding-right: 7.5px;
+  padding-left: 7.5px;
+}
+.mathInline math-field:empty {
+  padding-right: 5px;
+  padding-left: 5px;
 }
 
 math-field:not(:empty) {
-  border-color: transparent;
+  border: none;
 }
 
 math-field::part(container) {

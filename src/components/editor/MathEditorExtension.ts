@@ -30,11 +30,6 @@ declare global {
 
 export interface MathOptions {
   /**
-   * Define whether the node should be exited on arrow down if there is no node after it.
-   * Defaults to `true`.
-   */
-  exitOnArrowDown: boolean
-  /**
    * Custom HTML attributes that should be added to the rendered HTML tag.
    */
   HTMLAttributes: Record<string, any>
@@ -46,7 +41,7 @@ export const MathBlock = Node.create<MathOptions>({
   defining: true,
 
   addOptions() {
-    return { exitOnArrowDown: true, HTMLAttributes: {} }
+    return { HTMLAttributes: {} }
   },
 
   addAttributes() {
@@ -97,7 +92,7 @@ export const MathInline = Node.create<MathOptions>({
   defining: true,
 
   addOptions() {
-    return { exitOnArrowDown: true, HTMLAttributes: {} }
+    return { HTMLAttributes: {} }
   },
 
   addAttributes() {

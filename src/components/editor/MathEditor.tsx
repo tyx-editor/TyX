@@ -75,7 +75,24 @@ const MathEditor = (props: NodeViewProps) => {
                   .setTextSelection(position + props.node.nodeSize)
           chain.focus().run()
         } else {
-          props.editor.chain().setTextSelection(position).focus().run()
+          position === 0
+            ? props.editor
+                .chain()
+                .insertContentAt(position, {
+                  type: "paragraph",
+                })
+                .setTextSelection(position)
+                .focus()
+                .run()
+            : props.editor
+                .chain()
+                .setTextSelection(
+                  props.node.type.name === "mathBlock"
+                    ? position - 1
+                    : position,
+                )
+                .focus()
+                .run()
         }
       })
 
@@ -107,6 +124,7 @@ const MathEditor = (props: NodeViewProps) => {
   return (
     <NodeViewWrapper
       key={`math-editor-${uniqueId}`}
+      className={props.node.type.name}
       style={
         props.node.type.name === "mathInline"
           ? { display: "inline-block" }

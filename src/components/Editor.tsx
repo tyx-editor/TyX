@@ -179,7 +179,7 @@ const MathControls = () => {
         onClick={() =>
           window.currentMathEditor?.executeCommand(
             "insert",
-            "\\begin{pmatrix} #0 & #1 \\\\ #2 & #3 \\end{pmatrix}",
+            "\\begin{pmatrix} #0 & #? \\\\ #? & #? \\end{pmatrix}",
           )
         }
       >

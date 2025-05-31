@@ -16,6 +16,12 @@ export const mathConverter = (d: JSONContent, inline = false) => {
   }
 }
 
+export const convertCSSColor = (color: string) => {
+  const context = document.createElement("canvas").getContext("2d")!
+  context.fillStyle = color
+  return context.fillStyle
+}
+
 export const applyTextAlignAndDirection = (result: string, d: JSONContent) => {
   if (d.attrs?.textAlign && d.attrs.textAlign !== "justify") {
     result = `#align(${d.attrs.textAlign})[${result}]`
@@ -68,7 +74,7 @@ export const converters: Record<string, (d: JSONContent) => string> = {
         } else if (mark.type === "textStyle") {
           for (const key in mark.attrs ?? {}) {
             if (key === "color") {
-              text = `#text(rgb(${JSON.stringify(mark.attrs!.color)}))[${text}]`
+              text = `#text(rgb(${JSON.stringify(convertCSSColor(mark.attrs!.color))}))[${text}]`
             } else {
               throw Error(`Unsupported text style "${key}"`)
             }

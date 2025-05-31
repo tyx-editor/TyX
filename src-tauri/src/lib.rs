@@ -6,8 +6,6 @@ use std::{
 };
 
 use tauri::Emitter;
-#[cfg(not(any(target_os = "android", target_os = "ios")))]
-use tauri::menu::{Menu, MenuItemBuilder};
 
 use tauri_plugin_dialog::DialogExt;
 use tinymist_project::{CompileOnceArgs, EntryReader, TaskInputs, WorldProvider, base::ShadowApi};
@@ -164,50 +162,45 @@ pub fn run() {
 pub fn run() {
     use std::path::PathBuf;
 
+    use tauri::menu::{AboutMetadata, MenuBuilder, MenuItemBuilder, SubmenuBuilder};
+
     tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .menu(|handle| {
-            let menu = Menu::default(handle)?;
-
-            for item in menu.items().unwrap() {
-                if let Some(submenu) = item.as_submenu() {
-                    for (menu, remove_default, menu_items) in [(
-                        "File",
-                        true,
-                        vec![
-                            ("New", "new", "CmdOrCtrl+N"),
-                            ("Open", "open", "CmdOrCtrl+O"),
-                            ("Save", "save", "CmdOrCtrl+S"),
-                            ("Save As", "saveas", "CmdOrCtrl+Shift+S"),
-                            ("Preview", "preview", "CmdOrCtrl+Shift+K"),
-                            ("Close Tab", "close", "CmdOrCtrl+W"),
-                        ],
-                    )] {
-                        if submenu.text().is_ok_and(|s| s == menu) {
-                            if remove_default {
-                                for _ in 0..submenu.items().unwrap().len() {
-                                    submenu.remove_at(0).unwrap();
-                                }
-                            }
-
-                            for (text, id, accelerator) in menu_items.iter().rev() {
-                                submenu
-                                    .prepend(
-                                        &MenuItemBuilder::new(text)
-                                            .id(id)
-                                            .accelerator(accelerator)
-                                            .build(handle)
-                                            .unwrap(),
-                                    )
-                                    .unwrap();
-                            }
-                        }
-                    }
-                }
+            let app_submenu = SubmenuBuilder::new(handle, "App")
+                .about(Some(AboutMetadata {
+                    ..Default::default()
+                }))
+                .quit()
+                .build()?;
+            let mut file_submenu = SubmenuBuilder::new(handle, "File");
+            for (name, id, accelerator) in [
+                ("New", "new", "CmdOrCtrl+N"),
+                ("Open", "open", "CmdOrCtrl+O"),
+                ("Save", "save", "CmdOrCtrl+S"),
+                ("Save As", "saveas", "CmdOrCtrl+Shift+S"),
+                ("Preview", "preview", "CmdOrCtrl+Shift+K"),
+                ("Close Tab", "close", "CmdOrCtrl+W"),
+            ] {
+                let menu_item = MenuItemBuilder::new(name)
+                    .id(id)
+                    .accelerator(accelerator)
+                    .build(handle)?;
+                file_submenu = file_submenu.item(&menu_item);
             }
+            let file_submenu = file_submenu.build()?;
 
+            let edit_submenu = SubmenuBuilder::new(handle, "App")
+                .copy()
+                .paste()
+                .cut()
+                .build()?;
+
+            let menu = MenuBuilder::new(handle)
+                .items(&[&app_submenu, &file_submenu, &edit_submenu])
+                .build()?;
             Ok(menu)
         })
         .invoke_handler(tauri::generate_handler![open, save, saveas, preview])
