@@ -4,9 +4,9 @@ import MathEditor from "./MathEditor"
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
-    mathliveNew: {
+    mathEditorCommands: {
       /**
-       * Set a code block
+       * Set a math block
        */
       insertMathBlock: (attributes?: { language: string }) => ReturnType
       /**
@@ -88,14 +88,6 @@ export const MathBlock = Node.create<MathOptions>({
         },
     }
   },
-
-  addKeyboardShortcuts() {
-    return {
-      "mod-shift-m": () => {
-        return this.editor.commands.insertMathBlock()
-      },
-    }
-  },
 })
 
 export const MathInline = Node.create<MathOptions>({
@@ -149,12 +141,6 @@ export const MathInline = Node.create<MathOptions>({
             .focus()
             .run()
         },
-    }
-  },
-
-  addKeyboardShortcuts() {
-    return {
-      "mod-m": () => this.editor.commands.insertMathInline(),
     }
   },
 })

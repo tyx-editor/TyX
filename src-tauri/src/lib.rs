@@ -134,7 +134,7 @@ fn preview(filename: &str, content: &str) -> String {
     let doc = match typst::compile(&world).output {
         Ok(doc) => doc,
         Err(e) => {
-            if e.len() == 0 {
+            if e.is_empty() {
                 return String::new();
             }
             return e[0].message.to_string();

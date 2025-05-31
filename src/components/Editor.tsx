@@ -3,7 +3,7 @@ import {
   RichTextEditorControlProps,
   useRichTextEditorContext,
 } from "@mantine/tiptap"
-import { JSONContent, useEditor } from "@tiptap/react"
+import { Editor as EditorType, JSONContent, useEditor } from "@tiptap/react"
 import extensions from "./editor/extensions"
 
 import { Loader } from "@mantine/core"
@@ -33,6 +33,12 @@ import { useLocalStorage, useUpdateOnChange } from "../hooks"
 import { TyXDocument } from "../models"
 import { showSuccessMessage } from "../utilities"
 import DocumentSettingsModal from "./DocumentSettingsModal"
+
+declare global {
+  interface Window {
+    currentEditor?: EditorType
+  }
+}
 
 const PreviewControl = (props: RichTextEditorControlProps) => {
   const [loading, setLoading] = useState(false)
@@ -241,6 +247,12 @@ const Editor = () => {
 
   useEffect(() => {
     editor?.commands.focus()
+  }, [editor])
+
+  useEffect(() => {
+    window.currentEditor = editor ?? undefined
+
+    return () => (window.currentEditor = undefined)
   }, [editor])
 
   const basename = (doc.filename ?? "Untitled")

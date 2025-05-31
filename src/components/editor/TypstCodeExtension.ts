@@ -66,12 +66,4 @@ export const TypstCode = Mark.create<TypstCodeOptions>({
         },
     }
   },
-
-  addKeyboardShortcuts() {
-    return {
-      "mod-shift-l": () => {
-        return this.editor.commands.toggleTypstCode()
-      },
-    }
-  },
 })
