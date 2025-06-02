@@ -137,7 +137,10 @@ export const save = async (filename: string, content: string) => {
 }
 
 export const saveAs = () =>
-  modals.open({ title: "Save Document", children: <SaveAsModal /> })
+  modals.open({
+    title: "Save Document",
+    children: <SaveAsModal />,
+  })
 
 export const getVersion = async () => version
 

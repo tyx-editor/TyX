@@ -382,7 +382,7 @@ const Editor = () => {
         <MathControls />
       </RichTextEditor.Toolbar>
 
-      <RichTextEditor.Content />
+      <RichTextEditor.Content spellCheck={false} />
     </RichTextEditor>
   )
 }

@@ -13,19 +13,21 @@ import {
   Text,
 } from "@mantine/core"
 import { useColorScheme } from "@mantine/hooks"
-import { ModalsProvider } from "@mantine/modals"
+import { modals, ModalsProvider } from "@mantine/modals"
 import { Notifications } from "@mantine/notifications"
 import {
   IconBrandGithub,
   IconFileText,
   IconFolderOpen,
   IconPlus,
+  IconSettings,
   IconX,
 } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
 import { ErrorBoundary } from "react-error-boundary"
 import { getVersion, onNew, open } from "./backend"
 import Editor from "./components/Editor"
+import SettingsModal from "./components/SettingsModal"
 import { useLocalStorage } from "./hooks"
 import { TyXDocument } from "./models"
 import { showConfirmModal } from "./utilities"
@@ -75,7 +77,7 @@ const App = () => {
         primaryColor: "primary",
       }}
     >
-      <ModalsProvider>
+      <ModalsProvider modalProps={{ centered: true }}>
         <Notifications />
         {openDocuments.length > 0 && (
           <Tabs
@@ -176,6 +178,17 @@ const App = () => {
               </Button>
               <Button leftSection={<IconFolderOpen />} onClick={open}>
                 Open a Document
+              </Button>
+              <Button
+                leftSection={<IconSettings />}
+                onClick={() =>
+                  modals.open({
+                    title: "TyX Settings",
+                    children: <SettingsModal />,
+                  })
+                }
+              >
+                Settings
               </Button>
             </Button.Group>
             <Text c="grey">v{version}</Text>

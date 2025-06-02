@@ -1,5 +1,5 @@
 import { mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react"
-import { type MathfieldElement } from "mathlive"
+import { Selector, type MathfieldElement } from "mathlive"
 import MathEditor from "./MathEditor"
 
 declare module "@tiptap/core" {
@@ -13,6 +13,10 @@ declare module "@tiptap/core" {
        * Inserts an inline math node
        */
       insertMathInline: (attributes?: { language: string }) => ReturnType
+      /**
+       * Run a math command inside the active math editor
+       */
+      math: (command: Selector, ...parameters: any) => ReturnType
     }
   }
 }
@@ -135,6 +139,14 @@ export const MathInline = Node.create<MathOptions>({
             .setNodeSelection(state.selection.from)
             .focus()
             .run()
+        },
+      math:
+        (command, ...parameters) =>
+        () => {
+          return (
+            window.currentMathEditor?.executeCommand(command, ...parameters) ??
+            false
+          )
         },
     }
   },
