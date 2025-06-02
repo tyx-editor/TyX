@@ -1,5 +1,5 @@
 import { Button, Fieldset, Select } from "@mantine/core"
-import { IconKeyboard, IconRotate } from "@tabler/icons-react"
+import { IconKeyboard, IconPlus, IconRotate } from "@tabler/icons-react"
 import { useLocalStorage } from "../hooks"
 import { refreshKeyboardShortcuts } from "../keyboardShortcuts"
 import { DEFAULT_KEYBOARD_SHORTCUTS, TyXSettings } from "../models"
@@ -48,6 +48,22 @@ const SettingsModal = () => {
               key={shortcutIndex}
             />
           ))}
+        <Button
+          fullWidth
+          leftSection={<IconPlus />}
+          mt="xs"
+          onClick={() => {
+            const newSettings = { ...settings }
+            let newShortcut = "z"
+            while (newSettings.keyboardShortcuts![newShortcut]) {
+              newShortcut += " z"
+            }
+            newSettings.keyboardShortcuts![newShortcut] = ["selectAll"]
+            setSettings(newSettings)
+          }}
+        >
+          Add
+        </Button>
         <Button
           fullWidth
           leftSection={<IconRotate />}
