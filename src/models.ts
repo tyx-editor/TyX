@@ -25,6 +25,7 @@ export interface TyXDocument {
 
 export interface TyXSettings {
   keyboardShortcuts?: Record<string, [keyof SingleCommands, ...any]>
+  keyboardMap?: string | null
 }
 
 export const DEFAULT_KEYBOARD_SHORTCUTS: Record<

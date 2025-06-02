@@ -29,8 +29,8 @@ import {
 import { useEffect, useState } from "react"
 import { isWeb, onPreview, onSave, save } from "../backend"
 import tyx2typst from "../compilers/tyx2typst"
-import { useLocalStorage, useUpdateOnChange } from "../hooks"
-import { TyXDocument } from "../models"
+import { getLocalStorage, useLocalStorage, useUpdateOnChange } from "../hooks"
+import { TyXDocument, TyXSettings } from "../models"
 import { showSuccessMessage } from "../utilities"
 import DocumentSettingsModal from "./DocumentSettingsModal"
 
@@ -247,10 +247,10 @@ const Editor = () => {
 
   useEffect(() => {
     editor?.commands.focus()
-  }, [editor])
-
-  useEffect(() => {
     window.currentEditor = editor ?? undefined
+
+    const settings = getLocalStorage<TyXSettings>("Settings")
+    editor?.commands.setKeyboardLayout(settings.keyboardMap ?? null)
 
     return () => (window.currentEditor = undefined)
   }, [editor])

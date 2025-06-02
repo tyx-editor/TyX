@@ -29,6 +29,7 @@ import TextAlign from "@tiptap/extension-text-align"
 import TextStyle from "@tiptap/extension-text-style"
 import Underline from "@tiptap/extension-underline"
 import TextDirectionX from "tiptap-text-direction"
+import KeyboardMap from "./KeyboardMapExtension"
 import { MathBlock, MathInline } from "./MathEditorExtension"
 import { TypstCode } from "./TypstCodeExtension"
 
@@ -91,6 +92,7 @@ const extensions = [
   MathBlock,
   MathInline,
   TypstCode,
+  KeyboardMap,
 ].map(withoutShortcuts)
 
 export default extensions

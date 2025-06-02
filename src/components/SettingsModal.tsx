@@ -1,9 +1,10 @@
-import { Button, Fieldset } from "@mantine/core"
-import { IconRotate } from "@tabler/icons-react"
+import { Button, Fieldset, Select } from "@mantine/core"
+import { IconKeyboard, IconRotate } from "@tabler/icons-react"
 import { useLocalStorage } from "../hooks"
 import { refreshKeyboardShortcuts } from "../keyboardShortcuts"
 import { DEFAULT_KEYBOARD_SHORTCUTS, TyXSettings } from "../models"
 import ShortcutEditor from "./ShortcutEditor"
+import { KEYBOARD_MAPS } from "./editor/KeyboardMapExtension"
 
 const SettingsModal = () => {
   const [settings, setSettings] = useLocalStorage<TyXSettings>({
@@ -59,6 +60,16 @@ const SettingsModal = () => {
         >
           Reset to Default
         </Button>
+      </Fieldset>
+      <Fieldset legend="Editing" mt="xs">
+        <Select
+          allowDeselect
+          label="Keyboard Map"
+          leftSection={<IconKeyboard />}
+          data={Object.keys(KEYBOARD_MAPS)}
+          value={settings.keyboardMap ?? null}
+          onChange={(keyboardMap) => setSettings({ ...settings, keyboardMap })}
+        />
       </Fieldset>
     </>
   )
