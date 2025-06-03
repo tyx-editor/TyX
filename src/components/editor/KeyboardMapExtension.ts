@@ -41,8 +41,11 @@ export const KEYBOARD_MAPS: Record<string, Record<string, string>> = {
     y: "ט",
     z: "ז",
     ",": "ת",
+    ".": "ץ",
+    ";": "ף",
     "'": ",",
     "/": ".",
+    "`": ";",
   },
 }
 
