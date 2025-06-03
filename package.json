@@ -43,7 +43,7 @@
     "@tiptap/pm": "^2.12.0",
     "@tiptap/react": "^2.12.0",
     "@tiptap/starter-kit": "^2.12.0",
-    "mathlive": "^0.105.2",
+    "mathlive": "^0.105.3",
     "mousetrap": "^1.6.5",
     "mousetrap-global-bind": "^1.1.0",
     "mousetrap-record": "^1.0.1",

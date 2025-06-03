@@ -13,6 +13,20 @@ declare global {
   }
 }
 
+const moveForward = (props: NodeViewProps) => {
+  const position = props.getPos()
+  const chain =
+    position + props.node.nodeSize === props.editor.state.doc.content.size
+      ? props.editor
+          .chain()
+          .insertContentAt(position + props.node.nodeSize, {
+            type: "paragraph",
+          })
+          .setTextSelection(position + props.node.nodeSize + 1)
+      : props.editor.chain().setTextSelection(position + props.node.nodeSize)
+  chain.focus().run()
+}
+
 const MathEditor = (props: NodeViewProps) => {
   const mathfieldRef = useRef<MathfieldElement>(null)
   const uniqueId = useId()
@@ -39,16 +53,24 @@ const MathEditor = (props: NodeViewProps) => {
       mf.addEventListener("focus", updateCurrentMathEditor)
       mf.addEventListener("blur", updateCurrentMathEditor)
 
-      mf.addEventListener(
-        "keydown",
-        (ev) => {
-          if (ev.key === "\\") {
-            ev.preventDefault()
-            mf.executeCommand(["insert", "\\backslash"])
-          } else if (ev.key === "Escape") ev.preventDefault()
-        },
-        { capture: true },
-      )
+      mf.inlineShortcuts = {}
+
+      mf.addEventListener("keydown", (e) => {
+        if (e.key === " ") {
+          e.preventDefault()
+          const position = mf.position
+          mf.executeCommand("moveAfterParent")
+          if (mf.position === position) {
+            moveForward(props)
+          }
+        }
+      })
+
+      let element: HTMLElement | null = mf
+      while (element && !element.dir) {
+        element = element.parentElement
+      }
+      const dir = element?.dir ?? "ltr"
 
       mf.addEventListener("input", (e) => {
         const target = e.target as MathfieldElement
@@ -57,23 +79,16 @@ const MathEditor = (props: NodeViewProps) => {
 
       mf.addEventListener("move-out", (e) => {
         const position = props.getPos()
-        if (
+        let isForward =
+          !e?.detail?.direction ||
           e.detail.direction === "forward" ||
           e.detail.direction === "downward"
-        ) {
-          const chain =
-            position + props.node.nodeSize ===
-            props.editor.state.doc.content.size
-              ? props.editor
-                  .chain()
-                  .insertContentAt(position + props.node.nodeSize, {
-                    type: "paragraph",
-                  })
-                  .setTextSelection(position + props.node.nodeSize + 1)
-              : props.editor
-                  .chain()
-                  .setTextSelection(position + props.node.nodeSize)
-          chain.focus().run()
+        if (dir === "rtl") {
+          isForward = !isForward
+        }
+
+        if (isForward) {
+          moveForward(props)
         } else {
           position === 0
             ? props.editor
