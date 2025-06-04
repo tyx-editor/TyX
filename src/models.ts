@@ -26,6 +26,7 @@ export interface TyXDocument {
 }
 
 export interface TyXSettings {
+  language?: string
   keyboardShortcuts?: Record<string, [keyof SingleCommands, ...any]>
   keyboardMap?: string | null
 }

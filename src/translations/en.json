@@ -1,0 +1,17 @@
+{
+  "translation": {
+    "welcome": "Welcome to TyX!",
+    "language": "Language",
+    "createdWith": "TyX is created with",
+    "newEmptyDocument": "New Empty Document",
+    "openDocument": "Open a Document",
+    "settings": "Settings",
+    "ui": "UI",
+    "keyboardShortcuts": "Keyboard Shortcuts",
+    "add": "Add",
+    "new": "New",
+    "resetToDefault": "Reset To Default",
+    "editing": "Editing",
+    "keyboardMap": "Keyboard Map"
+  }
+}

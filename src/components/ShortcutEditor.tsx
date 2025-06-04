@@ -39,6 +39,7 @@ const ShortcutEditor = ({
 
   return (
     <div
+      dir="ltr"
       style={{
         display: "flex",
         alignItems: "center",

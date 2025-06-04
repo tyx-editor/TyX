@@ -25,14 +25,20 @@ import {
 } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
 import { ErrorBoundary } from "react-error-boundary"
+import { useTranslation } from "react-i18next"
 import { getVersion, onNew, open } from "./backend"
 import Editor from "./components/Editor"
 import SettingsModal from "./components/SettingsModal"
-import { useLocalStorage } from "./hooks"
-import { TyXDocument } from "./models"
+import { getLocalStorage, useLocalStorage } from "./hooks"
+import { RTL_LANGUAGES } from "./i18n"
+import { TyXDocument, TyXSettings } from "./models"
 import { showConfirmModal } from "./utilities"
 
 const App = () => {
+  const {
+    t,
+    i18n: { changeLanguage },
+  } = useTranslation()
   const colorScheme = useColorScheme()
   const [openDocuments, setOpenDocuments] = useLocalStorage<TyXDocument[]>({
     key: "Open Documents",
@@ -46,6 +52,11 @@ const App = () => {
 
   useEffect(() => {
     getVersion().then((v) => setVersion(v))
+    const language = getLocalStorage<TyXSettings>("Settings").language ?? "en"
+    changeLanguage(language)
+    if (RTL_LANGUAGES.includes(language)) {
+      document.dir = "rtl"
+    }
   }, [])
 
   const closeDocument = (index: number) => {
@@ -132,7 +143,7 @@ const App = () => {
                 leftSection={<IconPlus />}
                 onClick={onNew}
               >
-                New
+                {t("new")}
               </Button>
             </Tabs.List>
 
@@ -171,24 +182,24 @@ const App = () => {
               alignItems: "center",
             }}
           >
-            <h2>Welcome to TyX!</h2>
+            <h2>{t("welcome")}</h2>
             <Button.Group my="xs" orientation="vertical">
               <Button leftSection={<IconPlus />} onClick={onNew}>
-                New Empty Document
+                {t("newEmptyDocument")}
               </Button>
               <Button leftSection={<IconFolderOpen />} onClick={open}>
-                Open a Document
+                {t("openDocument")}
               </Button>
               <Button
                 leftSection={<IconSettings />}
                 onClick={() =>
                   modals.open({
-                    title: "TyX Settings",
+                    title: t("settings"),
                     children: <SettingsModal />,
                   })
                 }
               >
-                Settings
+                {t("settings")}
               </Button>
             </Button.Group>
             <Text c="grey">v{version}</Text>
@@ -207,11 +218,11 @@ const App = () => {
                 component="a"
                 href="https://github.com/tyx-editor/TyX/"
                 target="_blank"
-                mr={5}
+                style={{ marginInlineEnd: 5 }}
               >
                 <IconBrandGithub />
               </ActionIcon>
-              TyX is created with:
+              {t("createdWith")}:
               <Anchor
                 fz="inherit"
                 href="https://github.com/typst/typst/"

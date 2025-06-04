@@ -1,0 +1,17 @@
+{
+  "translation": {
+    "welcome": "ברוכים הבאים ל-TyX!",
+    "language": "שפה",
+    "createdWith": "TyX נוצר בעזרת",
+    "newEmptyDocument": "יצירת מסמך ריק חדש",
+    "openDocument": "פתיחת מסמך",
+    "settings": "הגדרות",
+    "ui": "ממשק משתמש",
+    "keyboardShortcuts": "קיצורי מקלדת",
+    "add": "הוספה",
+    "new": "חדש",
+    "resetToDefault": "איפוס לברירת המחדל",
+    "editing": "עריכה",
+    "keyboardMap": "מיפוי מקלדת"
+  }
+}
