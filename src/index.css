@@ -35,7 +35,8 @@ math-field::part(menu-toggle) {
   display: none;
 }
 
-.mantine-Checkbox-input {
+.mantine-Checkbox-input,
+.mantine-Checkbox-label {
   cursor: pointer;
 }
 

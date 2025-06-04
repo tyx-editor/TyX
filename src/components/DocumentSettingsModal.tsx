@@ -4,12 +4,16 @@ import {
   Fieldset,
   NumberInput,
   Select,
+  TagsInput,
   Textarea,
+  TextInput,
 } from "@mantine/core"
 import {
   IconColumns,
   IconDeviceFloppy,
   IconFileHorizontal,
+  IconFolder,
+  IconIcons,
   IconIndentIncrease,
   IconLanguage,
 } from "@tabler/icons-react"
@@ -707,6 +711,25 @@ const DocumentSettingsModal = () => {
               e.currentTarget.value.replace(/“|”|“|‟|”|❝|❞|〝|〞/g, '"')
             setOpenDocuments([...openDocuments])
           }}
+        />
+      </Fieldset>
+      <Fieldset legend="Compiler Options" mt="xs">
+        <TextInput
+          label="Root"
+          leftSection={<IconFolder />}
+          value={openDocuments[currentDocument].settings?.root ?? ""}
+          onChange={(e) =>
+            setSettings({ ...currentSettings, root: e.currentTarget.value })
+          }
+        />
+        <TagsInput
+          mt="xs"
+          label="Font Paths"
+          leftSection={<IconIcons />}
+          value={openDocuments[currentDocument].settings?.fontPaths ?? []}
+          onChange={(fontPaths) =>
+            setSettings({ ...currentSettings, fontPaths })
+          }
         />
       </Fieldset>
       <Button

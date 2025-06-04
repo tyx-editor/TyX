@@ -62,6 +62,8 @@ export const onPreview = async () => {
   const result: string = await invoke("preview", {
     filename: document.filename,
     content,
+    root: document.settings?.root ?? "",
+    fontPaths: document.settings?.fontPaths ?? [],
   })
   if (result) {
     showFailureMessage(result.replace(/\n\n/g, "\n"), {

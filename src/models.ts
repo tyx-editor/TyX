@@ -6,6 +6,8 @@ export interface TyXLength {
 }
 
 export interface TyXDocumentSettings {
+  fontPaths?: string[]
+  root?: string
   language?: string
   paper?: string
   flipped?: boolean

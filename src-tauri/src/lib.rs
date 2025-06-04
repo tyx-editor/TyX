@@ -8,7 +8,9 @@ use std::{
 use tauri::Emitter;
 
 use tauri_plugin_dialog::DialogExt;
-use tinymist_project::{CompileOnceArgs, EntryReader, TaskInputs, WorldProvider, base::ShadowApi};
+use tinymist_project::{
+    CompileFontArgs, CompileOnceArgs, EntryReader, TaskInputs, WorldProvider, base::ShadowApi,
+};
 use typst_pdf::PdfOptions;
 
 //
@@ -97,7 +99,7 @@ fn open(handle: tauri::AppHandle) {
 }
 
 #[tauri::command]
-fn preview(filename: &str, content: &str) -> String {
+fn preview(filename: &str, content: &str, root: &str, font_paths: Vec<String>) -> String {
     let basename = filename
         .strip_suffix(".tyx")
         .unwrap_or(filename)
@@ -109,17 +111,34 @@ fn preview(filename: &str, content: &str) -> String {
         .unwrap();
     let pdf_file = basename.clone() + ".pdf";
 
+    let mut root_path = PathBuf::from(dirname);
+    if !root.is_empty() {
+        root_path.push(PathBuf::from(root));
+    }
     let universe = CompileOnceArgs {
-        root: Some(PathBuf::from(dirname)),
+        root: Some(root_path.canonicalize().unwrap()),
         input: Some(filename.into()),
+        font: CompileFontArgs {
+            font_paths: font_paths
+                .iter()
+                .map(|path| {
+                    let mut p = PathBuf::from(dirname);
+                    p.push(PathBuf::from(path));
+                    p.canonicalize().unwrap()
+                })
+                .collect::<Vec<PathBuf>>(),
+            ..CompileFontArgs::default()
+        },
         ..CompileOnceArgs::default()
     }
     .resolve()
     .unwrap();
-    let entry = universe
+    let Ok(entry) = universe
         .entry_state()
         .try_select_path_in_workspace(Path::new(filename))
-        .unwrap();
+    else {
+        return String::from("Invalid root directory, couldn't select the file itself!");
+    };
     let mut world = universe.snapshot_with(Some(TaskInputs {
         entry,
         ..TaskInputs::default()
