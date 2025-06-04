@@ -30,6 +30,7 @@
     "@tauri-apps/plugin-updater": "~2.7.1",
     "@tiptap/extension-color": "^2.12.0",
     "@tiptap/extension-highlight": "^2.12.0",
+    "@tiptap/extension-image": "^2.12.0",
     "@tiptap/extension-link": "^2.12.0",
     "@tiptap/extension-subscript": "^2.12.0",
     "@tiptap/extension-superscript": "^2.12.0",

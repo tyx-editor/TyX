@@ -19,6 +19,7 @@ import {
   IconIndentDecrease,
   IconIndentIncrease,
   IconMatrix,
+  IconPhoto,
   IconRowInsertBottom,
   IconRowRemove,
   IconSettings,
@@ -27,7 +28,7 @@ import {
   IconTablePlus,
 } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
-import { isWeb, onPreview, onSave, save } from "../backend"
+import { insertImage, isWeb, onPreview, onSave, save } from "../backend"
 import tyx2typst from "../compilers/tyx2typst"
 import { getLocalStorage, useLocalStorage, useUpdateOnChange } from "../hooks"
 import { TyXDocument, TyXSettings } from "../models"
@@ -340,6 +341,13 @@ const Editor = () => {
         </RichTextEditor.ControlsGroup>
 
         <RichTextEditor.ControlsGroup>
+          <RichTextEditor.Control
+            title="Insert image"
+            aria-label="Insert image"
+            onClick={insertImage}
+          >
+            <IconPhoto />
+          </RichTextEditor.Control>
           <RichTextEditor.Control
             title="Insert typst code"
             aria-label="Insert typst code"

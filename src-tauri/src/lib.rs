@@ -1,10 +1,11 @@
 use std::{
-    fs::File,
+    fs::{self, File},
     io::Write,
     path::{Path, PathBuf},
     sync::Arc,
 };
 
+use base64::{Engine, engine::general_purpose::STANDARD};
 use tauri::Emitter;
 
 use tauri_plugin_dialog::DialogExt;
@@ -165,6 +166,31 @@ fn preview(filename: &str, content: &str, root: &str, font_paths: Vec<String>) -
     String::new()
 }
 
+#[tauri::command]
+fn insertimage(handle: tauri::AppHandle, filename: &str) {
+    let dirname = String::from(Path::new(filename).parent().unwrap().to_str().unwrap());
+    let h = handle.clone();
+    handle
+        .dialog()
+        .file()
+        .add_filter("image", &["png", "jpg", "jpeg", "gif", "svg"])
+        .pick_file(move |f| {
+            if let Some(f) = f {
+                if let Some(path) = f.as_path() {
+                    let bytes = fs::read(path).unwrap();
+                    h.emit(
+                        "insertImage",
+                        (
+                            path.strip_prefix(dirname).unwrap_or(path).to_str().unwrap(),
+                            STANDARD.encode(&bytes),
+                        ),
+                    )
+                    .unwrap();
+                }
+            }
+        });
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 #[cfg(any(target_os = "android", target_os = "ios"))]
 pub fn run() {
@@ -222,13 +248,14 @@ pub fn run() {
                 .build()?;
             Ok(menu)
         })
-        .invoke_handler(tauri::generate_handler![open, save, saveas, preview])
-        .on_menu_event(|handle, event| match event.id().0.as_str() {
-            "open" => open(handle.clone()),
-            "saveas" => saveas(handle.clone()),
-            "new" | "save" | "preview" | "close" => handle.emit(event.id().0.as_str(), ()).unwrap(),
-            _ => {}
-        })
+        .invoke_handler(tauri::generate_handler![
+            open,
+            save,
+            saveas,
+            preview,
+            insertimage
+        ])
+        .on_menu_event(|handle, event| handle.emit(event.id().0.as_str(), ()).unwrap())
         .setup(|app| {
             // TODO: FIXME: this happens before the listeners are set up
             for maybe_file in std::env::args().skip(1) {

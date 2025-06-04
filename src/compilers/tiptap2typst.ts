@@ -145,6 +145,7 @@ export const converters: Record<string, (d: JSONContent) => string> = {
   },
   mathInline: (d) => mathConverter(d, true),
   mathBlock: (d) => mathConverter(d),
+  image: (d) => `#image(${JSON.stringify(d.attrs?.alt ?? "")})`,
 }
 
 export const typstEscape = (text: string) => {

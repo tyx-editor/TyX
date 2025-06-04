@@ -126,6 +126,10 @@ export const open = () => {
   input.click()
 }
 
+export const insertImage = () => {}
+
+export const onInsertImage = () => {}
+
 export const save = async (filename: string, content: string) => {
   const a = document.createElement("a")
   a.download = filename

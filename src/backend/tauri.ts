@@ -18,6 +18,7 @@ export const initialize = () => {
   listen("save", onSave)
   listen("close", onClose)
   listen("preview", onPreview)
+  listen<[string, string]>("insertImage", (e) => onInsertImage(...e.payload))
   listen<[string]>("saveas", (e) => onSaveAs(...e.payload))
 
   check()
@@ -122,6 +123,21 @@ export const save = (filename: string, content: string) => {
 }
 
 export const saveAs = () => invoke("saveas")
+
+export const insertImage = () => {
+  const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
+  const currentDocument = getLocalStorage<number>("Current Document")
+  const document = openDocuments[currentDocument]
+  invoke("insertimage", { filename: document.filename ?? "" })
+}
+
+export const onInsertImage = (path: string, contents: string) => {
+  window.currentEditor?.commands.setImage({
+    src: `data:image/${path.split(".").at(-1)};base64,${contents}`,
+    // TODO: add `path` attribute instead of overriding alt
+    alt: path,
+  })
+}
 
 export { getVersion }
 
