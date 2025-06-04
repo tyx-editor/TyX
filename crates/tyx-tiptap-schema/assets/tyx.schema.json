@@ -100,6 +100,17 @@
       },
       "parseDOM": [{ "tag": "th" }]
     },
+    "image": {
+      "group": "block",
+      "inline": false,
+      "draggable": true,
+      "attrs": {
+        "src": { "default": null },
+        "alt": { "default": null },
+        "title": { "default": null }
+      },
+      "parseDOM": [{ "tag": "img[src]:not([src^=\"data:\"])" }]
+    },
     "mathBlock": {
       "group": "block",
       "defining": true,

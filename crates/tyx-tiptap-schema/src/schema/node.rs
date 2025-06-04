@@ -71,6 +71,23 @@ pub struct HorizontalRule {
     pub content: Option<Content>,
 }
 
+/// A `image` node.
+#[derive(Debug, Clone, Hash, Serialize, Deserialize)]
+pub struct Image {
+    /// The node's content.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub content: Option<Content>,
+
+    /// The `alt` attribute.
+    pub alt: serde_json::Value,
+
+    /// The `src` attribute.
+    pub src: serde_json::Value,
+
+    /// The `title` attribute.
+    pub title: serde_json::Value,
+}
+
 /// A `listItem` node.
 #[derive(Debug, Clone, Hash, Serialize, Deserialize)]
 pub struct ListItem {

@@ -26,6 +26,8 @@ pub enum TyxNode {
     Heading(Heading),
     /// A `HorizontalRule` node.
     HorizontalRule(HorizontalRule),
+    /// A `Image` node.
+    Image(Image),
     /// A `ListItem` node.
     ListItem(ListItem),
     /// A `MathBlock` node.

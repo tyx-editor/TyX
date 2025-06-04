@@ -509,6 +509,9 @@ impl Stage2Converter {
             TyxNode::TableRow(node) => {
                 self.propagate_mark_opt(&mut node.content);
             }
+            TyxNode::Image(node) => {
+                self.propagate_mark_opt(&mut node.content);
+            }
         };
     }
 
