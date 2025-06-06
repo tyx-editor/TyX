@@ -4,6 +4,7 @@
     <img src="https://img.shields.io/github/v/release/tyx-editor/TyX?display_name=tag">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg">
     <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
+    <img src="https://img.shields.io/readthedocs/TyX">
     <br />
 </h1>
 
@@ -21,8 +22,6 @@ Check out the [web editor](https://app.tyx-editor.com) or [download TyX](https:/
 
 TyX uses MathLive to make math formula editing easy by _seeing_ the formula you're editing!
 
-<video src="docs/_static/math-editor.mp4">
-
 > [!NOTE]
 > This is currently LaTeX-based. We are working on a Typst-based editor!
 
@@ -36,8 +35,6 @@ TyX supports customizable keyboard shortcuts!
 
 TyX supports keyboard maps (currently only a Hebrew keyboard map has been added [in the Keyboard Map TipTap Extension](src/components/editor/KeyboardMapExtension.ts)).
 This enables you to write in your language without having to switch to English every time you edit math environments!
-
-<video src="docs/_static/keyboard-map.mp4">
 
 ### Typst Importing
 
