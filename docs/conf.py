@@ -13,12 +13,10 @@ author = "TyX Developers"
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = [
-    "sphinx_mdinclude",
-]
+extensions = ["sphinx_mdinclude", "sphinxcontrib.video"]
 
 templates_path = ["_templates"]
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", ".venv"]
 
 
 # -- Options for HTML output -------------------------------------------------

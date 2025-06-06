@@ -15,6 +15,43 @@
 
 Check out the [web editor](https://app.tyx-editor.com) or [download TyX](https://tyx-editor.com)!
 
+## Features
+
+### Math Editor
+
+TyX uses MathLive to make math formula editing easy by _seeing_ the formula you're editing!
+
+<video src="docs/_static/math-editor.mp4">
+
+> [!NOTE]
+> This is currently LaTeX-based. We are working on a Typst-based editor!
+
+### Keyboard Shortcuts
+
+TyX supports customizable keyboard shortcuts!
+
+![keyboard shortcuts](docs/_static/keyboard-shortcuts.png)
+
+### Keyboard Map
+
+TyX supports keyboard maps (currently only a Hebrew keyboard map has been added [in the Keyboard Map TipTap Extension](src/components/editor/KeyboardMapExtension.ts)).
+This enables you to write in your language without having to switch to English every time you edit math environments!
+
+<video src="docs/_static/keyboard-map.mp4">
+
+### Typst Importing
+
+Thanks to [contributions by Myriad-Dreamin](https://github.com/tyx-editor/TyX/commits?author=Myriad-Dreamin) you can open `.typ` files into TyX!
+
+> [!NOTE]
+> This, as well, is still a work in progress.
+> Many Typst features are currently not imported correctly.
+
+### Translations
+
+TyX currently has translations for Hebrew! Further translations can be added via GitHub PRs
+by adding a file to [the translations directory](src/translations) and adding it to [the translations file](src/i18n.ts).
+
 ## Acknowledgements
 
 TyX would not be possible without the following open-source libraries:

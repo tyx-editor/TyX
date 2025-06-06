@@ -1,0 +1,12 @@
+[project]
+name = "docs"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "sphinx>=8.2.3",
+    "sphinx-mdinclude>=0.6.2",
+    "sphinx-rtd-theme>=3.0.2",
+    "sphinxcontrib-video>=0.4.1",
+]
