@@ -1,10 +1,11 @@
+import { getLocalStorage } from "./hooks"
+import { DEFAULT_KEYBOARD_SHORTCUTS, TyXSettings } from "./models"
+
 import "mousetrap"
 import "mousetrap-global-bind"
 // @ts-ignore
 import record from "mousetrap-record"
-import { getLocalStorage } from "./hooks"
-import { DEFAULT_KEYBOARD_SHORTCUTS, TyXSettings } from "./models"
-import { showFailureMessage } from "./utilities"
+import { executeCommand, parseCommandSequence } from "./commands"
 
 declare global {
   namespace Mousetrap {
@@ -24,26 +25,16 @@ export const applyKeyboardShortcutsFromSettings = () => {
   const shortcuts =
     getLocalStorage<TyXSettings>("Settings").keyboardShortcuts ??
     DEFAULT_KEYBOARD_SHORTCUTS
-  for (const shortcut in shortcuts) {
-    Mousetrap.bindGlobal(shortcut, (e) => {
+  for (const shortcut of shortcuts) {
+    if (!shortcut[0] || !shortcut[1]) {
+      continue
+    }
+
+    Mousetrap.bindGlobal(shortcut[0], (e) => {
       e.preventDefault()
 
-      if (window.currentEditor) {
-        const [command, ...parameters] = shortcuts[shortcut]
-        const commandFunction = window.currentEditor.commands[command]
-
-        if (!commandFunction) {
-          showFailureMessage(
-            `Invalid shortcut: command '${command}' does not exist!`,
-          )
-        } else {
-          try {
-            // @ts-ignore
-            commandFunction(...parameters)
-          } catch (e) {
-            showFailureMessage(`Command '${command}' threw an exception: ${e}`)
-          }
-        }
+      for (const command of parseCommandSequence(shortcut[1])) {
+        executeCommand(command)
       }
     })
   }

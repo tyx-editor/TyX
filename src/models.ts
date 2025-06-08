@@ -27,26 +27,25 @@ export interface TyXDocument {
 
 export interface TyXSettings {
   language?: string
-  keyboardShortcuts?: Record<string, [keyof SingleCommands, ...any]>
+  keyboardShortcuts?: [string, string][]
   keyboardMap?: string | null
 }
 
-export const DEFAULT_KEYBOARD_SHORTCUTS: Record<
-  string,
-  [keyof SingleCommands, ...any]
-> = {
-  "mod+b": ["toggleBold"],
-  "mod+i": ["toggleItalic"],
-  "mod+u": ["toggleUnderline"],
-  "mod+shift+x": ["toggleStrike"],
-  "mod+shift+h": ["toggleHighlight"],
-  "mod+e": ["toggleCode"],
-  "mod+z": ["undo"],
-  "mod+shift+z": ["redo"],
-  "shift+enter": ["setHardBreak"],
-  "mod+enter": ["setHardBreak"],
-  "mod+l": ["toggleTypstCode"],
-  "mod+m": ["insertMathInline"],
-  "mod+shift+m": ["insertMathBlock"],
-  "ctrl+g a": ["math", "insert", "\\alpha"],
-}
+export type TyXCommand = [keyof SingleCommands, ...any]
+
+export const DEFAULT_KEYBOARD_SHORTCUTS: [string, string][] = [
+  ["mod+b", "toggleBold"],
+  ["mod+i", "toggleItalic"],
+  ["mod+u", "toggleUnderline"],
+  ["mod+shift+x", "toggleStrike"],
+  ["mod+shift+h", "toggleHighlight"],
+  ["mod+e", "toggleCode"],
+  ["mod+z", "undo"],
+  ["mod+shift+z", "redo"],
+  ["shift+enter", "setHardBreak"],
+  ["mod+enter", "setHardBreak"],
+  ["mod+l", "toggleTypstCode"],
+  ["mod+m", "insertMathInline"],
+  ["mod+shift+m", "insertMathBlock"],
+  ["ctrl+g a", "math insert \\alpha"],
+]

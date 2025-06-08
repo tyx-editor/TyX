@@ -33,9 +33,9 @@ const SettingsModal = () => {
         : "ltr"
   }, [settings.language])
 
-  settings.keyboardShortcuts = settings.keyboardShortcuts ?? {
+  settings.keyboardShortcuts = settings.keyboardShortcuts ?? [
     ...DEFAULT_KEYBOARD_SHORTCUTS,
-  }
+  ]
 
   return (
     <>
@@ -49,46 +49,40 @@ const SettingsModal = () => {
         />
       </Fieldset>
       <Fieldset legend={t("keyboardShortcuts")} mt="xs">
-        {Object.keys(settings.keyboardShortcuts)
-          .sort()
-          .map((shortcut, shortcutIndex) => (
+        {settings.keyboardShortcuts!.map(
+          ([shortcut, command], shortcutIndex) => (
             <ShortcutEditor
               shortcut={shortcut}
-              command={settings.keyboardShortcuts![shortcut]}
+              command={command}
               setShortcut={(s) => {
                 const newSettings = { ...settings }
-                newSettings.keyboardShortcuts![s] =
-                  newSettings.keyboardShortcuts![shortcut]
-                delete newSettings.keyboardShortcuts![shortcut]
+                newSettings.keyboardShortcuts![shortcutIndex][0] = s
                 setSettings(newSettings)
                 refreshKeyboardShortcuts()
               }}
               setCommand={(command) => {
                 const newSettings = { ...settings }
-                newSettings.keyboardShortcuts![shortcut] = command
+                newSettings.keyboardShortcuts![shortcutIndex][1] = command
                 setSettings(newSettings)
                 refreshKeyboardShortcuts()
               }}
               remove={() => {
                 const newSettings = { ...settings }
-                delete newSettings.keyboardShortcuts![shortcut]
+                newSettings.keyboardShortcuts!.splice(shortcutIndex, 1)
                 setSettings(newSettings)
                 refreshKeyboardShortcuts()
               }}
               key={shortcutIndex}
             />
-          ))}
+          ),
+        )}
         <Button
           fullWidth
           leftSection={<IconPlus />}
           mt="xs"
           onClick={() => {
             const newSettings = { ...settings }
-            let newShortcut = "z"
-            while (newSettings.keyboardShortcuts![newShortcut]) {
-              newShortcut += " z"
-            }
-            newSettings.keyboardShortcuts![newShortcut] = ["selectAll"]
+            newSettings.keyboardShortcuts!.push(["", ""])
             setSettings(newSettings)
           }}
         >

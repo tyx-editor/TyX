@@ -1,17 +1,21 @@
 import { ActionIcon, Kbd, Loader, TextInput } from "@mantine/core"
 import { IconCode, IconTrash } from "@tabler/icons-react"
-import { SingleCommands } from "@tiptap/react"
 import { useState } from "react"
 
 const prettifyShortcut = (shortcut: string) => {
+  if (shortcut === "") {
+    return " "
+  }
+
   return shortcut
-    .replace(/\+/g, "")
-    .replace(/ctrl/g, "^")
-    .replace(/alt/g, "⌥")
-    .replace(/mod/g, "⌘")
-    .replace(/shift/g, "⇧")
-    .replace(/enter/g, "⏎")
-    .replace(/esc/g, "␛")
+    .replaceAll("+", "")
+    .replaceAll("ctrl", "^")
+    .replaceAll("alt", "⌥")
+    .replaceAll("mod", "⌘")
+    .replaceAll("shift", "⇧")
+    .replaceAll("enter", "⏎")
+    .replaceAll("esc", "␛")
+    .replaceAll("space", "␣")
 }
 
 const ShortcutEditor = ({
@@ -22,9 +26,9 @@ const ShortcutEditor = ({
   remove,
 }: {
   shortcut: string
-  command: [keyof SingleCommands, ...any]
+  command: string
   setShortcut: (newShortcut: string) => void
-  setCommand: (newCommand: [keyof SingleCommands, ...any]) => void
+  setCommand: (newCommand: string) => void
   remove: () => void
 }) => {
   const [recording, setRecording] = useState(false)
@@ -66,12 +70,8 @@ const ShortcutEditor = ({
         leftSection={<IconCode />}
         size="xs"
         style={{ display: "inline-block", height: "100%" }}
-        value={command.join(" ")}
-        onChange={(e) =>
-          setCommand(
-            e.currentTarget.value.split(" ") as [keyof SingleCommands, ...any],
-          )
-        }
+        value={command}
+        onChange={(e) => setCommand(e.currentTarget.value)}
       />
       <ActionIcon
         ml="xs"
