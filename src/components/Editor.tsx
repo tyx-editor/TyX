@@ -4,7 +4,7 @@ import {
   useRichTextEditorContext,
 } from "@mantine/tiptap"
 import { Editor as EditorType, JSONContent, useEditor } from "@tiptap/react"
-import extensions from "./editor/extensions"
+import extensions from "../editor/extensions"
 
 import { Loader } from "@mantine/core"
 import { useForceUpdate, useWindowEvent } from "@mantine/hooks"
@@ -30,9 +30,13 @@ import {
 import { useEffect, useState } from "react"
 import { insertImage, isWeb, onPreview, onSave, save } from "../backend"
 import tyx2typst from "../compilers/tyx2typst"
-import { getLocalStorage, useLocalStorage, useUpdateOnChange } from "../hooks"
 import { TyXDocument, TyXSettings } from "../models"
 import { showSuccessMessage } from "../utilities"
+import {
+  getLocalStorage,
+  useLocalStorage,
+  useUpdateOnChange,
+} from "../utilities/hooks"
 import DocumentSettingsModal from "./DocumentSettingsModal"
 
 declare global {

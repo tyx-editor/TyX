@@ -1,5 +1,5 @@
 import { getSchema } from "@tiptap/core"
-import extensions from "../src/components/editor/extensions"
+import extensions from "../src/editor/extensions"
 
 const spec = getSchema(extensions).spec
 

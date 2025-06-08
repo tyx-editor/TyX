@@ -29,10 +29,10 @@ import { useTranslation } from "react-i18next"
 import { getVersion, onNew, open } from "./backend"
 import Editor from "./components/Editor"
 import SettingsModal from "./components/SettingsModal"
-import { getLocalStorage, useLocalStorage } from "./hooks"
-import { RTL_LANGUAGES } from "./i18n"
 import { TyXDocument, TyXSettings } from "./models"
+import { RTL_LANGUAGES } from "./translations"
 import { showConfirmModal } from "./utilities"
+import { getLocalStorage, useLocalStorage } from "./utilities/hooks"
 
 const App = () => {
   const {

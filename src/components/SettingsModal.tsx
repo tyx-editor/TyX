@@ -7,12 +7,12 @@ import {
 } from "@tabler/icons-react"
 import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
-import { useLocalStorage } from "../hooks"
-import { RTL_LANGUAGES, TRANSLATIONS } from "../i18n"
-import { refreshKeyboardShortcuts } from "../keyboardShortcuts"
+import { KEYBOARD_MAPS } from "../editor/KeyboardMapExtension"
 import { DEFAULT_KEYBOARD_SHORTCUTS, TyXSettings } from "../models"
+import { refreshKeyboardShortcuts } from "../shortcuts"
+import { RTL_LANGUAGES, TRANSLATIONS } from "../translations"
+import { useLocalStorage } from "../utilities/hooks"
 import ShortcutEditor from "./ShortcutEditor"
-import { KEYBOARD_MAPS } from "./editor/KeyboardMapExtension"
 
 const SettingsModal = () => {
   const {

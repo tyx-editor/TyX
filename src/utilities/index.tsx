@@ -2,18 +2,27 @@ import { modals } from "@mantine/modals"
 import { notifications } from "@mantine/notifications"
 import { IconCheck, IconExclamationMark } from "@tabler/icons-react"
 
-export const showSuccessMessage = (successMessage: string) => {
-  notifications.show({
-    title: "Success!",
-    color: "green",
-    icon: <IconCheck />,
-    message: successMessage,
-  })
-}
-
 interface MessageOptions {
   title?: string
   raw?: boolean
+}
+
+export const showSuccessMessage = (
+  successMessage: string,
+  options?: MessageOptions,
+) => {
+  notifications.show({
+    title: options?.title ?? "Success!",
+    color: "green",
+    icon: <IconCheck />,
+    message: options?.raw ? (
+      <pre>
+        <code>{successMessage}</code>
+      </pre>
+    ) : (
+      successMessage
+    ),
+  })
 }
 
 export const showFailureMessage = (

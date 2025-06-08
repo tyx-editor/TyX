@@ -3,8 +3,8 @@ import { createTypstCompiler, TypstCompiler } from "@myriaddreamin/typst.ts"
 import { version } from "../../src-tauri/tauri.conf.json"
 import tyx2typst from "../compilers/tyx2typst"
 import SaveAsModal from "../components/SaveAsModal"
-import { getLocalStorage, setLocalStorage } from "../hooks"
 import { TyXDocument } from "../models"
+import { getLocalStorage, setLocalStorage } from "../utilities/hooks"
 
 let compiler: TypstCompiler
 

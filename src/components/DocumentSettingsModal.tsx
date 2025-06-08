@@ -17,8 +17,8 @@ import {
   IconIndentIncrease,
   IconLanguage,
 } from "@tabler/icons-react"
-import { setLocalStorage, useLocalStorage } from "../hooks"
 import { TyXDocument, TyXDocumentSettings } from "../models"
+import { setLocalStorage, useLocalStorage } from "../utilities/hooks"
 import LengthInput from "./LengthInput"
 
 const DocumentSettingsModal = () => {

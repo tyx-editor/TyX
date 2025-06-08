@@ -99,4 +99,5 @@ const extensions = [
 ].map(withoutShortcuts)
 
 export default extensions
+
 export type Commands = SingleCommands

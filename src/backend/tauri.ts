@@ -5,9 +5,9 @@ import { check } from "@tauri-apps/plugin-updater"
 
 import { getVersion } from "@tauri-apps/api/app"
 import tyx2typst from "../compilers/tyx2typst"
-import { getLocalStorage, setLocalStorage } from "../hooks"
 import { TyXDocument } from "../models"
 import { showFailureMessage } from "../utilities"
+import { getLocalStorage, setLocalStorage } from "../utilities/hooks"
 
 let version: string
 

@@ -1,5 +1,5 @@
-import { getLocalStorage } from "./hooks"
 import { DEFAULT_KEYBOARD_SHORTCUTS, TyXSettings } from "./models"
+import { getLocalStorage } from "./utilities/hooks"
 
 import "mousetrap"
 import "mousetrap-global-bind"

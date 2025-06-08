@@ -3,8 +3,8 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import App from "./App"
 import { initialize } from "./backend"
-import "./i18n"
-import { initializeKeyboardShortcuts } from "./keyboardShortcuts"
+import { initializeKeyboardShortcuts } from "./shortcuts"
+import "./translations"
 
 MathfieldElement.fontsDirectory = "/fonts"
 
