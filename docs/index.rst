@@ -63,7 +63,6 @@ by adding a file to `the translations directory <https://github.com/tyx-editor/T
     :caption: Introduction
 
     getting-started
-    File Format <file-format>
     settings
     document-settings
 
@@ -71,4 +70,6 @@ by adding a file to `the translations directory <https://github.com/tyx-editor/T
     :hidden:
     :caption: API Docs
 
+    File Format <file-format>
+    commands
     changelog

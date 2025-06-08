@@ -1,4 +1,5 @@
 import { Link } from "@mantine/tiptap"
+import type { SingleCommands } from "@tiptap/core"
 import { Blockquote } from "@tiptap/extension-blockquote"
 import { Bold } from "@tiptap/extension-bold"
 import { BulletList } from "@tiptap/extension-bullet-list"
@@ -98,3 +99,4 @@ const extensions = [
 ].map(withoutShortcuts)
 
 export default extensions
+export type Commands = SingleCommands

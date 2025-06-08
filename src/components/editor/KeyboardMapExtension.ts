@@ -5,9 +5,14 @@ declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     keyboardMapCommands: {
       /**
-       * Run a math command inside the active math editor
+       * Sets the currently active keyboard map.
        */
       setKeyboardLayout: (layout: string | null) => ReturnType
+
+      /**
+       * Toggles between the given keyboard map and no keyboard map.
+       */
+      toggleKeyboardLayout: (layout: string) => ReturnType
     }
   }
 }
@@ -91,6 +96,10 @@ const KeyboardMap = Extension.create({
     return {
       setKeyboardLayout: (layout) => () => {
         this.storage.layout = layout
+        return true
+      },
+      toggleKeyboardLayout: (layout) => () => {
+        this.storage.layout = this.storage.layout ? null : layout
         return true
       },
     }
