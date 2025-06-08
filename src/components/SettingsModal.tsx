@@ -12,13 +12,15 @@ import {
 import { useTranslation } from "react-i18next"
 import { KEYBOARD_MAPS } from "../editor/KeyboardMapExtension"
 import { TyXSettings } from "../models"
+import { DEFAULT_MATH_INLINE_SHORTCUTS } from "../settings"
 import {
   DEFAULT_KEYBOARD_SHORTCUTS,
   refreshKeyboardShortcuts,
 } from "../shortcuts"
 import { TRANSLATIONS } from "../translations"
 import { useLocalStorage } from "../utilities/hooks"
-import ShortcutEditor from "./ShortcutEditor"
+import KeyboardShortcutEditor from "./KeyboardShortcutEditor"
+import MathInlineShortcutEditor from "./MathInlineShortcutEditor"
 
 const SettingsModal = () => {
   const { t } = useTranslation()
@@ -29,6 +31,9 @@ const SettingsModal = () => {
 
   settings.keyboardShortcuts = settings.keyboardShortcuts ?? [
     ...DEFAULT_KEYBOARD_SHORTCUTS,
+  ]
+  settings.mathInlineShortcuts = settings.mathInlineShortcuts ?? [
+    ...DEFAULT_MATH_INLINE_SHORTCUTS,
   ]
 
   return (
@@ -45,7 +50,7 @@ const SettingsModal = () => {
       <Fieldset legend={t("keyboardShortcuts")} mt="xs">
         {settings.keyboardShortcuts!.map(
           ([shortcut, command], shortcutIndex) => (
-            <ShortcutEditor
+            <KeyboardShortcutEditor
               shortcut={shortcut}
               command={command}
               setShortcut={(s) => {
@@ -89,6 +94,59 @@ const SettingsModal = () => {
           onClick={() => {
             const newSettings = { ...settings }
             delete newSettings.keyboardShortcuts
+            setSettings(newSettings)
+          }}
+        >
+          {t("resetToDefault")}
+        </Button>
+      </Fieldset>
+      <Fieldset legend={t("mathInlineShortcuts")} mt="xs">
+        {settings.mathInlineShortcuts!.map(
+          ([shortcut, command], shortcutIndex) => (
+            <MathInlineShortcutEditor
+              shortcut={shortcut}
+              command={command}
+              setShortcut={(s) => {
+                const newSettings = { ...settings }
+                newSettings.mathInlineShortcuts![shortcutIndex][0] = s
+                setSettings(newSettings)
+                refreshKeyboardShortcuts()
+              }}
+              setCommand={(command) => {
+                const newSettings = { ...settings }
+                newSettings.mathInlineShortcuts![shortcutIndex][1] = command
+                setSettings(newSettings)
+                refreshKeyboardShortcuts()
+              }}
+              remove={() => {
+                const newSettings = { ...settings }
+                newSettings.mathInlineShortcuts!.splice(shortcutIndex, 1)
+                setSettings(newSettings)
+                refreshKeyboardShortcuts()
+              }}
+              key={shortcutIndex}
+            />
+          ),
+        )}
+        <Button
+          fullWidth
+          leftSection={<IconPlus />}
+          mt="xs"
+          onClick={() => {
+            const newSettings = { ...settings }
+            newSettings.mathInlineShortcuts!.push(["", ""])
+            setSettings(newSettings)
+          }}
+        >
+          {t("add")}
+        </Button>
+        <Button
+          fullWidth
+          leftSection={<IconRotate />}
+          mt="xs"
+          onClick={() => {
+            const newSettings = { ...settings }
+            delete newSettings.mathInlineShortcuts
             setSettings(newSettings)
           }}
         >

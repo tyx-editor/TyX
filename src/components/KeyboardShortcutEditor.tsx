@@ -24,7 +24,7 @@ const prettifyShortcut = (shortcut: string) => {
     .toUpperCase()
 }
 
-const ShortcutEditor = ({
+const KeyboardShortcutEditor = ({
   shortcut,
   command,
   setShortcut,
@@ -96,4 +96,4 @@ const ShortcutEditor = ({
   )
 }
 
-export default ShortcutEditor
+export default KeyboardShortcutEditor

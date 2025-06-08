@@ -10,6 +10,9 @@ import {
 } from "@tiptap/react"
 import { type MathfieldElement } from "mathlive"
 import { useEffect, useId, useRef, useState } from "react"
+import { TyXSettings } from "../models"
+import { DEFAULT_MATH_INLINE_SHORTCUTS } from "../settings"
+import { getLocalStorage } from "../utilities/hooks"
 
 declare global {
   interface Window {
@@ -54,74 +57,77 @@ const MathEditor = (props: NodeViewProps) => {
         props.node.type.name === "mathInline" ? "inline-math" : "math"
       mf.mathVirtualKeyboardPolicy = "manual"
 
-      mf.addEventListener("focus", updateCurrentMathEditor)
-      mf.addEventListener("blur", updateCurrentMathEditor)
-
-      mf.inlineShortcuts = {}
-
-      mf.addEventListener("keydown", (e) => {
-        if (e.key === " ") {
-          e.preventDefault()
-          const position = mf.position
-          mf.executeCommand("moveAfterParent")
-          if (mf.position === position) {
-            moveForward(props)
-          }
-        }
-      })
-
-      let element: HTMLElement | null = mf
-      while (element && !element.dir) {
-        element = element.parentElement
-      }
-      const dir = element?.dir ?? "ltr"
-
-      mf.addEventListener("input", (e) => {
-        const target = e.target as MathfieldElement
-        setValue(target.getValue(), target.getValue("ascii-math"))
-      })
-
-      mf.addEventListener("move-out", (e) => {
-        const position = props.getPos()
-        let isForward =
-          !e?.detail?.direction ||
-          e.detail.direction === "forward" ||
-          e.detail.direction === "downward"
-        if (dir === "rtl") {
-          isForward = !isForward
-        }
-
-        if (isForward) {
-          moveForward(props)
-        } else {
-          position === 0
-            ? props.editor
-                .chain()
-                .insertContentAt(position, {
-                  type: "paragraph",
-                })
-                .setTextSelection(position)
-                .focus()
-                .run()
-            : props.editor
-                .chain()
-                .setTextSelection(
-                  props.node.type.name === "mathBlock"
-                    ? position - 1
-                    : position,
-                )
-                .focus()
-                .run()
-        }
-      })
-
-      mf.addEventListener("beforeinput", (e: any) => {
-        if (!e.target.value && e.inputType === "deleteContentBackward") {
-          props.editor.chain().deleteSelection().run()
-        }
-      })
-
       if (mf.isConnected) {
+        mf.addEventListener("focus", updateCurrentMathEditor)
+        mf.addEventListener("blur", updateCurrentMathEditor)
+
+        mf.inlineShortcuts = Object.fromEntries(
+          getLocalStorage<TyXSettings>("Settings").mathInlineShortcuts ??
+            DEFAULT_MATH_INLINE_SHORTCUTS,
+        )
+
+        mf.addEventListener("keydown", (e) => {
+          if (e.key === " ") {
+            e.preventDefault()
+            const position = mf.position
+            mf.executeCommand("moveAfterParent")
+            if (mf.position === position) {
+              moveForward(props)
+            }
+          }
+        })
+
+        let element: HTMLElement | null = mf
+        while (element && !element.dir) {
+          element = element.parentElement
+        }
+        const dir = element?.dir ?? "ltr"
+
+        mf.addEventListener("input", (e) => {
+          const target = e.target as MathfieldElement
+          setValue(target.getValue(), target.getValue("ascii-math"))
+        })
+
+        mf.addEventListener("move-out", (e) => {
+          const position = props.getPos()
+          let isForward =
+            !e?.detail?.direction ||
+            e.detail.direction === "forward" ||
+            e.detail.direction === "downward"
+          if (dir === "rtl") {
+            isForward = !isForward
+          }
+
+          if (isForward) {
+            moveForward(props)
+          } else {
+            position === 0
+              ? props.editor
+                  .chain()
+                  .insertContentAt(position, {
+                    type: "paragraph",
+                  })
+                  .setTextSelection(position)
+                  .focus()
+                  .run()
+              : props.editor
+                  .chain()
+                  .setTextSelection(
+                    props.node.type.name === "mathBlock"
+                      ? position - 1
+                      : position,
+                  )
+                  .focus()
+                  .run()
+          }
+        })
+
+        mf.addEventListener("beforeinput", (e: any) => {
+          if (!e.target.value && e.inputType === "deleteContentBackward") {
+            props.editor.chain().deleteSelection().run()
+          }
+        })
+
         mf.menuItems = []
       }
     }

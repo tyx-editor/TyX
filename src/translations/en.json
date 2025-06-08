@@ -12,6 +12,7 @@
     "new": "New",
     "resetToDefault": "Reset To Default",
     "editing": "Editing",
-    "keyboardMap": "Keyboard Map"
+    "keyboardMap": "Keyboard Map",
+    "mathInlineShortcuts": "Math Inline Shortcuts"
   }
 }

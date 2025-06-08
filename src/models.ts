@@ -41,6 +41,7 @@ export interface TyXSettings {
   language?: string
   keyboardShortcuts?: [string, string][]
   keyboardMap?: string | null
+  mathInlineShortcuts?: [string, string][]
 }
 
 // TODO: perhaps support "global" commands, such as switching between documents etc.
