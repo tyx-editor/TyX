@@ -131,8 +131,6 @@ const MathEditor = (props: NodeViewProps) => {
         mf.menuItems = []
       }
     }
-
-    return updateCurrentMathEditor
   }, [mathfieldRef, mathfieldRef.current?.isConnected])
 
   useEffect(() => {

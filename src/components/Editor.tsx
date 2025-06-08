@@ -11,7 +11,6 @@ import { Editor as EditorType, JSONContent, useEditor } from "@tiptap/react"
 import extensions from "../editor/extensions"
 
 import { Loader } from "@mantine/core"
-import { useForceUpdate, useWindowEvent } from "@mantine/hooks"
 import { modals } from "@mantine/modals"
 import {
   IconCodeAsterisk,
@@ -22,7 +21,6 @@ import {
   IconFileFunction,
   IconIndentDecrease,
   IconIndentIncrease,
-  IconMatrix,
   IconPhoto,
   IconRowInsertBottom,
   IconRowRemove,
@@ -42,6 +40,7 @@ import {
   useUpdateOnChange,
 } from "../utilities/hooks"
 import DocumentSettingsModal from "./DocumentSettingsModal"
+import MathControls from "./MathControls"
 
 declare global {
   interface Window {
@@ -167,63 +166,6 @@ const LinkControls = () => {
     <RichTextEditor.ControlsGroup>
       <RichTextEditor.Link />
       <RichTextEditor.Unlink />
-    </RichTextEditor.ControlsGroup>
-  )
-}
-
-const MathControls = () => {
-  const forceUpdate = useForceUpdate()
-
-  useWindowEvent("mathEditorChanged", forceUpdate)
-
-  if (!window.currentMathEditor) {
-    return <></>
-  }
-
-  return (
-    <RichTextEditor.ControlsGroup>
-      <RichTextEditor.Control
-        title="Insert matrix"
-        aria-label="Insert matrix"
-        onClick={() =>
-          window.currentMathEditor?.executeCommand(
-            "insert",
-            "\\begin{pmatrix} #0 & #? \\\\ #? & #? \\end{pmatrix}",
-          )
-        }
-      >
-        <IconMatrix />
-      </RichTextEditor.Control>
-      <RichTextEditor.Control
-        title="Insert row below"
-        aria-label="Insert row below"
-        onClick={() => window.currentMathEditor?.executeCommand("addRowAfter")}
-      >
-        <IconRowInsertBottom />
-      </RichTextEditor.Control>
-      <RichTextEditor.Control
-        title="Insert column to the right"
-        aria-label="Insert column to the right"
-        onClick={() =>
-          window.currentMathEditor?.executeCommand("addColumnAfter")
-        }
-      >
-        <IconColumnInsertRight />
-      </RichTextEditor.Control>
-      <RichTextEditor.Control
-        title="Delete row"
-        aria-label="Delete row"
-        onClick={() => window.currentMathEditor?.executeCommand("removeRow")}
-      >
-        <IconRowRemove />
-      </RichTextEditor.Control>
-      <RichTextEditor.Control
-        title="Delete column"
-        aria-label="Delete column"
-        onClick={() => window.currentMathEditor?.executeCommand("removeColumn")}
-      >
-        <IconColumnRemove />
-      </RichTextEditor.Control>
     </RichTextEditor.ControlsGroup>
   )
 }

@@ -29,6 +29,7 @@ const MathInlineShortcutEditor = ({
       }}
     >
       <TextInput
+        autoCorrect="off"
         leftSection={<IconWriting />}
         style={{ display: "inline-block", height: "100%" }}
         value={shortcut}
