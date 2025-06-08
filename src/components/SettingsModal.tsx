@@ -9,7 +9,6 @@ import {
   IconPlus,
   IconRotate,
 } from "@tabler/icons-react"
-import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { KEYBOARD_MAPS } from "../editor/KeyboardMapExtension"
 import { TyXSettings } from "../models"
@@ -17,28 +16,16 @@ import {
   DEFAULT_KEYBOARD_SHORTCUTS,
   refreshKeyboardShortcuts,
 } from "../shortcuts"
-import { RTL_LANGUAGES, TRANSLATIONS } from "../translations"
+import { TRANSLATIONS } from "../translations"
 import { useLocalStorage } from "../utilities/hooks"
 import ShortcutEditor from "./ShortcutEditor"
 
 const SettingsModal = () => {
-  const {
-    t,
-    i18n: { changeLanguage, language },
-  } = useTranslation()
+  const { t } = useTranslation()
   const [settings, setSettings] = useLocalStorage<TyXSettings>({
     key: "Settings",
     defaultValue: {},
   })
-
-  useEffect(() => {
-    changeLanguage(settings.language ?? "en")
-
-    document.dir =
-      settings.language && RTL_LANGUAGES.includes(settings.language)
-        ? "rtl"
-        : "ltr"
-  }, [settings.language])
 
   settings.keyboardShortcuts = settings.keyboardShortcuts ?? [
     ...DEFAULT_KEYBOARD_SHORTCUTS,
@@ -51,7 +38,7 @@ const SettingsModal = () => {
           label={t("language")}
           leftSection={<IconLanguage />}
           data={TRANSLATIONS}
-          value={language}
+          value={settings.language ?? "en"}
           onChange={(v) => setSettings({ ...settings, language: v ?? "en" })}
         />
       </Fieldset>
