@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.17] - 2025-06-09
+
+### Added
+
+- The new `toggleKeyboardLayout` command allows easily switching between a keyboard layout and no keyboard layout.
+- The math controls now also include greek letters.
+- You can now customize inline shortcuts for the math editor in the app settings.
+
+### Changed
+
+- The generated Typst is now _much_ more readable.
+
+### Fixed
+
+- List item keyboard shortcuts are now back, so pressing enter in the editor while in a bullet/item list correctly inserts another item.
+- The "Mathfield not mounted" error has been fixed.
+
 ## [0.1.16] - 2025-06-04
 
 ### Added
