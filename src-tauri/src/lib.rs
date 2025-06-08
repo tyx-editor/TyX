@@ -168,7 +168,13 @@ fn preview(filename: &str, content: &str, root: &str, font_paths: Vec<String>) -
 
 #[tauri::command]
 fn insertimage(handle: tauri::AppHandle, filename: &str) {
-    let dirname = String::from(Path::new(filename).parent().unwrap().to_str().unwrap());
+    let dirname = String::from(
+        Path::new(filename)
+            .parent()
+            .unwrap_or(Path::new(""))
+            .to_str()
+            .unwrap(),
+    );
     let h = handle.clone();
     handle
         .dialog()

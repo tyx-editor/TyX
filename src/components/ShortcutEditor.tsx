@@ -16,10 +16,12 @@ const prettifyShortcut = (shortcut: string) => {
     .replaceAll("ctrl", "^")
     .replaceAll("alt", "⌥")
     .replaceAll("mod", "⌘")
+    .replaceAll("meta", "⌘")
     .replaceAll("shift", "⇧")
     .replaceAll("enter", "⏎")
     .replaceAll("esc", "␛")
     .replaceAll("space", "␣")
+    .toUpperCase()
 }
 
 const ShortcutEditor = ({
@@ -59,8 +61,9 @@ const ShortcutEditor = ({
         size="md"
         style={{
           cursor: "pointer",
-          letterSpacing: 3,
+          letterSpacing: 5,
         }}
+        pr={0}
         onClick={record}
       >
         {recording ? (
@@ -75,6 +78,9 @@ const ShortcutEditor = ({
         size="xs"
         style={{ display: "inline-block", height: "100%" }}
         value={command}
+        onBlur={(e) =>
+          setCommand(e.currentTarget.value.replace(/[“”“‟”❝❞〝〞]/g, '"'))
+        }
         onChange={(e) => setCommand(e.currentTarget.value)}
       />
       <ActionIcon

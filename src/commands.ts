@@ -10,13 +10,45 @@ export const parseCommandParameter = (parameter: string) => {
   if (parameter === "null") {
     return null
   }
+  if (parameter === "true") {
+    return true
+  }
+  if (parameter === "false") {
+    return false
+  }
 
   const asNumber = Number(parameter)
   if (!isNaN(asNumber)) {
     return asNumber
   }
 
+  try {
+    return JSON.parse(parameter)
+  } catch (_) {}
+
   return parameter
+}
+
+/** Splits the given command by spaces, while skipping spaces inside objects. */
+export const splitCommand = (command: string) => {
+  const result: string[] = []
+
+  let currentStart = 0
+  let braceCount = 0
+  for (let i = 0; i < command.length; i++) {
+    const currentChar = command.charAt(i)
+    if (currentChar === " " && braceCount === 0) {
+      result.push(command.substring(currentStart, i))
+      currentStart = i + 1
+    } else if (currentChar === "{") {
+      braceCount++
+    } else if (currentChar === "}") {
+      braceCount--
+    }
+  }
+  result.push(command.substring(currentStart))
+
+  return result
 }
 
 /**
@@ -28,7 +60,7 @@ export const parseCommandSequence = (command: string) => {
     .split(";")
     .map(
       (command) =>
-        command.trim().split(" ").map(parseCommandParameter) as TyXCommand,
+        splitCommand(command.trim()).map(parseCommandParameter) as TyXCommand,
     )
 }
 

@@ -18,7 +18,7 @@ let version: string
 
 export const initializeBackend = () => {
   getVersion().then((v) => (version = v))
-  listen<[string, string]>("open", (e) => onOpen(...e.payload))
+  listen<[string, string]>("open", (e) => onOpen(...(e.payload ?? [])))
   listen("new", onNew)
   listen("save", onSave)
   listen("close", onClose)
@@ -58,6 +58,18 @@ export const onPreview = async () => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
+
+  if (!document) {
+    showFailureMessage("No open document to preview!")
+    return
+  }
+  if (!document.filename) {
+    showFailureMessage(
+      "Current document must be saved before it can be previewed!",
+    )
+    return
+  }
+
   let content = ""
   try {
     content = tyx2typst(document, version)
@@ -110,7 +122,12 @@ export const onSave = async () => {
   }
 }
 
-export const onOpen = (filename: string | undefined, content: string) => {
+export const onOpen = (filename?: string | undefined, content?: string) => {
+  if (!content) {
+    open()
+    return
+  }
+
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   if (filename && !filename.endsWith(".tyx")) {
     const lastDot = filename?.lastIndexOf(".")

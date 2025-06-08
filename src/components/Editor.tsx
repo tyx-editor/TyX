@@ -294,6 +294,7 @@ const Editor = () => {
             }}
             aria-label="Export to Typst"
             title="Export to Typst"
+            disabled={!isWeb && doc.filename === undefined}
           >
             <IconFileFunction />
           </RichTextEditor.Control>
