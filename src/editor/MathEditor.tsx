@@ -36,9 +36,8 @@ const MathEditor = (props: NodeViewProps) => {
   const uniqueId = useId()
   const [formula, setFormula] = useState(props.node.attrs.value ?? "")
 
-  const mf = mathfieldRef.current
-
   const updateCurrentMathEditor = () => {
+    const mf = mathfieldRef.current
     if (mf && mf.hasFocus() && window.currentMathEditor !== mf) {
       window.currentMathEditor = mf
       window.dispatchEvent(new Event("mathEditorChanged"))
@@ -49,6 +48,7 @@ const MathEditor = (props: NodeViewProps) => {
   }
 
   useEffect(() => {
+    const mf = mathfieldRef.current
     if (mf) {
       mf.defaultMode =
         props.node.type.name === "mathInline" ? "inline-math" : "math"
@@ -132,7 +132,7 @@ const MathEditor = (props: NodeViewProps) => {
   useEffect(() => {
     const selection = props.editor.state.selection
     if (isNodeSelection(selection) && selection.from === props.getPos()) {
-      mf?.focus()
+      mathfieldRef.current?.focus()
     }
     updateCurrentMathEditor()
   }, [props.editor.state.selection, props.selected])

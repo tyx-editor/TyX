@@ -54,11 +54,6 @@
       ]
     },
     "horizontalRule": { "group": "block", "parseDOM": [{ "tag": "hr" }] },
-    "listItem": {
-      "content": "paragraph block*",
-      "defining": true,
-      "parseDOM": [{ "tag": "li" }]
-    },
     "orderedList": {
       "content": "listItem+",
       "group": "block list",
@@ -123,6 +118,11 @@
       "defining": true,
       "attrs": { "value": { "default": "" }, "asciimath": { "default": "" } },
       "parseDOM": [{ "tag": "math-inline" }]
+    },
+    "listItem": {
+      "content": "paragraph block*",
+      "defining": true,
+      "parseDOM": [{ "tag": "li" }]
     }
   },
   "marks": {
