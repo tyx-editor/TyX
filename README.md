@@ -51,7 +51,7 @@ Thanks to [contributions by Myriad-Dreamin](https://github.com/tyx-editor/TyX/co
 ### Translations
 
 TyX currently has translations for Hebrew! Further translations can be added via GitHub PRs
-by adding a file to [the translations directory](src/translations) and adding it to [the translations file](src/i18n.ts).
+by adding a file to [the translations directory](src/translations) and adding it to [the translations file](src/translations/index.ts).
 
 ## Acknowledgements
 
