@@ -22,6 +22,8 @@ Check out the [web editor](https://app.tyx-editor.com) or [download TyX](https:/
 
 TyX uses MathLive to make math formula editing easy by _seeing_ the formula you're editing!
 
+![math editor](docs/_static/math-editor.gif)
+
 > [!NOTE]
 > This is currently LaTeX-based. We are working on a Typst-based editor!
 
@@ -35,6 +37,8 @@ TyX supports customizable keyboard shortcuts!
 
 TyX supports keyboard maps (currently only a Hebrew keyboard map has been added [in the Keyboard Map TipTap Extension](src/components/editor/KeyboardMapExtension.ts)).
 This enables you to write in your language without having to switch to English every time you edit math environments!
+
+![keyboard map](docs/_static/keyboard-map.gif)
 
 ### Typst Importing
 
