@@ -10,9 +10,7 @@ import {
 } from "@tiptap/react"
 import { type MathfieldElement } from "mathlive"
 import { useEffect, useId, useRef, useState } from "react"
-import { TyXSettings } from "../models"
-import { DEFAULT_MATH_INLINE_SHORTCUTS } from "../settings"
-import { getLocalStorage } from "../utilities/hooks"
+import { DEFAULT_MATH_INLINE_SHORTCUTS, getSettings } from "../settings"
 
 declare global {
   interface Window {
@@ -62,8 +60,7 @@ const MathEditor = (props: NodeViewProps) => {
         mf.addEventListener("blur", updateCurrentMathEditor)
 
         mf.inlineShortcuts = Object.fromEntries(
-          getLocalStorage<TyXSettings>("Settings").mathInlineShortcuts ??
-            DEFAULT_MATH_INLINE_SHORTCUTS,
+          getSettings().mathInlineShortcuts ?? DEFAULT_MATH_INLINE_SHORTCUTS,
         )
 
         mf.addEventListener("keydown", (e) => {

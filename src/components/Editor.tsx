@@ -32,13 +32,10 @@ import {
 import { useEffect, useState } from "react"
 import { insertImage, isWeb, onPreview, onSave, save } from "../backend"
 import tyx2typst from "../compilers/tyx2typst"
-import { TyXDocument, TyXSettings } from "../models"
+import { TyXDocument } from "../models"
+import { getSettings } from "../settings"
 import { showSuccessMessage } from "../utilities"
-import {
-  getLocalStorage,
-  useLocalStorage,
-  useUpdateOnChange,
-} from "../utilities/hooks"
+import { useLocalStorage, useUpdateOnChange } from "../utilities/hooks"
 import DocumentSettingsModal from "./DocumentSettingsModal"
 import MathControls from "./MathControls"
 
@@ -200,7 +197,7 @@ const Editor = () => {
     editor?.commands.focus()
     window.currentEditor = editor ?? undefined
 
-    const settings = getLocalStorage<TyXSettings>("Settings")
+    const settings = getSettings()
     editor?.commands.setKeyboardLayout(settings.keyboardMap ?? null)
 
     return () => (window.currentEditor = undefined)

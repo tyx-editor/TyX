@@ -9,8 +9,7 @@ import "mousetrap-global-bind"
 import record from "mousetrap-record"
 
 import { executeCommand, parseCommandSequence } from "./commands"
-import { TyXSettings } from "./models"
-import { getLocalStorage } from "./utilities/hooks"
+import { getSettings } from "./settings"
 
 declare global {
   namespace Mousetrap {
@@ -47,8 +46,7 @@ export const DEFAULT_KEYBOARD_SHORTCUTS: [string, string][] = [
 /** Bind the shortcuts from the user's settings to their commands. */
 export const applyKeyboardShortcutsFromSettings = () => {
   const shortcuts =
-    getLocalStorage<TyXSettings>("Settings").keyboardShortcuts ??
-    DEFAULT_KEYBOARD_SHORTCUTS
+    getSettings().keyboardShortcuts ?? DEFAULT_KEYBOARD_SHORTCUTS
 
   for (const shortcut of shortcuts) {
     if (!shortcut[0] || !shortcut[1]) {

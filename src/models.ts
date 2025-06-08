@@ -3,6 +3,7 @@
  */
 
 import type { JSONContent, SingleCommands } from "@tiptap/react"
+import { z } from "zod/v4"
 
 /** An object representing Typst `relative` or `fraction` types. */
 export interface TyXLength {
@@ -36,13 +37,14 @@ export interface TyXDocument {
   settings?: TyXDocumentSettings
 }
 
-/** Global app settings for the user. */
-export interface TyXSettings {
-  language?: string
-  keyboardShortcuts?: [string, string][]
-  keyboardMap?: string | null
-  mathInlineShortcuts?: [string, string][]
-}
+export const TyXSettings = z.object({
+  language: z.string().optional(),
+  keyboardShortcuts: z.array(z.tuple([z.string(), z.string()])).optional(),
+  keyboardMap: z.string().nullable().optional(),
+  mathInlineShortcuts: z.array(z.tuple([z.string(), z.string()])).optional(),
+})
+
+export type TyXSettings = z.infer<typeof TyXSettings>
 
 // TODO: perhaps support "global" commands, such as switching between documents etc.
 /** The type of TyX commands which can be executed on the current document. */
