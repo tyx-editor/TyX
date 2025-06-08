@@ -1,3 +1,7 @@
+/**
+ * @file A modal for choosing the name to save the current document as.
+ */
+
 import { Button, TextInput } from "@mantine/core"
 import { modals } from "@mantine/modals"
 import { IconDeviceFloppy } from "@tabler/icons-react"

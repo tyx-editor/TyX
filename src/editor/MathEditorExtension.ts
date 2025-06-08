@@ -1,3 +1,7 @@
+/**
+ * @file Math editor extensions for inline math and math blocks using Mathfield.
+ */
+
 import { mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react"
 import { Selector, type MathfieldElement } from "mathlive"
 import MathEditor from "./MathEditor"

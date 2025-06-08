@@ -1,3 +1,8 @@
+/**
+ * @file The tauri backend providing the required backend options.
+ * Uses a Typst compiler and renderer that is bundled with the binary.
+ */
+
 import { invoke } from "@tauri-apps/api/core"
 import { listen } from "@tauri-apps/api/event"
 import { relaunch } from "@tauri-apps/plugin-process"
@@ -11,7 +16,7 @@ import { getLocalStorage, setLocalStorage } from "../utilities/hooks"
 
 let version: string
 
-export const initialize = () => {
+export const initializeBackend = () => {
   getVersion().then((v) => (version = v))
   listen<[string, string]>("open", (e) => onOpen(...e.payload))
   listen("new", onNew)

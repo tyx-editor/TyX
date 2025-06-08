@@ -1,13 +1,23 @@
+/**
+ * @file TypeScript models used by TyX.
+ */
+
 import type { JSONContent, SingleCommands } from "@tiptap/react"
 
+/** An object representing Typst `relative` or `fraction` types. */
 export interface TyXLength {
   unit?: string
   value?: string
 }
 
-export interface TyXDocumentSettings {
-  fontPaths?: string[]
+/** Compilation options passed to the Typst compiler. */
+export interface TyXCompilationOptions {
   root?: string
+  fontPaths?: string[]
+}
+
+/** An object wrapping some common Typst document configuration options. */
+export interface TyXDocumentSettings extends TyXCompilationOptions {
   language?: string
   paper?: string
   flipped?: boolean
@@ -16,6 +26,7 @@ export interface TyXDocumentSettings {
   columns?: number
 }
 
+/** An object representing an entire TyX document. Saved in `.tyx` files. */
 export interface TyXDocument {
   version: string
   preamble?: string
@@ -25,27 +36,13 @@ export interface TyXDocument {
   settings?: TyXDocumentSettings
 }
 
+/** Global app settings for the user. */
 export interface TyXSettings {
   language?: string
   keyboardShortcuts?: [string, string][]
   keyboardMap?: string | null
 }
 
+// TODO: perhaps support "global" commands, such as switching between documents etc.
+/** The type of TyX commands which can be executed on the current document. */
 export type TyXCommand = [keyof SingleCommands, ...any]
-
-export const DEFAULT_KEYBOARD_SHORTCUTS: [string, string][] = [
-  ["mod+b", "toggleBold"],
-  ["mod+i", "toggleItalic"],
-  ["mod+u", "toggleUnderline"],
-  ["mod+shift+x", "toggleStrike"],
-  ["mod+shift+h", "toggleHighlight"],
-  ["mod+e", "toggleCode"],
-  ["mod+z", "undo"],
-  ["mod+shift+z", "redo"],
-  ["shift+enter", "setHardBreak"],
-  ["mod+enter", "setHardBreak"],
-  ["mod+l", "toggleTypstCode"],
-  ["mod+m", "insertMathInline"],
-  ["mod+shift+m", "insertMathBlock"],
-  ["ctrl+g a", "math insert \\alpha"],
-]

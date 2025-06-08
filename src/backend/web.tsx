@@ -1,3 +1,8 @@
+/**
+ * @file The web backend providing the required backend options.
+ * Uses Typst.ts for compiling and rendering.
+ */
+
 import { modals } from "@mantine/modals"
 import { createTypstCompiler, TypstCompiler } from "@myriaddreamin/typst.ts"
 import { version } from "../../src-tauri/tauri.conf.json"
@@ -8,7 +13,7 @@ import { getLocalStorage, setLocalStorage } from "../utilities/hooks"
 
 let compiler: TypstCompiler
 
-export const initialize = async () => {
+export const initializeBackend = async () => {
   compiler = createTypstCompiler()
   await compiler.init({
     beforeBuild: [],

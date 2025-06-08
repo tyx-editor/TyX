@@ -1,3 +1,7 @@
+/**
+ * @file An editor for a specific keyboard shortcut.
+ */
+
 import { ActionIcon, Kbd, Loader, TextInput } from "@mantine/core"
 import { IconCode, IconTrash } from "@tabler/icons-react"
 import { useState } from "react"

@@ -1,17 +1,24 @@
+/**
+ * @file Useful react hooks for the app.
+ */
+
 import { useForceUpdate } from "@mantine/hooks"
 import { Editor } from "@tiptap/react"
 import { useEffect, useState } from "react"
 
+/** Returns the given JSON-serialized item from local storage. */
 export const getLocalStorage = <T>(key: string, defaultValue = {}): T => {
   return JSON.parse(localStorage.getItem(key) ?? JSON.stringify(defaultValue))
 }
 
+/** Sets the item in local storage to be the JSON-serialized item, and notifies all listeners of this change. */
 export const setLocalStorage = (key: string, item: any) => {
   const newValue = JSON.stringify(item)
   localStorage.setItem(key, newValue)
   window.dispatchEvent(new StorageEvent("storage", { key, newValue }))
 }
 
+/** Binds state to the given local storage item, and listens for changes to that item. */
 export const useLocalStorage = <T>({
   key,
   defaultValue,
@@ -67,6 +74,7 @@ export const useLocalStorage = <T>({
   return [value, userSetValue]
 }
 
+/** Re-renders the component whenever the editor selection or focus changes. */
 export const useUpdateOnChange = (editor: Editor | null) => {
   const forceUpdate = useForceUpdate()
   useEffect(() => {

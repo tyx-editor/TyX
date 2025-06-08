@@ -1,8 +1,6 @@
-import "@mantine/core/styles.css"
-import "@mantine/notifications/styles.css"
-import "@mantine/tiptap/styles.css"
-import "mathlive"
-import "./index.css"
+/**
+ * @file The entry point to the React app.
+ */
 
 import {
   ActionIcon,

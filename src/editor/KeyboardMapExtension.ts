@@ -1,3 +1,7 @@
+/**
+ * @file Adds support for keyboard maps in TipTap.
+ */
+
 import { Extension } from "@tiptap/core"
 import { Plugin } from "@tiptap/pm/state"
 

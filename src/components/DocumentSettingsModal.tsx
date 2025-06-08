@@ -1,3 +1,7 @@
+/**
+ * @file A modal for customizing the current document's settings.
+ */
+
 import {
   Button,
   Checkbox,

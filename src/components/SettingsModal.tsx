@@ -1,3 +1,7 @@
+/**
+ * @file A modal for customizing the app-wide settings.
+ */
+
 import { Button, Fieldset, Select } from "@mantine/core"
 import {
   IconKeyboard,
@@ -8,8 +12,11 @@ import {
 import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { KEYBOARD_MAPS } from "../editor/KeyboardMapExtension"
-import { DEFAULT_KEYBOARD_SHORTCUTS, TyXSettings } from "../models"
-import { refreshKeyboardShortcuts } from "../shortcuts"
+import { TyXSettings } from "../models"
+import {
+  DEFAULT_KEYBOARD_SHORTCUTS,
+  refreshKeyboardShortcuts,
+} from "../shortcuts"
 import { RTL_LANGUAGES, TRANSLATIONS } from "../translations"
 import { useLocalStorage } from "../utilities/hooks"
 import ShortcutEditor from "./ShortcutEditor"

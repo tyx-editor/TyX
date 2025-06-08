@@ -1,3 +1,7 @@
+/**
+ * @file A TipTap React node view for editing math using Mathfield.
+ */
+
 import {
   isNodeSelection,
   NodeViewContent,

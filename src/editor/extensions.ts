@@ -1,3 +1,8 @@
+/**
+ * @file All TipTap extensions used for the editor, both third-party and custom extensions.
+ * Importable outside the browser context as well.
+ */
+
 import { Link } from "@mantine/tiptap"
 import type { SingleCommands } from "@tiptap/core"
 import { Blockquote } from "@tiptap/extension-blockquote"

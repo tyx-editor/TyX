@@ -1,3 +1,8 @@
+/**
+ * @file An extension for supporting raw Typst code content in TyX.
+ * Similar to LyX's "Evil Raw TeX", or ERT, but perhaps could be renamed to ART, "Awesome Raw Typst".
+ */
+
 import { Mark, mergeAttributes } from "@tiptap/react"
 
 export interface TypstCodeOptions {

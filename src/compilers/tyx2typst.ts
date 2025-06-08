@@ -1,3 +1,7 @@
+/**
+ * @file A compiler from TyX documents to Typst.
+ */
+
 import { TyXDocument, TyXDocumentSettings } from "../models"
 import tiptap2typst from "./tiptap2typst"
 

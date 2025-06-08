@@ -1,3 +1,7 @@
+/**
+ * @file A compiler from TyX's TipTap schema to Typst.
+ */
+
 import { JSONContent } from "@tiptap/react"
 import asciimath2typst from "./asciimath2typst"
 

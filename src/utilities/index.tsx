@@ -1,3 +1,7 @@
+/**
+ * @file Generic UI utilities for working with React.
+ */
+
 import { modals } from "@mantine/modals"
 import { notifications } from "@mantine/notifications"
 import { IconCheck, IconExclamationMark } from "@tabler/icons-react"
@@ -7,6 +11,7 @@ interface MessageOptions {
   raw?: boolean
 }
 
+/** Shows a success notification with the given message. */
 export const showSuccessMessage = (
   successMessage: string,
   options?: MessageOptions,
@@ -25,6 +30,7 @@ export const showSuccessMessage = (
   })
 }
 
+/** Shows a failure notification with the given message. */
 export const showFailureMessage = (
   failureMessage: string,
   options?: MessageOptions,
@@ -43,6 +49,7 @@ export const showFailureMessage = (
   })
 }
 
+/** Shows a modal to confirm a possibly dangerous action. */
 export const showConfirmModal = (message: string, onConfirm: () => void) => {
   modals.openConfirmModal({
     title: "Please confirm your action!",

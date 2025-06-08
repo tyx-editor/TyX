@@ -1,3 +1,7 @@
+/**
+ * @file The TipTap editor for a TyX document.
+ */
+
 import {
   RichTextEditor,
   RichTextEditorControlProps,

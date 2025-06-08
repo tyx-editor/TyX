@@ -1,3 +1,7 @@
+/**
+ * @file A component for accepting TyX length values.
+ */
+
 import { Select, TextInput, TextInputProps } from "@mantine/core"
 import { TyXLength } from "../models"
 
