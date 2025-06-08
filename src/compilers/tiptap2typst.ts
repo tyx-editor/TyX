@@ -78,7 +78,10 @@ export const converters: Record<string, (d: JSONContent) => string> = {
         } else if (mark.type === "textStyle") {
           for (const key in mark.attrs ?? {}) {
             if (key === "color") {
-              text = `#text(rgb(${JSON.stringify(convertCSSColor(mark.attrs!.color))}))[${text}]`
+              const color = convertCSSColor(mark.attrs!.color)
+              if (color !== "#000000") {
+                text = `#text(rgb(${JSON.stringify(convertCSSColor(mark.attrs!.color))}))[${text}]`
+              }
             } else {
               throw Error(`Unsupported text style "${key}"`)
             }
@@ -96,9 +99,9 @@ export const converters: Record<string, (d: JSONContent) => string> = {
       "#list(" +
       d.content?.map(
         (child) =>
-          `list.item[${child.content?.map(tiptap2typst).join("\n\n")}]`,
+          `list.item[\n${child.content?.map(tiptap2typst).join("\n\n").trim()}\n]`,
       ) +
-      ")"
+      ")\n"
     )
   },
   orderedList: (d) => {
@@ -106,9 +109,9 @@ export const converters: Record<string, (d: JSONContent) => string> = {
       "#enum(" +
       d.content?.map(
         (child) =>
-          `enum.item[${child.content?.map(tiptap2typst).join("\n\n")}]`,
+          `enum.item[\n${child.content?.map(tiptap2typst).join("\n\n").trim()}\n]`,
       ) +
-      ")"
+      ")\n"
     )
   },
   table: (d) => {
@@ -122,7 +125,7 @@ export const converters: Record<string, (d: JSONContent) => string> = {
             .join(","),
         )
         .join(",") +
-      ")]"
+      ")]\n"
     )
   },
   tableCell: (d) => {
@@ -142,18 +145,21 @@ export const converters: Record<string, (d: JSONContent) => string> = {
     return result
   },
   blockquote: (d) => {
-    return `#quote(block: true)[${d.content?.map(tiptap2typst).join("")}]`
+    return `#quote(block: true)[\n${d.content?.map(tiptap2typst).join("").trim()}\n]\n`
   },
   horizontalRule: () => {
     return `#line(length: 100%)`
   },
   mathInline: (d) => mathConverter(d, true),
-  mathBlock: (d) => mathConverter(d),
+  mathBlock: (d) => mathConverter(d) + "\n",
   image: (d) => `#image(${JSON.stringify(d.attrs?.alt ?? "")})`,
 }
 
 export const typstEscape = (text: string) => {
-  return "#" + JSON.stringify(text)
+  return text.replace(
+    /[#=\[\]$*_`@<\-\+\/\\'"~]/g,
+    (character) => "\\" + character,
+  )
 }
 
 export const tiptap2text = (d: JSONContent) => {

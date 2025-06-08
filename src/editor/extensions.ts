@@ -72,7 +72,6 @@ const extensions = [
   History,
   HorizontalRule,
   Italic,
-  ListItem,
   OrderedList,
   Paragraph,
   Strike,
@@ -101,7 +100,12 @@ const extensions = [
   MathInline,
   TypstCode,
   KeyboardMap,
-].map(withoutShortcuts)
+]
+  .map(withoutShortcuts)
+  .concat([
+    // Keep the keyboard shortcuts.
+    ListItem,
+  ])
 
 export default extensions
 
