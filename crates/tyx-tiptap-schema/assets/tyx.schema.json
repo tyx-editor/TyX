@@ -16,6 +16,7 @@
     "bulletList": {
       "content": "listItem+",
       "group": "block list",
+      "attrs": { "dir": { "default": null } },
       "parseDOM": [{ "tag": "ul" }]
     },
     "codeBlock": {
@@ -57,7 +58,11 @@
     "orderedList": {
       "content": "listItem+",
       "group": "block list",
-      "attrs": { "start": { "default": 1 }, "type": { "default": null } },
+      "attrs": {
+        "dir": { "default": null },
+        "start": { "default": 1 },
+        "type": { "default": null }
+      },
       "parseDOM": [{ "tag": "ol" }]
     },
     "text": { "group": "inline" },

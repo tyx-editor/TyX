@@ -14,6 +14,9 @@ pub struct BulletList {
     /// The node's content.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub content: Option<Content>,
+
+    /// The `dir` attribute.
+    pub dir: serde_json::Value,
 }
 
 /// A `codeBlock` node.
@@ -134,6 +137,9 @@ pub struct OrderedList {
     /// The node's content.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub content: Option<Content>,
+
+    /// The `dir` attribute.
+    pub dir: serde_json::Value,
 
     /// The `start` attribute.
     #[serde(skip_serializing_if = "Option::is_none")]

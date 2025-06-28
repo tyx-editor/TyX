@@ -233,6 +233,7 @@ impl Stage1Converter {
             }
         }
         Some(TyxNode::OrderedList(s::OrderedList {
+            dir: serde_json::Value::Null,
             content: Some(children),
             start: Some(start as i32),
             ty: serde_json::Value::Null,
@@ -250,6 +251,7 @@ impl Stage1Converter {
         }
 
         Some(TyxNode::BulletList(s::BulletList {
+            dir: serde_json::Value::Null,
             content: Some(children),
         }))
     }
