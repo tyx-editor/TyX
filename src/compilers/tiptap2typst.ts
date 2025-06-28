@@ -14,10 +14,12 @@ export const mathConverter = (d: JSONContent, inline = false) => {
   }
 
   if (inline) {
-    return `$${result}$`
+    result = `$${result}$`
   } else {
-    return `$ ${result} $`
+    result = `$ ${result} $`
   }
+
+  return applyTextMarks(result, d.marks)
 }
 
 export const convertCSSColor = (color: string) => {
@@ -34,6 +36,55 @@ export const applyTextAlignAndDirection = (result: string, d: JSONContent) => {
     result = `#text(dir: ${d.attrs.dir})[${result}]`
   }
   return result
+}
+
+export const applyTextMarks = (
+  text: string,
+  marks:
+    | {
+        [key: string]: any
+        type: string
+        attrs?: Record<string, any>
+      }[]
+    | undefined,
+) => {
+  for (const mark of marks ?? []) {
+    if (mark.type === "bold") {
+      text = `*${text}*`
+    } else if (mark.type === "italic") {
+      text = `_${text}_`
+    } else if (mark.type === "underline") {
+      text = `#underline[${text}]`
+    } else if (mark.type === "highlight") {
+      text = `#highlight[${text}]`
+    } else if (mark.type === "strike") {
+      text = `#strike[${text}]`
+    } else if (mark.type === "link") {
+      let href = mark.attrs?.href ?? ""
+      if (href !== "" && !href.includes("://")) {
+        href = "https://" + href
+      }
+      text = `#link(${JSON.stringify(href)})[${text}]`
+    } else if (mark.type === "subscript") {
+      text = `#sub[${text}]`
+    } else if (mark.type === "superscript") {
+      text = `#super[${text}]`
+    } else if (mark.type === "textStyle") {
+      for (const key in mark.attrs ?? {}) {
+        if (key === "color") {
+          const color = convertCSSColor(mark.attrs!.color)
+          if (color !== "#000000") {
+            text = `#text(rgb(${JSON.stringify(convertCSSColor(mark.attrs!.color))}))[${text}]`
+          }
+        } else {
+          throw Error(`Unsupported text style "${key}"`)
+        }
+      }
+    } else {
+      throw Error(`Unsupported mark "${mark.type}"`)
+    }
+  }
+  return text
 }
 
 export const converters: Record<string, (d: JSONContent) => string> = {
@@ -54,42 +105,7 @@ export const converters: Record<string, (d: JSONContent) => string> = {
         return `\n${tiptap2text(d)}\n`
       }
 
-      for (const mark of d.marks ?? []) {
-        if (mark.type === "bold") {
-          text = `*${text}*`
-        } else if (mark.type === "italic") {
-          text = `_${text}_`
-        } else if (mark.type === "underline") {
-          text = `#underline[${text}]`
-        } else if (mark.type === "highlight") {
-          text = `#highlight[${text}]`
-        } else if (mark.type === "strike") {
-          text = `#strike[${text}]`
-        } else if (mark.type === "link") {
-          let href = mark.attrs?.href ?? ""
-          if (href !== "" && !href.includes("://")) {
-            href = "https://" + href
-          }
-          text = `#link(${JSON.stringify(href)})[${text}]`
-        } else if (mark.type === "subscript") {
-          text = `#sub[${text}]`
-        } else if (mark.type === "superscript") {
-          text = `#super[${text}]`
-        } else if (mark.type === "textStyle") {
-          for (const key in mark.attrs ?? {}) {
-            if (key === "color") {
-              const color = convertCSSColor(mark.attrs!.color)
-              if (color !== "#000000") {
-                text = `#text(rgb(${JSON.stringify(convertCSSColor(mark.attrs!.color))}))[${text}]`
-              }
-            } else {
-              throw Error(`Unsupported text style "${key}"`)
-            }
-          }
-        } else {
-          throw Error(`Unsupported mark "${mark.type}"`)
-        }
-      }
+      text = applyTextMarks(text, d.marks)
     }
 
     return text
