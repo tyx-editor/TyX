@@ -122,7 +122,7 @@ export const converters: Record<string, (d: JSONContent) => string> = {
   },
   orderedList: (d) => {
     return (
-      "#enum(" +
+      `#enum(start: ${d.attrs?.start ?? "auto"},` +
       d.content?.map(
         (child) =>
           `enum.item[\n${child.content?.map(tiptap2typst).join("\n\n").trim()}\n]`,

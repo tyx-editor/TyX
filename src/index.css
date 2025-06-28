@@ -89,3 +89,7 @@ math-field::part(container) {
 .mantine-RichTextEditor-typographyStylesProvider {
   flex-grow: 1;
 }
+
+.mantine-RichTextEditor-content pre {
+  direction: ltr;
+}
