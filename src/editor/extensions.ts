@@ -88,7 +88,7 @@ const extensions = [
     defaultAlignment: "",
   }),
   TextDirection.configure({
-    types: ["heading", "paragraph"],
+    types: ["heading", "paragraph", "bulletList", "orderedList"],
     defaultDirection: "ltr",
   }),
   Table.configure({ resizable: false }),
