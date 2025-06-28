@@ -4,6 +4,7 @@
 
 import { Extension } from "@tiptap/core"
 import { Plugin } from "@tiptap/pm/state"
+import { setLocalStorage } from "../utilities/hooks"
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
@@ -108,10 +109,13 @@ const KeyboardMap = Extension.create({
     return {
       setKeyboardLayout: (layout) => () => {
         this.storage.layout = layout
+        setLocalStorage("Keyboard Map", layout)
         return true
       },
       toggleKeyboardLayout: (layout) => () => {
-        this.storage.layout = this.storage.layout ? null : layout
+        const layoutToSet = this.storage.layout ? null : layout
+        this.storage.layout = layoutToSet
+        setLocalStorage("Keyboard Map", layoutToSet)
         return true
       },
     }

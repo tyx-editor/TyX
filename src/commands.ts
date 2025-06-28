@@ -4,6 +4,7 @@
 
 import { TyXCommand } from "./models"
 import { showFailureMessage } from "./utilities"
+import { setLocalStorage } from "./utilities/hooks"
 
 /** Parse the given parameter into the corresponding JS object, to be passed to command functions. */
 export const parseCommandParameter = (parameter: string) => {
@@ -66,6 +67,7 @@ export const parseCommandSequence = (command: string) => {
 
 /** Executes the given command. */
 export const executeCommand = (command: TyXCommand) => {
+  setLocalStorage("Current Command", command.join(" "))
   if (window.currentEditor) {
     const commandFunction = window.currentEditor.commands[command[0]]
 

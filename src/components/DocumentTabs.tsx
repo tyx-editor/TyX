@@ -11,6 +11,7 @@ import { TyXDocument } from "../models"
 import { showConfirmModal } from "../utilities"
 import { useLocalStorage } from "../utilities/hooks"
 import Editor from "./Editor"
+import StatusBar from "./StatusBar"
 
 const DocumentTabs = () => {
   const [openDocuments, setOpenDocuments] = useLocalStorage<TyXDocument[]>({
@@ -40,8 +41,11 @@ const DocumentTabs = () => {
           setCurrentDocument(tab)
         }
       }}
+      display="flex"
+      style={{ flexDirection: "column", overflow: "hidden" }}
+      h="100%"
     >
-      <Tabs.List>
+      <Tabs.List flex="none">
         {openDocuments.map((doc, docIndex) => (
           <Tabs.Tab
             key={docIndex}
@@ -87,8 +91,17 @@ const DocumentTabs = () => {
       </Tabs.List>
 
       {openDocuments[currentDocument] !== undefined && (
-        <Tabs.Panel key={currentDocument} value={currentDocument.toString()}>
-          <div style={{ padding: 10 }}>
+        <Tabs.Panel
+          key={currentDocument}
+          value={currentDocument.toString()}
+          display="flex"
+          style={{
+            flexDirection: "column",
+            minHeight: 0,
+            flex: 1,
+          }}
+        >
+          <div style={{ overflowY: "auto", flex: 1 }}>
             <ErrorBoundary
               fallbackRender={({ error }) => (
                 <>
@@ -102,6 +115,7 @@ const DocumentTabs = () => {
               <Editor />
             </ErrorBoundary>
           </div>
+          <StatusBar />
         </Tabs.Panel>
       )}
     </Tabs>

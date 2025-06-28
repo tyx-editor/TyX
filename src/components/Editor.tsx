@@ -210,7 +210,7 @@ const Editor = () => {
     .pop()
 
   return (
-    <RichTextEditor editor={editor}>
+    <RichTextEditor editor={editor} bd="none">
       <RichTextEditor.Toolbar sticky>
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Control

@@ -65,3 +65,27 @@ math-field:not(:empty) {
 math-field::part(container) {
   padding: 0px;
 }
+
+.status-bar * {
+  user-select: none;
+}
+
+.status-bar-item {
+  display: flex;
+  align-items: center;
+}
+
+.mantine-RichTextEditor-root,
+.mantine-RichTextEditor-content,
+.mantine-RichTextEditor-content > .tiptap {
+  height: 100%;
+}
+
+.mantine-RichTextEditor-root {
+  display: flex;
+  flex-direction: column;
+}
+
+.mantine-RichTextEditor-typographyStylesProvider {
+  flex-grow: 1;
+}
