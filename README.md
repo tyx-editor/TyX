@@ -12,6 +12,11 @@
     <b>A LyX-like experience rewritten for Typst and the modern era.</b>
 </p>
 
+> [!WARNING]
+> TyX is currently in early development and breaking changes
+> are introduced frequently.
+> In fact, the base editor is now being refactored to use Lexical.
+
 ## Getting Started
 
 Check out the [web editor](https://app.tyx-editor.com) or [download TyX](https://tyx-editor.com)!
