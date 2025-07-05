@@ -6,6 +6,31 @@ import { TyXCommand } from "./models"
 import { showFailureMessage } from "./utilities"
 import { setLocalStorage } from "./utilities/hooks"
 
+import {
+  INSERT_ORDERED_LIST_COMMAND,
+  INSERT_UNORDERED_LIST_COMMAND,
+} from "@lexical/list"
+import {
+  FORMAT_ELEMENT_COMMAND,
+  FORMAT_TEXT_COMMAND,
+  LexicalCommand,
+  REDO_COMMAND,
+  UNDO_COMMAND,
+} from "lexical"
+import { TOGGLE_KEYBOARD_MAP_COMMAND } from "./components/plugins/KeyboardMapPlugin"
+import { INSERT_MATH_INLINE_COMMAND } from "./components/plugins/MathPlugin"
+
+const COMMANDS: Record<string, LexicalCommand<any>> = {
+  toggleKeyboardMap: TOGGLE_KEYBOARD_MAP_COMMAND,
+  formatElement: FORMAT_ELEMENT_COMMAND,
+  formatText: FORMAT_TEXT_COMMAND,
+  undo: UNDO_COMMAND,
+  redo: REDO_COMMAND,
+  insertMathInline: INSERT_MATH_INLINE_COMMAND,
+  insertOrderedList: INSERT_ORDERED_LIST_COMMAND,
+  insertUnorderedList: INSERT_UNORDERED_LIST_COMMAND,
+}
+
 /** Parse the given parameter into the corresponding JS object, to be passed to command functions. */
 export const parseCommandParameter = (parameter: string) => {
   if (parameter === "null") {
@@ -68,17 +93,20 @@ export const parseCommandSequence = (command: string) => {
 /** Executes the given command. */
 export const executeCommand = (command: TyXCommand) => {
   setLocalStorage("Current Command", command.join(" "))
-  if (window.currentEditor) {
-    const commandFunction = window.currentEditor.commands[command[0]]
 
-    if (!commandFunction) {
+  if (window.currentEditor) {
+    const lexicalCommand = COMMANDS[command[0]]
+
+    if (!lexicalCommand) {
       showFailureMessage(
         `Invalid shortcut: command '${command}' does not exist!`,
       )
     } else {
       try {
-        // @ts-ignore
-        commandFunction(...command.slice(1))
+        window.currentEditor.dispatchCommand(
+          lexicalCommand,
+          command.length === 2 ? command[1] : command.slice(1),
+        )
       } catch (e) {
         showFailureMessage(`Command '${command}' threw an exception: ${e}`)
       }

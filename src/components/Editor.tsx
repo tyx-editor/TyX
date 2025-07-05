@@ -2,46 +2,56 @@
  * @file The TipTap editor for a TyX document.
  */
 
+import { ListItemNode, ListNode } from "@lexical/list"
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin"
+import {
+  type InitialConfigType,
+  LexicalComposer,
+} from "@lexical/react/LexicalComposer"
+import { ContentEditable } from "@lexical/react/LexicalContentEditable"
+import { EditorRefPlugin } from "@lexical/react/LexicalEditorRefPlugin"
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary"
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin"
+import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin"
+import { ListPlugin } from "@lexical/react/LexicalListPlugin"
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
+import { QuoteNode } from "@lexical/rich-text"
+import { Loader } from "@mantine/core"
 import {
   RichTextEditor,
   RichTextEditorControlProps,
   useRichTextEditorContext,
 } from "@mantine/tiptap"
-import { Editor as EditorType, JSONContent, useEditor } from "@tiptap/react"
-import extensions from "../editor/extensions"
-
-import { Loader } from "@mantine/core"
-import { modals } from "@mantine/modals"
 import {
-  IconCodeAsterisk,
   IconColumnInsertRight,
   IconColumnRemove,
-  IconDeviceFloppy,
   IconEye,
-  IconFileFunction,
   IconIndentDecrease,
   IconIndentIncrease,
-  IconPhoto,
   IconRowInsertBottom,
   IconRowRemove,
-  IconSettings,
-  IconSum,
   IconTableMinus,
   IconTablePlus,
 } from "@tabler/icons-react"
-import { useEffect, useState } from "react"
-import { insertImage, isWeb, onPreview, onSave, save } from "../backend"
-import tyx2typst from "../compilers/tyx2typst"
+import {
+  CLEAR_HISTORY_COMMAND,
+  LexicalEditor,
+  SerializedEditorState,
+  SerializedLexicalNode,
+} from "lexical"
+import { useEffect, useRef, useState } from "react"
+import { onPreview } from "../backend"
 import { TyXDocument } from "../models"
-import { getSettings } from "../settings"
-import { showSuccessMessage } from "../utilities"
 import { useLocalStorage, useUpdateOnChange } from "../utilities/hooks"
-import DocumentSettingsModal from "./DocumentSettingsModal"
-import MathControls from "./MathControls"
+import KeyboardMapPlugin from "./plugins/KeyboardMapPlugin"
+import MathPlugin, { MathNode } from "./plugins/MathPlugin"
+import { PageBreakNode } from "./plugins/PageBreakPlugin"
+import RemoveDefaultShortcutsPlugin from "./plugins/RemoveDefaultShortcutsPlugin"
+import ToolbarPlugin from "./plugins/ToolbarPlugin"
 
 declare global {
   interface Window {
-    currentEditor?: EditorType
+    currentEditor?: LexicalEditor
   }
 }
 
@@ -167,6 +177,17 @@ const LinkControls = () => {
   )
 }
 
+const initialConfig: InitialConfigType = {
+  namespace: "TyX",
+  theme: {
+    text: { underline: "underline", strikethrough: "strikethrough" },
+  },
+  onError: (error) => {
+    console.error(error)
+  },
+  nodes: [PageBreakNode, ListNode, ListItemNode, QuoteNode, MathNode],
+}
+
 const Editor = () => {
   const [openDocuments, setOpenDocuments] = useLocalStorage<TyXDocument[]>({
     key: "Open Documents",
@@ -178,30 +199,14 @@ const Editor = () => {
     defaultValue: 0,
     silent: true,
   })
+  const editorRef = useRef<LexicalEditor>(null)
 
   const doc = openDocuments[currentDocument]
-  const update = (content: JSONContent) => {
-    openDocuments[currentDocument].content = content
-    openDocuments[currentDocument].dirty = true
+  const update = (content: SerializedEditorState<SerializedLexicalNode>) => {
+    doc.content = content
+    doc.dirty = true
     setOpenDocuments(openDocuments)
   }
-
-  const editor = useEditor({
-    extensions,
-    content: Object.keys(doc.content).length > 0 ? doc.content : undefined,
-    onUpdate: ({ editor }) => update(editor.getJSON()),
-    shouldRerenderOnTransaction: false,
-  })
-
-  useEffect(() => {
-    editor?.commands.focus()
-    window.currentEditor = editor ?? undefined
-
-    const settings = getSettings()
-    editor?.commands.setKeyboardLayout(settings.keyboardMap ?? null)
-
-    return () => (window.currentEditor = undefined)
-  }, [editor])
 
   const basename = (doc.filename ?? "Untitled")
     .split("/")
@@ -209,137 +214,43 @@ const Editor = () => {
     .split("\\")
     .pop()
 
+  useEffect(() => {
+    window.currentEditor = editorRef.current ?? undefined
+
+    const editor = editorRef.current
+
+    if (editor) {
+      editor.update(() => {
+        const editorState = editor.parseEditorState(doc.content)
+        editor.setEditorState(editorState)
+        editor.dispatchCommand(CLEAR_HISTORY_COMMAND, undefined)
+      })
+
+      return editor.registerUpdateListener(({ editorState }) => {
+        update(editorState.toJSON())
+      })
+    }
+  }, [editorRef])
+
   return (
-    <RichTextEditor editor={editor} bd="none">
-      <RichTextEditor.Toolbar sticky>
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Control
-            onClick={onSave}
-            aria-label="Save"
-            title="Save"
-            disabled={doc.filename !== undefined && !doc.dirty}
-          >
-            <IconDeviceFloppy />
-          </RichTextEditor.Control>
-          <RichTextEditor.Control
-            onClick={() => {
-              const filename = (doc.filename ?? "Untitled.tyx").replace(
-                ".tyx",
-                ".typ",
-              )
-              save(filename, tyx2typst(doc)).then(() =>
-                showSuccessMessage(`Document exported to ${filename}.`),
-              )
-            }}
-            aria-label="Export to Typst"
-            title="Export to Typst"
-            disabled={!isWeb && doc.filename === undefined}
-          >
-            <IconFileFunction />
-          </RichTextEditor.Control>
-          <PreviewControl disabled={!isWeb && doc.filename === undefined} />
-          <RichTextEditor.Control
-            title="Document settings"
-            aria-label="Document settings"
-            onClick={() =>
-              modals.open({
-                title: `Document Settings (${basename})`,
-                children: <DocumentSettingsModal />,
-              })
-            }
-          >
-            <IconSettings />
-          </RichTextEditor.Control>
-        </RichTextEditor.ControlsGroup>
+    <LexicalComposer initialConfig={initialConfig}>
+      <ToolbarPlugin />
+      <RichTextPlugin
+        contentEditable={
+          <ContentEditable aria-placeholder="" placeholder={<></>} />
+        }
+        ErrorBoundary={LexicalErrorBoundary}
+      />
+      <HistoryPlugin />
+      <AutoFocusPlugin />
+      <HorizontalRulePlugin />
+      <ListPlugin />
+      <EditorRefPlugin editorRef={editorRef} />
 
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.ColorPicker
-            colors={[
-              "#25262b",
-              "#868e96",
-              "#fa5252",
-              "#e64980",
-              "#be4bdb",
-              "#7950f2",
-              "#4c6ef5",
-              "#228be6",
-              "#15aabf",
-              "#12b886",
-              "#40c057",
-              "#82c91e",
-              "#fab005",
-              "#fd7e14",
-            ]}
-          />
-          <RichTextEditor.Bold />
-          <RichTextEditor.Italic />
-          <RichTextEditor.Underline />
-          <RichTextEditor.Strikethrough />
-          <RichTextEditor.Subscript />
-          <RichTextEditor.Superscript />
-          <RichTextEditor.Code />
-          <RichTextEditor.ClearFormatting />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.H1 />
-          <RichTextEditor.H2 />
-          <RichTextEditor.H3 />
-          <RichTextEditor.H4 />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Control
-            title="Insert image"
-            aria-label="Insert image"
-            onClick={insertImage}
-          >
-            <IconPhoto />
-          </RichTextEditor.Control>
-          <RichTextEditor.Control
-            title="Insert typst code"
-            aria-label="Insert typst code"
-            onClick={() => editor?.chain().focus().toggleTypstCode().run()}
-          >
-            <IconCodeAsterisk />
-          </RichTextEditor.Control>
-          <RichTextEditor.Control
-            title="Insert math"
-            aria-label="Insert math"
-            onClick={() => editor?.chain().focus().insertMathInline().run()}
-          >
-            <IconSum />
-          </RichTextEditor.Control>
-          <RichTextEditor.Blockquote />
-          <RichTextEditor.Hr />
-          <RichTextEditor.BulletList />
-          <RichTextEditor.OrderedList />
-          <RichTextEditor.CodeBlock />
-        </RichTextEditor.ControlsGroup>
-
-        <TableControls />
-
-        <ListControls />
-
-        <LinkControls />
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.AlignLeft />
-          <RichTextEditor.AlignCenter />
-          <RichTextEditor.AlignRight />
-          <RichTextEditor.AlignJustify />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Undo />
-          <RichTextEditor.Redo />
-        </RichTextEditor.ControlsGroup>
-
-        <MathControls />
-      </RichTextEditor.Toolbar>
-
-      <RichTextEditor.Content spellCheck={false} />
-    </RichTextEditor>
+      <KeyboardMapPlugin />
+      <RemoveDefaultShortcutsPlugin />
+      <MathPlugin />
+    </LexicalComposer>
   )
 }
 

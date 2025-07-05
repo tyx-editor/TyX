@@ -1,26 +1,36 @@
 import { Tooltip } from "@mantine/core"
 import { useTimeout } from "@mantine/hooks"
 import { IconKeyboard, IconTerminal } from "@tabler/icons-react"
-import React, { useEffect } from "react"
+import React, { CSSProperties, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { useLocalStorage } from "../utilities/hooks"
 
-const CURRENT_COMMAND_DELAY_MILLISECONDS = 2000
+const CURRENT_COMMAND_DELAY_MILLISECONDS = 3000
 
 const StatusBarItem = ({
   children,
   label,
+  style,
+  onClick,
 }: {
   children?: React.ReactNode
   label?: string
+  style?: CSSProperties
+  onClick?: React.MouseEventHandler<HTMLSpanElement>
 }) => {
   if (!label) {
-    return <span className="status-bar-item">{children}</span>
+    return (
+      <span style={style} className="status-bar-item" onClick={onClick}>
+        {children}
+      </span>
+    )
   }
 
   return (
     <Tooltip label={label}>
-      <span className="status-bar-item">{children}</span>
+      <span style={style} className="status-bar-item" onClick={onClick}>
+        {children}
+      </span>
     </Tooltip>
   )
 }
@@ -65,7 +75,14 @@ const CurrentCommandStatusBarItem = () => {
   }
 
   return (
-    <StatusBarItem>
+    <StatusBarItem
+      label="Click to copy"
+      style={{
+        fontFamily: "'Courier New', Courier, monospace",
+        cursor: "pointer",
+      }}
+      onClick={() => navigator.clipboard.writeText(currentCommand)}
+    >
       <IconTerminal style={{ marginInlineEnd: 5 }} />
       {currentCommand}
     </StatusBarItem>

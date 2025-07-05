@@ -36,6 +36,7 @@ import TextAlign from "@tiptap/extension-text-align"
 import TextStyle from "@tiptap/extension-text-style"
 import Underline from "@tiptap/extension-underline"
 import TextDirectionX from "tiptap-text-direction"
+import { FunctionCallBlock, FunctionCallInline } from "./FunctionCallExtension"
 import KeyboardMap from "./KeyboardMapExtension"
 import { MathBlock, MathInline } from "./MathEditorExtension"
 import { TypstCode } from "./TypstCodeExtension"
@@ -105,6 +106,8 @@ const extensions = [
   .concat([
     // Keep the keyboard shortcuts.
     ListItem,
+    FunctionCallBlock,
+    FunctionCallInline,
   ])
 
 export default extensions
