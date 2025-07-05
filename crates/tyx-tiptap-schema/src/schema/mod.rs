@@ -20,6 +20,10 @@ pub enum TyxNode {
     CodeBlock(CodeBlock),
     /// A `Doc` node.
     Doc(Doc),
+    /// A `FunctionCallBlock` node.
+    FunctionCallBlock(FunctionCallBlock),
+    /// A `FunctionCallInline` node.
+    FunctionCallInline(FunctionCallInline),
     /// A `HardBreak` node.
     HardBreak(HardBreak),
     /// A `Heading` node.

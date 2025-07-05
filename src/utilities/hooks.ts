@@ -7,7 +7,7 @@ import { Editor } from "@tiptap/react"
 import { useEffect, useState } from "react"
 
 /** Returns the given JSON-serialized item from local storage. */
-export const getLocalStorage = <T>(key: string, defaultValue = {}): T => {
+export const getLocalStorage = <T>(key: string, defaultValue: any = {}): T => {
   return JSON.parse(localStorage.getItem(key) ?? JSON.stringify(defaultValue))
 }
 
