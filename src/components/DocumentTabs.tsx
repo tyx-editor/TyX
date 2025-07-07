@@ -101,7 +101,14 @@ const DocumentTabs = () => {
             flex: 1,
           }}
         >
-          <div style={{ overflowY: "auto", flex: 1, padding: 10 }}>
+          <div
+            style={{
+              overflowY: "auto",
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             <ErrorBoundary
               fallbackRender={({ error }) => (
                 <>

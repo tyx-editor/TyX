@@ -4,10 +4,15 @@ import {
   $isHeadingNode,
   $isQuoteNode,
 } from "@lexical/rich-text"
-import { $setBlocksType } from "@lexical/selection"
+import { $isAtNodeEnd, $setBlocksType } from "@lexical/selection"
 import { $isTableSelection } from "@lexical/table"
-import { $getNearestBlockElementAncestorOrThrow } from "@lexical/utils"
-import { ActionIcon } from "@mantine/core"
+import {
+  $findMatchingParent,
+  $getNearestBlockElementAncestorOrThrow,
+  mergeRegister,
+} from "@lexical/utils"
+import { ActionIcon, Loader, Tooltip } from "@mantine/core"
+import { modals } from "@mantine/modals"
 import {
   IconAlignCenter,
   IconAlignJustified,
@@ -19,10 +24,14 @@ import {
   IconBold,
   IconClearFormatting,
   IconCode,
+  IconDeviceFloppy,
+  IconEye,
+  IconFileCode,
   IconItalic,
   IconLineDotted,
   IconList,
   IconListNumbers,
+  IconSettings,
   IconStrikethrough,
   IconSubscript,
   IconSum,
@@ -32,14 +41,31 @@ import {
 import {
   $createParagraphNode,
   $getSelection,
+  $isElementNode,
+  $isNodeSelection,
   $isRangeSelection,
+  $isRootOrShadowRoot,
   $isTextNode,
+  CAN_REDO_COMMAND,
+  CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
+  COMMAND_PRIORITY_EDITOR,
+  ElementFormatType,
+  ElementNode,
   LexicalEditor,
+  LexicalNode,
+  RangeSelection,
   SELECTION_CHANGE_COMMAND,
+  TextNode,
 } from "lexical"
-import { useCallback, useEffect, useState } from "react"
-import { executeCommand } from "../../commands"
+import React, { useCallback, useEffect, useState } from "react"
+import { onPreview, onSave, save } from "../../backend"
+import { executeCommand, parseCommandSequence } from "../../commands"
+import tyx2typst from "../../compilers/tyx2typst"
+import { TyXDocument } from "../../models"
+import { showSuccessMessage } from "../../utilities"
+import { useLocalStorage } from "../../utilities/hooks"
+import DocumentSettingsModal from "../DocumentSettingsModal"
 
 interface ToolbarState {
   isBold?: boolean
@@ -123,7 +149,149 @@ const formatQuote = (editor: LexicalEditor, blockType: string) => {
   }
 }
 
-const ToolbarPlugin = () => {
+const getSelectedNode = (selection: RangeSelection): TextNode | ElementNode => {
+  const anchor = selection.anchor
+  const focus = selection.focus
+  const anchorNode = selection.anchor.getNode()
+  const focusNode = selection.focus.getNode()
+  if (anchorNode === focusNode) {
+    return anchorNode
+  }
+  const isBackward = selection.isBackward()
+  if (isBackward) {
+    return $isAtNodeEnd(focus) ? anchorNode : focusNode
+  } else {
+    return $isAtNodeEnd(anchor) ? anchorNode : focusNode
+  }
+}
+
+const $findTopLevelElement = (node: LexicalNode) => {
+  let topLevelElement =
+    node.getKey() === "root"
+      ? node
+      : $findMatchingParent(node, (e) => {
+          const parent = e.getParent()
+          return parent !== null && $isRootOrShadowRoot(parent)
+        })
+
+  if (topLevelElement === null) {
+    topLevelElement = node.getTopLevelElementOrThrow()
+  }
+  return topLevelElement
+}
+
+const ToolbarControl = ({
+  label,
+  children,
+  command,
+  active,
+  disabled,
+  loading,
+  onClick,
+}: {
+  label: string
+  children?: React.ReactNode
+  command?: string
+  active?: boolean
+  disabled?: boolean
+  loading?: boolean
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
+}) => {
+  if (command) {
+    onClick ??= () => parseCommandSequence(command).forEach(executeCommand)
+  }
+
+  return (
+    <Tooltip label={label}>
+      <ActionIcon
+        size="md"
+        variant={active ? undefined : "default"}
+        disabled={disabled || !onClick || loading}
+        onClick={onClick}
+      >
+        {loading ? <Loader size="xs" /> : children}
+      </ActionIcon>
+    </Tooltip>
+  )
+}
+
+const ToolbarControlGroup = ({ children }: { children?: React.ReactNode }) => {
+  return (
+    <ActionIcon.Group display="inline-block" mr={10} mb={10}>
+      {children}
+    </ActionIcon.Group>
+  )
+}
+
+const ManagementControls = () => {
+  const [loadingPreview, setLoadingPreview] = useState(false)
+  const [openDocuments] = useLocalStorage<TyXDocument[]>({
+    key: "Open Documents",
+    defaultValue: [],
+    silent: true,
+  })
+  const [currentDocument] = useLocalStorage<number>({
+    key: "Current Document",
+    defaultValue: 0,
+    silent: true,
+  })
+
+  const doc = openDocuments[currentDocument]
+  const basename = (doc.filename ?? "Untitled")
+    .split("/")
+    .pop()!
+    .split("\\")
+    .pop()
+
+  const preview = () => {
+    setLoadingPreview(true)
+    onPreview()
+      .then(() => setLoadingPreview(false))
+      .catch(() => setLoadingPreview(false))
+  }
+
+  return (
+    <ToolbarControlGroup>
+      <ToolbarControl label="Save" onClick={onSave}>
+        <IconDeviceFloppy stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Export to Typst"
+        onClick={() => {
+          const filename = (doc.filename ?? "Untitled.tyx").replace(
+            ".tyx",
+            ".typ",
+          )
+          save(filename, tyx2typst(doc)).then(() =>
+            showSuccessMessage(`Document exported to ${filename}.`),
+          )
+        }}
+      >
+        <IconFileCode stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Preview PDF"
+        loading={loadingPreview}
+        onClick={preview}
+      >
+        <IconEye stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Document settings"
+        onClick={() =>
+          modals.open({
+            title: `Document Settings (${basename})`,
+            children: <DocumentSettingsModal />,
+          })
+        }
+      >
+        <IconSettings stroke={1.5} />
+      </ToolbarControl>
+    </ToolbarControlGroup>
+  )
+}
+
+const FormatControls = () => {
   const [editor] = useLexicalComposerContext()
   const [toolbarState, setToolbarState] = useState<ToolbarState>({})
 
@@ -174,198 +342,229 @@ const ToolbarPlugin = () => {
   }, [editor])
 
   return (
+    <ToolbarControlGroup>
+      <ToolbarControl
+        active={toolbarState.isBold}
+        label="Toggle bold"
+        command="formatText bold"
+      >
+        <IconBold stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        active={toolbarState.isItalic}
+        label="Toggle italic"
+        command="formatText italic"
+      >
+        <IconItalic stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        active={toolbarState.isUnderline}
+        label="Toggle underline"
+        command="formatText underline"
+      >
+        <IconUnderline stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        active={toolbarState.isStrikethrough}
+        label="Toggle strikethrough"
+        command="formatText strikethrough"
+      >
+        <IconStrikethrough stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        active={toolbarState.isSubscript}
+        label="Toggle subscript"
+        command="formatText subscript"
+      >
+        <IconSubscript stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        active={toolbarState.isSuperscript}
+        label="Toggle superscript"
+        command="formatText superscript"
+      >
+        <IconSuperscript stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        active={toolbarState.isCode}
+        label="Toggle code"
+        command="formatText code"
+      >
+        <IconCode stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Clear formatting"
+        onClick={() => clearFormatting(editor)}
+      >
+        <IconClearFormatting stroke={1.5} />
+      </ToolbarControl>
+    </ToolbarControlGroup>
+  )
+}
+
+const InsertControls = () => {
+  const [editor] = useLexicalComposerContext()
+
+  return (
+    <ToolbarControlGroup>
+      <ToolbarControl label="Insert math" command="insertMathInline">
+        <IconSum stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Insert quote"
+        onClick={() => formatQuote(editor, "")}
+      >
+        <IconBlockquote stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl label="Insert horizontal line">
+        <IconLineDotted stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Insert unordered list"
+        command="insertUnorderedList"
+      >
+        <IconList stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl label="Insert ordered list" command="insertOrderedList">
+        <IconListNumbers stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl label="Insert code block">
+        <IconCode stroke={1.5} />
+      </ToolbarControl>
+    </ToolbarControlGroup>
+  )
+}
+
+const AlignmentControls = () => {
+  const [editor] = useLexicalComposerContext()
+  const [alignment, setAlignment] = useState<ElementFormatType>("")
+
+  const $updateAlignment = useCallback(() => {
+    editor.read(() => {
+      const selection = $getSelection()
+      if ($isRangeSelection(selection)) {
+        const node = getSelectedNode(selection)
+        const parent = node.getParent()
+
+        setAlignment(
+          $isElementNode(node)
+            ? node.getFormatType()
+            : parent?.getFormatType() || "left",
+        )
+      }
+
+      if ($isNodeSelection(selection)) {
+        for (const node of selection.getNodes()) {
+          const selectedElement = $findTopLevelElement(node)
+          if ($isElementNode(selectedElement)) {
+            setAlignment(selectedElement.getFormatType())
+          }
+        }
+      }
+    })
+  }, [])
+
+  useEffect(() => {
+    return mergeRegister(
+      editor.registerCommand(
+        SELECTION_CHANGE_COMMAND,
+        () => {
+          $updateAlignment()
+          return false
+        },
+        COMMAND_PRIORITY_EDITOR,
+      ),
+      editor.registerUpdateListener($updateAlignment),
+    )
+  }, [editor])
+
+  return (
+    <ToolbarControlGroup>
+      <ToolbarControl
+        label="Align left"
+        command="formatElement left"
+        active={alignment === "left"}
+      >
+        <IconAlignLeft stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Align center"
+        command="formatElement center"
+        active={alignment === "center"}
+      >
+        <IconAlignCenter stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Align right"
+        command="formatElement right"
+        active={alignment === "right"}
+      >
+        <IconAlignRight stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Justify text"
+        command="formatElement justify"
+        active={alignment === "justify"}
+      >
+        <IconAlignJustified stroke={1.5} />
+      </ToolbarControl>
+    </ToolbarControlGroup>
+  )
+}
+
+const UndoRedoControls = () => {
+  const [editor] = useLexicalComposerContext()
+  const [canUndo, setCanUndo] = useState(false)
+  const [canRedo, setCanRedo] = useState(false)
+
+  useEffect(() => {
+    return mergeRegister(
+      editor.registerCommand(
+        CAN_UNDO_COMMAND,
+        (canUndo) => {
+          setCanUndo(canUndo)
+          return false
+        },
+        COMMAND_PRIORITY_EDITOR,
+      ),
+      editor.registerCommand(
+        CAN_REDO_COMMAND,
+        (canRedo) => {
+          setCanRedo(canRedo)
+          return false
+        },
+        COMMAND_PRIORITY_EDITOR,
+      ),
+    )
+  }, [editor])
+
+  return (
+    <ToolbarControlGroup>
+      <ToolbarControl label="Undo" command="undo" disabled={!canUndo}>
+        <IconArrowBackUp stroke={1.5} />
+      </ToolbarControl>
+      <ToolbarControl label="Redo" command="redo" disabled={!canRedo}>
+        <IconArrowForwardUp stroke={1.5} />
+      </ToolbarControl>
+    </ToolbarControlGroup>
+  )
+}
+
+const ToolbarPlugin = () => {
+  return (
     <div
       style={{
-        marginBottom: 10,
+        flex: "none",
+        padding: 10,
+        paddingBottom: 0,
+        borderBottom: "1px solid var(--tab-border-color)",
       }}
     >
-      <ActionIcon.Group display="inline-block" mr={10} mb={10}>
-        <ActionIcon
-          variant={toolbarState.isBold ? undefined : "default"}
-          title="Toggle bold"
-          aria-label="Toggle bold"
-          onClick={() => executeCommand(["formatText", "bold"])}
-        >
-          <IconBold stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant={toolbarState.isItalic ? undefined : "default"}
-          title="Toggle italic"
-          aria-label="Toggle italic"
-          onClick={() => executeCommand(["formatText", "italic"])}
-        >
-          <IconItalic stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant={toolbarState.isUnderline ? undefined : "default"}
-          title="Toggle underline"
-          aria-label="Toggle underline"
-          onClick={() => executeCommand(["formatText", "underline"])}
-        >
-          <IconUnderline stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant={toolbarState.isStrikethrough ? undefined : "default"}
-          title="Toggle strikethrough"
-          aria-label="Toggle strikethrough"
-          onClick={() => executeCommand(["formatText", "strikethrough"])}
-        >
-          <IconStrikethrough stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant={toolbarState.isSubscript ? undefined : "default"}
-          title="Toggle subscript"
-          aria-label="Toggle subscript"
-          onClick={() => executeCommand(["formatText", "subscript"])}
-        >
-          <IconSubscript stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant={toolbarState.isSuperscript ? undefined : "default"}
-          title="Toggle superscript"
-          aria-label="Toggle superscript"
-          onClick={() => executeCommand(["formatText", "superscript"])}
-        >
-          <IconSuperscript stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant={toolbarState.isCode ? undefined : "default"}
-          title="Toggle code"
-          aria-label="Toggle code"
-          onClick={() => executeCommand(["formatText", "code"])}
-        >
-          <IconCode stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant="default"
-          title="Clear formatting"
-          aria-label="Clear formatting"
-          onClick={() => clearFormatting(editor)}
-        >
-          <IconClearFormatting stroke={1.5} />
-        </ActionIcon>
-      </ActionIcon.Group>
-      <ActionIcon.Group display="inline-block" mr={10} mb={10}>
-        <ActionIcon
-          size="md"
-          variant="default"
-          title="Insert math"
-          aria-label="Insert math"
-          onClick={() => executeCommand(["insertMathInline"])}
-        >
-          <IconSum stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant="default"
-          title="Insert quote"
-          aria-label="Insert quote"
-          onClick={() => formatQuote(editor, "")}
-        >
-          <IconBlockquote stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant="default"
-          title="Insert horizontal line"
-          aria-label="Insert horizontal line"
-          onClick={() => executeCommand(["insertMathInline"])}
-        >
-          <IconLineDotted stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant="default"
-          title="Insert unordered list"
-          aria-label="Insert unordered list"
-          onClick={() => executeCommand(["insertUnorderedList"])}
-        >
-          <IconList stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant="default"
-          title="Insert ordered list"
-          aria-label="Insert ordered list"
-          onClick={() => executeCommand(["insertOrderedList"])}
-        >
-          <IconListNumbers stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant="default"
-          title="Insert code block"
-          aria-label="Insert code block"
-          onClick={() => executeCommand(["insertMathInline"])}
-        >
-          <IconCode stroke={1.5} />
-        </ActionIcon>
-      </ActionIcon.Group>
-      <ActionIcon.Group display="inline-block" mr={10} mb={10}>
-        <ActionIcon
-          size="md"
-          variant="default"
-          title="Align left"
-          aria-label="Align left"
-          onClick={() => executeCommand(["formatElement", "left"])}
-        >
-          <IconAlignLeft stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant="default"
-          title="Align center"
-          aria-label="Align center"
-          onClick={() => executeCommand(["formatElement", "center"])}
-        >
-          <IconAlignCenter stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant="default"
-          title="Align right"
-          aria-label="Align right"
-          onClick={() => executeCommand(["formatElement", "right"])}
-        >
-          <IconAlignRight stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant="default"
-          title="Justify text"
-          aria-label="Justify text"
-          onClick={() => executeCommand(["formatElement", "justify"])}
-        >
-          <IconAlignJustified stroke={1.5} />
-        </ActionIcon>
-      </ActionIcon.Group>
-      <ActionIcon.Group display="inline-block" mr={10} mb={10}>
-        <ActionIcon
-          size="md"
-          variant="default"
-          title="Undo"
-          aria-label="Undo"
-          onClick={() => executeCommand(["undo"])}
-        >
-          <IconArrowBackUp stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon
-          size="md"
-          variant="default"
-          title="Redo"
-          aria-label="Redo"
-          onClick={() => executeCommand(["redo"])}
-        >
-          <IconArrowForwardUp stroke={1.5} />
-        </ActionIcon>
-      </ActionIcon.Group>
+      <ManagementControls />
+      <FormatControls />
+      <InsertControls />
+      <AlignmentControls />
+      <UndoRedoControls />
     </div>
   )
 }

@@ -27,6 +27,21 @@ declare module "mathlive" {
   }
 }
 
+declare global {
+  interface Window {
+    currentMathEditor?: MathfieldElement
+  }
+
+  namespace JSX {
+    interface IntrinsicElements {
+      "math-field": React.DetailedHTMLProps<
+        React.HTMLAttributes<MathfieldElement>,
+        MathfieldElement
+      >
+    }
+  }
+}
+
 export const INSERT_MATH_INLINE_COMMAND: LexicalCommand<void> = createCommand()
 
 export type SerializedMathNode = Spread<
@@ -44,7 +59,7 @@ export class MathNode extends DecoratorNode<ReactNode> {
   __asciimath: string
 
   static getType(): string {
-    return "math-inline"
+    return "math"
   }
 
   static clone(node: MathNode): MathNode {
@@ -209,6 +224,7 @@ export const MathEditor = ({
 
         mf.addEventListener("focus", updateCurrentMathEditor)
         mf.addEventListener("blur", updateCurrentMathEditor)
+        mf.addEventListener("keypress", (e) => e.stopPropagation())
 
         mf.inlineShortcuts = Object.fromEntries(
           getSettings().mathInlineShortcuts ?? DEFAULT_MATH_INLINE_SHORTCUTS,
@@ -261,30 +277,6 @@ export const MathEditor = ({
           }
           e.stopImmediatePropagation()
         })
-
-        //     if (isForward) {
-        //       moveForward(props)
-        //     } else {
-        //       position === 0
-        //         ? props.editor
-        //             .chain()
-        //             .insertContentAt(position, {
-        //               type: "paragraph",
-        //             })
-        //             .setTextSelection(position)
-        //             .focus()
-        //             .run()
-        //         : props.editor
-        //             .chain()
-        //             .setTextSelection(
-        //               props.node.type.name === "mathBlock"
-        //                 ? position - 1
-        //                 : position,
-        //             )
-        //             .focus()
-        //             .run()
-        //     }
-        //   })
 
         mf.addEventListener("beforeinput", (e: InputEvent) => {
           const target = e.target as MathfieldElement

@@ -2,8 +2,6 @@
  * @file Useful react hooks for the app.
  */
 
-import { useForceUpdate } from "@mantine/hooks"
-import { Editor } from "@tiptap/react"
 import { useEffect, useState } from "react"
 
 /** Returns the given JSON-serialized item from local storage. */
@@ -72,14 +70,4 @@ export const useLocalStorage = <T>({
   }
 
   return [value, userSetValue]
-}
-
-/** Re-renders the component whenever the editor selection or focus changes. */
-export const useUpdateOnChange = (editor: Editor | null) => {
-  const forceUpdate = useForceUpdate()
-  useEffect(() => {
-    editor?.on("selectionUpdate", forceUpdate)
-    editor?.on("focus", forceUpdate)
-    editor?.on("blur", forceUpdate)
-  }, [editor])
 }

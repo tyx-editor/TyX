@@ -20,16 +20,6 @@ p {
   height: 18px;
 }
 
-.mantine-RichTextEditor-content table td {
-  border-width: 1px;
-  border-style: solid;
-  border-color: #666666;
-}
-
-.mantine-RichTextEditor-content table {
-  table-layout: fixed;
-}
-
 math-field::part(virtual-keyboard-toggle),
 math-field::part(menu-toggle) {
   display: none;
@@ -82,25 +72,6 @@ math-field::part(container) {
   align-items: center;
 }
 
-.mantine-RichTextEditor-root,
-.mantine-RichTextEditor-content,
-.mantine-RichTextEditor-content > .tiptap {
-  height: 100%;
-}
-
-.mantine-RichTextEditor-root {
-  display: flex;
-  flex-direction: column;
-}
-
-.mantine-RichTextEditor-typographyStylesProvider {
-  flex-grow: 1;
-}
-
-.mantine-RichTextEditor-content pre {
-  direction: ltr;
-}
-
 .function-call {
   border-radius: 10px;
   border: 2px dashed gray;
@@ -139,10 +110,8 @@ math-field::part(container) {
   font-weight: bold;
 }
 
-div[data-lexical-editor="true"],
-div[data-lexical-editor="true"]:focus {
-  height: 100%;
-  outline: none !important;
+.italic {
+  font-style: italic;
 }
 
 .underline {
@@ -159,4 +128,12 @@ div[data-lexical-editor="true"]:focus {
 
 math-field::part(content) {
   padding: 2px;
+}
+
+.editor,
+.editor:focus {
+  padding: 10px;
+  flex-grow: 1;
+  overflow-y: auto;
+  outline: none !important;
 }
