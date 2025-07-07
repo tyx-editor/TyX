@@ -20,7 +20,7 @@ import { TRANSLATIONS } from "../translations"
 import { useLocalStorage } from "../utilities/hooks"
 import KeyboardShortcutEditor from "./KeyboardShortcutEditor"
 import MathInlineShortcutEditor from "./MathInlineShortcutEditor"
-import { KEYBOARD_MAPS } from "./plugins/KeyboardMapPlugin"
+import { KEYBOARD_MAPS } from "./plugins/keyboardMap"
 
 const SettingsModal = () => {
   const { t } = useTranslation()

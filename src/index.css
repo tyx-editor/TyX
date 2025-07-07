@@ -3,6 +3,7 @@ body,
 #root {
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 h1,
@@ -130,10 +131,47 @@ math-field::part(content) {
   padding: 2px;
 }
 
-.editor,
 .editor:focus {
-  padding: 10px;
-  flex-grow: 1;
-  overflow-y: auto;
   outline: none !important;
+}
+
+.editor blockquote {
+  margin: 0px;
+  padding-right: 10px;
+  border-right: 1px solid var(--tab-border-color);
+  opacity: 0.6;
+}
+
+.editor .code {
+  display: block;
+  direction: ltr;
+  background: #181818;
+  color: white;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.editor table td,
+.editor table th,
+.editor table {
+  border: 1px solid var(--tab-border-color);
+  border-collapse: collapse;
+}
+
+.editor table th {
+  text-align: initial;
+}
+
+.editor table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.toolbar-control .tabler-icon {
+  stroke-width: 1.25;
+}
+
+li:has(ol),
+li:has(ul) {
+  list-style-type: none;
 }

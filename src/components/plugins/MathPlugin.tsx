@@ -1,17 +1,17 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { useLexicalNodeSelection } from "@lexical/react/useLexicalNodeSelection"
+import { mergeRegister } from "@lexical/utils"
 import {
-  $applyNodeReplacement,
   $createNodeSelection,
   $getNodeByKey,
   $getSelection,
   $insertNodes,
+  $isNodeSelection,
   $setSelection,
+  COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_EDITOR,
-  createCommand,
   DecoratorNode,
-  LexicalCommand,
-  LexicalNode,
+  KEY_DOWN_COMMAND,
   LexicalUpdateJSON,
   NodeKey,
   SerializedLexicalNode,
@@ -20,6 +20,13 @@ import {
 import { MathfieldElement } from "mathlive"
 import { ReactNode, useEffect, useRef, useState } from "react"
 import { DEFAULT_MATH_INLINE_SHORTCUTS, getSettings } from "../../settings"
+import {
+  $createMathNode,
+  $isMathNode,
+  INSERT_MATH_COMMAND,
+  MATH_COMMAND,
+  TOGGLE_MATH_INLINE_COMMAND,
+} from "./math"
 
 declare module "mathlive" {
   interface MathfieldElement {
@@ -41,8 +48,6 @@ declare global {
     }
   }
 }
-
-export const INSERT_MATH_INLINE_COMMAND: LexicalCommand<void> = createCommand()
 
 export type SerializedMathNode = Spread<
   {
@@ -130,22 +135,19 @@ export class MathNode extends DecoratorNode<ReactNode> {
   }
 
   isInline() {
-    return this.__inline
+    return this.getLatest().__inline
   }
 
   createDOM(): HTMLElement {
-    if (this.__inline) {
-      const span = document.createElement("span")
-      span.classList.add("math-inline")
-      return span
-    } else {
-      const div = document.createElement("div")
-      div.classList.add("math-block")
-      return div
-    }
+    const div = document.createElement("div")
+    div.className = this.__inline ? "math-inline" : "math-block"
+    return div
   }
 
-  updateDOM(): false {
+  updateDOM(prevNode: this, dom: HTMLElement): false {
+    if (prevNode.__inline !== this.__inline) {
+      dom.className = this.__inline ? "math-inline" : "math-block"
+    }
     return false
   }
 
@@ -158,19 +160,6 @@ export class MathNode extends DecoratorNode<ReactNode> {
       />
     )
   }
-}
-
-export function $createMathNode(
-  contents: string = "",
-  inline: boolean = true,
-): MathNode {
-  return $applyNodeReplacement(new MathNode(contents, undefined, inline))
-}
-
-export function $isMathNode(
-  node: LexicalNode | null | undefined,
-): node is MathNode {
-  return node instanceof MathNode
 }
 
 export const MathEditor = ({
@@ -216,15 +205,21 @@ export const MathEditor = ({
   useEffect(() => {
     const mf = mathfieldRef.current
     if (mf) {
-      mf.defaultMode = inline ? "inline-math" : "math"
       mf.mathVirtualKeyboardPolicy = "manual"
 
       if (mf.isConnected && !mf.isRegistered) {
         mf.isRegistered = true
 
-        mf.addEventListener("focus", updateCurrentMathEditor)
+        mf.addEventListener("focus", () => {
+          updateCurrentMathEditor()
+          editor.update(() => {
+            const selection = $createNodeSelection()
+            selection.add(nodeKey)
+            $setSelection(selection)
+          })
+        })
         mf.addEventListener("blur", updateCurrentMathEditor)
-        mf.addEventListener("keypress", (e) => e.stopPropagation())
+        // mf.addEventListener("keypress", (e) => e.stopPropagation())
 
         mf.inlineShortcuts = Object.fromEntries(
           getSettings().mathInlineShortcuts ?? DEFAULT_MATH_INLINE_SHORTCUTS,
@@ -275,7 +270,6 @@ export const MathEditor = ({
               })
             }
           }
-          e.stopImmediatePropagation()
         })
 
         mf.addEventListener("beforeinput", (e: InputEvent) => {
@@ -293,7 +287,14 @@ export const MathEditor = ({
         mf.menuItems = []
       }
     }
-  }, [mathfieldRef])
+  }, [mathfieldRef.current])
+
+  useEffect(() => {
+    const mf = mathfieldRef.current
+    if (mf) {
+      mf.defaultMode = inline ? "inline-math" : "math"
+    }
+  }, [inline])
 
   useEffect(() => {
     if (isSelected) {
@@ -304,7 +305,9 @@ export const MathEditor = ({
         }
       })
     }
-  }, [mathfieldRef, isSelected])
+
+    return updateCurrentMathEditor
+  }, [mathfieldRef.current, isSelected])
 
   return <math-field ref={mathfieldRef}>{formula}</math-field>
 }
@@ -313,23 +316,64 @@ const MathPlugin = () => {
   const [editor] = useLexicalComposerContext()
 
   useEffect(() => {
-    return editor.registerCommand(
-      INSERT_MATH_INLINE_COMMAND,
-      () => {
-        const node = $createMathNode()
-        $insertNodes([node])
+    return mergeRegister(
+      editor.registerCommand(
+        INSERT_MATH_COMMAND,
+        (inline) => {
+          const node = $createMathNode("", inline)
+          $insertNodes([node])
 
-        const selection = $createNodeSelection()
-        selection.add(node.getKey())
-        $setSelection(selection)
+          const selection = $createNodeSelection()
+          selection.add(node.getKey())
+          $setSelection(selection)
 
-        return true
-      },
-      COMMAND_PRIORITY_EDITOR,
+          return true
+        },
+        COMMAND_PRIORITY_EDITOR,
+      ),
+      editor.registerCommand(
+        TOGGLE_MATH_INLINE_COMMAND,
+        () => {
+          const selection = $getSelection()
+          if ($isNodeSelection(selection)) {
+            for (const node of selection.getNodes()) {
+              if ($isMathNode(node)) {
+                node.setInline(!node.isInline())
+                return true
+              }
+            }
+          }
+
+          editor.dispatchCommand(INSERT_MATH_COMMAND, false)
+          return true
+        },
+        COMMAND_PRIORITY_EDITOR,
+      ),
+      editor.registerCommand(
+        MATH_COMMAND,
+        ([command, ...args]) => {
+          try {
+            // @ts-ignore
+            window.currentMathEditor?.executeCommand(command, ...args)
+          } catch (e) {
+            console.log(e)
+          }
+          return true
+        },
+        COMMAND_PRIORITY_EDITOR,
+      ),
+      editor.registerCommand(
+        KEY_DOWN_COMMAND,
+        (e) => {
+          const target = e.target as HTMLElement | null
+          return target?.tagName === "MATH-FIELD"
+        },
+        COMMAND_PRIORITY_CRITICAL,
+      ),
     )
   }, [editor])
 
-  return <></>
+  return null
 }
 
 export default MathPlugin

@@ -12,7 +12,8 @@
     "tauri": "tauri",
     "prettier": "prettier",
     "build-web": "echo 'export * from \"./web\"' > src/backend/index.ts && bun run build && echo 'export * from \"./tauri\"' > src/backend/index.ts",
-    "deploy": "bun run build-web && netlify deploy -d dist --prod --site tyx-editor"
+    "deploy": "bun run build-web && netlify deploy -d dist --prod --site tyx-editor",
+    "lint": "eslint \"src/**/*.{js,ts,tsx}\""
   },
   "dependencies": {
     "@lexical/react": "^0.33.0",
@@ -41,14 +42,18 @@
     "zod": "^3.25.56"
   },
   "devDependencies": {
+    "@eslint/js": "^9.30.1",
     "@tauri-apps/cli": "^2.5.0",
     "@types/bun": "^1.2.12",
     "@types/mousetrap": "^1.6.15",
     "@types/react": "^18.3.21",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^4.4.1",
+    "eslint": "^9.30.1",
+    "eslint-plugin-react-refresh": "^0.4.20",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3",
+    "typescript-eslint": "^8.36.0",
     "vite": "^5.4.19",
     "vite-plugin-static-copy": "^3.0.0"
   },

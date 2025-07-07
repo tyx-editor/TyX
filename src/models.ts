@@ -32,7 +32,7 @@ export interface TyXDocument {
   version: string
   preamble?: string
   filename?: string
-  content: SerializedEditorState<SerializedLexicalNode>
+  content?: SerializedEditorState<SerializedLexicalNode>
   dirty?: boolean
   settings?: TyXDocumentSettings
 }

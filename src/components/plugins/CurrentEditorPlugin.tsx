@@ -14,7 +14,7 @@ const CurrentEditorPlugin = () => {
     }
   }, [editor])
 
-  return <></>
+  return null
 }
 
 export default CurrentEditorPlugin

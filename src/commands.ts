@@ -10,15 +10,30 @@ import {
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
 } from "@lexical/list"
+import { INSERT_HORIZONTAL_RULE_COMMAND } from "@lexical/react/LexicalHorizontalRuleNode"
+import { INSERT_TABLE_COMMAND } from "@lexical/table"
 import {
   FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
+  INDENT_CONTENT_COMMAND,
+  INSERT_LINE_BREAK_COMMAND,
   LexicalCommand,
+  OUTDENT_CONTENT_COMMAND,
   REDO_COMMAND,
   UNDO_COMMAND,
 } from "lexical"
-import { TOGGLE_KEYBOARD_MAP_COMMAND } from "./components/plugins/KeyboardMapPlugin"
-import { INSERT_MATH_INLINE_COMMAND } from "./components/plugins/MathPlugin"
+import { TOGGLE_KEYBOARD_MAP_COMMAND } from "./components/plugins/keyboardMap"
+import {
+  INSERT_MATH_COMMAND,
+  MATH_COMMAND,
+  TOGGLE_MATH_INLINE_COMMAND,
+} from "./components/plugins/math"
+import {
+  TABLE_INSERT_COLUMN_RIGHT_COMMAND,
+  TABLE_INSERT_ROW_BELOW_COMMAND,
+  TABLE_REMOVE_COLUMN_COMMAND,
+  TABLE_REMOVE_ROW_COMMAND,
+} from "./components/plugins/tableCommands"
 
 const COMMANDS: Record<string, LexicalCommand<any>> = {
   toggleKeyboardMap: TOGGLE_KEYBOARD_MAP_COMMAND,
@@ -26,9 +41,20 @@ const COMMANDS: Record<string, LexicalCommand<any>> = {
   formatText: FORMAT_TEXT_COMMAND,
   undo: UNDO_COMMAND,
   redo: REDO_COMMAND,
-  insertMathInline: INSERT_MATH_INLINE_COMMAND,
+  insertMath: INSERT_MATH_COMMAND,
   insertOrderedList: INSERT_ORDERED_LIST_COMMAND,
   insertUnorderedList: INSERT_UNORDERED_LIST_COMMAND,
+  insertLineBreak: INSERT_LINE_BREAK_COMMAND,
+  insertHorizontalLine: INSERT_HORIZONTAL_RULE_COMMAND,
+  toggleMathInline: TOGGLE_MATH_INLINE_COMMAND,
+  math: MATH_COMMAND,
+  indent: INDENT_CONTENT_COMMAND,
+  outdent: OUTDENT_CONTENT_COMMAND,
+  insertTable: INSERT_TABLE_COMMAND,
+  tableInsertRowBelow: TABLE_INSERT_ROW_BELOW_COMMAND,
+  tableInsertColumnRight: TABLE_INSERT_COLUMN_RIGHT_COMMAND,
+  tableRemoveRow: TABLE_REMOVE_ROW_COMMAND,
+  tableRemoveColumn: TABLE_REMOVE_COLUMN_COMMAND,
 }
 
 /** Parse the given parameter into the corresponding JS object, to be passed to command functions. */
@@ -50,24 +76,29 @@ export const parseCommandParameter = (parameter: string) => {
 
   try {
     return JSON.parse(parameter)
-  } catch (_) {}
+  } catch {
+    //
+  }
 
   return parameter
 }
 
-/** Splits the given command by spaces, while skipping spaces inside objects. */
+/** Splits the given command by spaces, while skipping spaces inside objects or strings. */
 export const splitCommand = (command: string) => {
   const result: string[] = []
 
   let currentStart = 0
   let braceCount = 0
+  let quoteCount = 0
   for (let i = 0; i < command.length; i++) {
     const currentChar = command.charAt(i)
-    if (currentChar === " " && braceCount === 0) {
+    if (currentChar === " " && braceCount === 0 && quoteCount === 0) {
       result.push(command.substring(currentStart, i))
       currentStart = i + 1
     } else if (currentChar === "{") {
       braceCount++
+    } else if (currentChar === '"') {
+      quoteCount = (quoteCount + 1) % 2
     } else if (currentChar === "}") {
       braceCount--
     }

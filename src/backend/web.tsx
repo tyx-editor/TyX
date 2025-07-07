@@ -26,7 +26,6 @@ export const onNew = () => {
   const newDocument: TyXDocument = {
     version,
     preamble: "",
-    content: {},
     settings: getLocalStorage("Default Settings", {}),
   }
   onOpen(undefined, JSON.stringify(newDocument))

@@ -1,68 +1,68 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
-import {
-  $createQuoteNode,
-  $isHeadingNode,
-  $isQuoteNode,
-} from "@lexical/rich-text"
-import { $isAtNodeEnd, $setBlocksType } from "@lexical/selection"
-import { $isTableSelection } from "@lexical/table"
-import {
-  $findMatchingParent,
-  $getNearestBlockElementAncestorOrThrow,
-  mergeRegister,
-} from "@lexical/utils"
-import { ActionIcon, Loader, Tooltip } from "@mantine/core"
+import { $findTableNode } from "@lexical/table"
+import { mergeRegister } from "@lexical/utils"
+import { ActionIcon, Loader, Menu, Tooltip } from "@mantine/core"
 import { modals } from "@mantine/modals"
 import {
   IconAlignCenter,
   IconAlignJustified,
   IconAlignLeft,
   IconAlignRight,
+  IconAlpha,
   IconArrowBackUp,
   IconArrowForwardUp,
   IconBlockquote,
   IconBold,
   IconClearFormatting,
   IconCode,
+  IconCodeAsterisk,
+  IconColumnInsertRight,
+  IconColumnRemove,
   IconDeviceFloppy,
   IconEye,
   IconFileCode,
+  IconIndentDecrease,
+  IconIndentIncrease,
   IconItalic,
   IconLineDotted,
   IconList,
   IconListNumbers,
+  IconMatrix,
+  IconPhoto,
+  IconRowInsertBottom,
+  IconRowRemove,
   IconSettings,
   IconStrikethrough,
   IconSubscript,
   IconSum,
   IconSuperscript,
+  IconTablePlus,
   IconUnderline,
 } from "@tabler/icons-react"
 import {
-  $createParagraphNode,
   $getSelection,
   $isElementNode,
   $isNodeSelection,
   $isRangeSelection,
-  $isRootOrShadowRoot,
-  $isTextNode,
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_EDITOR,
   ElementFormatType,
-  ElementNode,
-  LexicalEditor,
-  LexicalNode,
-  RangeSelection,
   SELECTION_CHANGE_COMMAND,
-  TextNode,
 } from "lexical"
 import React, { useCallback, useEffect, useState } from "react"
 import { onPreview, onSave, save } from "../../backend"
 import { executeCommand, parseCommandSequence } from "../../commands"
 import tyx2typst from "../../compilers/tyx2typst"
 import { TyXDocument } from "../../models"
+import {
+  $findTopLevelElement,
+  clearFormatting,
+  formatCode,
+  formatQuote,
+  getSelectedNode,
+} from "../../resources/playground"
 import { showSuccessMessage } from "../../utilities"
 import { useLocalStorage } from "../../utilities/hooks"
 import DocumentSettingsModal from "../DocumentSettingsModal"
@@ -79,141 +79,37 @@ interface ToolbarState {
 type ToolbarStateKey = keyof ToolbarState
 type ToolbarStateValue<Key extends keyof ToolbarState> = ToolbarState[Key]
 
-const clearFormatting = (editor: LexicalEditor) => {
-  editor.update(() => {
-    const selection = $getSelection()
-    if ($isRangeSelection(selection) || $isTableSelection(selection)) {
-      const anchor = selection.anchor
-      const focus = selection.focus
-      const nodes = selection.getNodes()
-      const extractedNodes = selection.extract()
-
-      if (anchor.key === focus.key && anchor.offset === focus.offset) {
-        return
-      }
-
-      nodes.forEach((node, idx) => {
-        // We split the first and last node by the selection
-        // So that we don't format unselected text inside those nodes
-        if ($isTextNode(node)) {
-          // Use a separate variable to ensure TS does not lose the refinement
-          let textNode = node
-          if (idx === 0 && anchor.offset !== 0) {
-            textNode = textNode.splitText(anchor.offset)[1] || textNode
-          }
-          if (idx === nodes.length - 1) {
-            textNode = textNode.splitText(focus.offset)[0] || textNode
-          }
-          /**
-           * If the selected text has one format applied
-           * selecting a portion of the text, could
-           * clear the format to the wrong portion of the text.
-           *
-           * The cleared text is based on the length of the selected text.
-           */
-          // We need this in case the selected text only has one format
-          const extractedTextNode = extractedNodes[0]
-          if (nodes.length === 1 && $isTextNode(extractedTextNode)) {
-            textNode = extractedTextNode
-          }
-
-          if (textNode.__style !== "") {
-            textNode.setStyle("")
-          }
-          if (textNode.__format !== 0) {
-            textNode.setFormat(0)
-          }
-          const nearestBlockElement =
-            $getNearestBlockElementAncestorOrThrow(textNode)
-          if (nearestBlockElement.__format !== 0) {
-            nearestBlockElement.setFormat("")
-          }
-          if (nearestBlockElement.__indent !== 0) {
-            nearestBlockElement.setIndent(0)
-          }
-          node = textNode
-        } else if ($isHeadingNode(node) || $isQuoteNode(node)) {
-          node.replace($createParagraphNode(), true)
-        }
-      })
-    }
-  })
-}
-
-const formatQuote = (editor: LexicalEditor, blockType: string) => {
-  if (blockType !== "quote") {
-    editor.update(() => {
-      const selection = $getSelection()
-      $setBlocksType(selection, () => $createQuoteNode())
-    })
+const ToolbarControl = React.forwardRef<
+  HTMLDivElement,
+  {
+    label: string
+    children?: React.ReactNode
+    command?: string
+    active?: boolean
+    disabled?: boolean
+    loading?: boolean
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
   }
-}
-
-const getSelectedNode = (selection: RangeSelection): TextNode | ElementNode => {
-  const anchor = selection.anchor
-  const focus = selection.focus
-  const anchorNode = selection.anchor.getNode()
-  const focusNode = selection.focus.getNode()
-  if (anchorNode === focusNode) {
-    return anchorNode
-  }
-  const isBackward = selection.isBackward()
-  if (isBackward) {
-    return $isAtNodeEnd(focus) ? anchorNode : focusNode
-  } else {
-    return $isAtNodeEnd(anchor) ? anchorNode : focusNode
-  }
-}
-
-const $findTopLevelElement = (node: LexicalNode) => {
-  let topLevelElement =
-    node.getKey() === "root"
-      ? node
-      : $findMatchingParent(node, (e) => {
-          const parent = e.getParent()
-          return parent !== null && $isRootOrShadowRoot(parent)
-        })
-
-  if (topLevelElement === null) {
-    topLevelElement = node.getTopLevelElementOrThrow()
-  }
-  return topLevelElement
-}
-
-const ToolbarControl = ({
-  label,
-  children,
-  command,
-  active,
-  disabled,
-  loading,
-  onClick,
-}: {
-  label: string
-  children?: React.ReactNode
-  command?: string
-  active?: boolean
-  disabled?: boolean
-  loading?: boolean
-  onClick?: React.MouseEventHandler<HTMLButtonElement>
-}) => {
+>(({ label, children, command, active, disabled, loading, onClick }, ref) => {
   if (command) {
     onClick ??= () => parseCommandSequence(command).forEach(executeCommand)
   }
 
   return (
-    <Tooltip label={label}>
+    <Tooltip label={label} ref={ref}>
       <ActionIcon
+        className="toolbar-control"
         size="md"
         variant={active ? undefined : "default"}
         disabled={disabled || !onClick || loading}
         onClick={onClick}
+        onMouseDown={(e) => e.preventDefault()}
       >
         {loading ? <Loader size="xs" /> : children}
       </ActionIcon>
     </Tooltip>
   )
-}
+})
 
 const ToolbarControlGroup = ({ children }: { children?: React.ReactNode }) => {
   return (
@@ -253,7 +149,7 @@ const ManagementControls = () => {
   return (
     <ToolbarControlGroup>
       <ToolbarControl label="Save" onClick={onSave}>
-        <IconDeviceFloppy stroke={1.5} />
+        <IconDeviceFloppy />
       </ToolbarControl>
       <ToolbarControl
         label="Export to Typst"
@@ -267,14 +163,14 @@ const ManagementControls = () => {
           )
         }}
       >
-        <IconFileCode stroke={1.5} />
+        <IconFileCode />
       </ToolbarControl>
       <ToolbarControl
         label="Preview PDF"
         loading={loadingPreview}
         onClick={preview}
       >
-        <IconEye stroke={1.5} />
+        <IconEye />
       </ToolbarControl>
       <ToolbarControl
         label="Document settings"
@@ -285,7 +181,7 @@ const ManagementControls = () => {
           })
         }
       >
-        <IconSettings stroke={1.5} />
+        <IconSettings />
       </ToolbarControl>
     </ToolbarControlGroup>
   )
@@ -348,55 +244,55 @@ const FormatControls = () => {
         label="Toggle bold"
         command="formatText bold"
       >
-        <IconBold stroke={1.5} />
+        <IconBold />
       </ToolbarControl>
       <ToolbarControl
         active={toolbarState.isItalic}
         label="Toggle italic"
         command="formatText italic"
       >
-        <IconItalic stroke={1.5} />
+        <IconItalic />
       </ToolbarControl>
       <ToolbarControl
         active={toolbarState.isUnderline}
         label="Toggle underline"
         command="formatText underline"
       >
-        <IconUnderline stroke={1.5} />
+        <IconUnderline />
       </ToolbarControl>
       <ToolbarControl
         active={toolbarState.isStrikethrough}
         label="Toggle strikethrough"
         command="formatText strikethrough"
       >
-        <IconStrikethrough stroke={1.5} />
+        <IconStrikethrough />
       </ToolbarControl>
       <ToolbarControl
         active={toolbarState.isSubscript}
         label="Toggle subscript"
         command="formatText subscript"
       >
-        <IconSubscript stroke={1.5} />
+        <IconSubscript />
       </ToolbarControl>
       <ToolbarControl
         active={toolbarState.isSuperscript}
         label="Toggle superscript"
         command="formatText superscript"
       >
-        <IconSuperscript stroke={1.5} />
+        <IconSuperscript />
       </ToolbarControl>
       <ToolbarControl
         active={toolbarState.isCode}
         label="Toggle code"
         command="formatText code"
       >
-        <IconCode stroke={1.5} />
+        <IconCode />
       </ToolbarControl>
       <ToolbarControl
         label="Clear formatting"
         onClick={() => clearFormatting(editor)}
       >
-        <IconClearFormatting stroke={1.5} />
+        <IconClearFormatting />
       </ToolbarControl>
     </ToolbarControlGroup>
   )
@@ -407,29 +303,41 @@ const InsertControls = () => {
 
   return (
     <ToolbarControlGroup>
+      <ToolbarControl label="Insert image">
+        <IconPhoto />
+      </ToolbarControl>
+      <ToolbarControl label="Insert Typst code">
+        <IconCodeAsterisk />
+      </ToolbarControl>
       <ToolbarControl label="Insert math" command="insertMathInline">
-        <IconSum stroke={1.5} />
+        <IconSum />
       </ToolbarControl>
       <ToolbarControl
         label="Insert quote"
         onClick={() => formatQuote(editor, "")}
       >
-        <IconBlockquote stroke={1.5} />
+        <IconBlockquote />
       </ToolbarControl>
-      <ToolbarControl label="Insert horizontal line">
-        <IconLineDotted stroke={1.5} />
+      <ToolbarControl
+        label="Insert horizontal line"
+        command="insertHorizontalLine"
+      >
+        <IconLineDotted />
       </ToolbarControl>
       <ToolbarControl
         label="Insert unordered list"
         command="insertUnorderedList"
       >
-        <IconList stroke={1.5} />
+        <IconList />
       </ToolbarControl>
       <ToolbarControl label="Insert ordered list" command="insertOrderedList">
-        <IconListNumbers stroke={1.5} />
+        <IconListNumbers />
       </ToolbarControl>
-      <ToolbarControl label="Insert code block">
-        <IconCode stroke={1.5} />
+      <ToolbarControl
+        label="Insert code block"
+        onClick={() => formatCode(editor, "")}
+      >
+        <IconCode />
       </ToolbarControl>
     </ToolbarControlGroup>
   )
@@ -449,7 +357,7 @@ const AlignmentControls = () => {
         setAlignment(
           $isElementNode(node)
             ? node.getFormatType()
-            : parent?.getFormatType() || "left",
+            : parent?.getFormatType() || "",
         )
       }
 
@@ -485,29 +393,189 @@ const AlignmentControls = () => {
         command="formatElement left"
         active={alignment === "left"}
       >
-        <IconAlignLeft stroke={1.5} />
+        <IconAlignLeft />
       </ToolbarControl>
       <ToolbarControl
         label="Align center"
         command="formatElement center"
         active={alignment === "center"}
       >
-        <IconAlignCenter stroke={1.5} />
+        <IconAlignCenter />
       </ToolbarControl>
       <ToolbarControl
         label="Align right"
         command="formatElement right"
         active={alignment === "right"}
       >
-        <IconAlignRight stroke={1.5} />
+        <IconAlignRight />
       </ToolbarControl>
       <ToolbarControl
         label="Justify text"
         command="formatElement justify"
         active={alignment === "justify"}
       >
-        <IconAlignJustified stroke={1.5} />
+        <IconAlignJustified />
       </ToolbarControl>
+    </ToolbarControlGroup>
+  )
+}
+
+const IndentationControls = () => {
+  return (
+    <ToolbarControlGroup>
+      <ToolbarControl label="Indent" command="indent">
+        <IconIndentIncrease />
+      </ToolbarControl>
+      <ToolbarControl label="Outdent" command="outdent">
+        <IconIndentDecrease />
+      </ToolbarControl>
+    </ToolbarControlGroup>
+  )
+}
+
+const TableControls = () => {
+  const [editor] = useLexicalComposerContext()
+  const [isTable, setIsTable] = useState(false)
+
+  useEffect(() => {
+    return editor.registerCommand(
+      SELECTION_CHANGE_COMMAND,
+      () => {
+        const selection = $getSelection()
+        if ($isRangeSelection(selection)) {
+          setIsTable($findTableNode(selection.anchor.getNode()) !== null)
+        } else {
+          setIsTable(false)
+        }
+        return false
+      },
+      COMMAND_PRIORITY_EDITOR,
+    )
+  }, [editor])
+
+  return (
+    <ToolbarControlGroup>
+      <ToolbarControl
+        label="Insert table"
+        command='insertTable {"rows": 3, "columns": 3}'
+      >
+        <IconTablePlus />
+      </ToolbarControl>
+      {isTable && (
+        <>
+          <ToolbarControl
+            label="Insert row below"
+            command="tableInsertRowBelow"
+          >
+            <IconRowInsertBottom />
+          </ToolbarControl>
+          <ToolbarControl
+            label="Insert column to the right"
+            command="tableInsertColumnRight"
+          >
+            <IconColumnInsertRight />
+          </ToolbarControl>
+          <ToolbarControl label="Remove row" command="tableRemoveRow">
+            <IconRowRemove />
+          </ToolbarControl>
+          <ToolbarControl label="Remove column" command="tableRemoveColumn">
+            <IconColumnRemove />
+          </ToolbarControl>
+        </>
+      )}
+    </ToolbarControlGroup>
+  )
+}
+
+const MathControls = () => {
+  const [editor] = useLexicalComposerContext()
+  const [isMath, setIsMath] = useState(false)
+
+  useEffect(() => {
+    return editor.registerUpdateListener(() => {
+      setIsMath(window.currentMathEditor !== undefined)
+    })
+  }, [editor])
+
+  if (!isMath) {
+    return null
+  }
+
+  return (
+    <ToolbarControlGroup>
+      <ToolbarControl
+        label="Insert matrix"
+        command='math insert "\\begin{pmatrix} #0 & #? \\\\ #? & #? \\end{pmatrix}"'
+      >
+        <IconMatrix />
+      </ToolbarControl>
+      <ToolbarControl label="Insert row below" command="math addRowAfter">
+        <IconRowInsertBottom />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Insert column to the right"
+        command="math addColumnAfter"
+      >
+        <IconColumnInsertRight />
+      </ToolbarControl>
+      <ToolbarControl label="Remove row" command="math removeRow">
+        <IconRowRemove />
+      </ToolbarControl>
+      <ToolbarControl label="Remove column" command="math removeColumn">
+        <IconColumnRemove />
+      </ToolbarControl>
+      <Menu trapFocus={false}>
+        <Menu.Target>
+          <ToolbarControl label="Insert Greek letters">
+            <IconAlpha />
+          </ToolbarControl>
+        </Menu.Target>
+        <Menu.Dropdown>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(6, 1fr)",
+              gap: 4,
+              padding: 4,
+            }}
+          >
+            {[
+              ["alpha", "α"],
+              ["beta", "β"],
+              ["gamma", "γ"],
+              ["delta", "δ"],
+              ["varepsilon", "ε"],
+              ["zeta", "ζ"],
+              ["eta", "η"],
+              ["vartheta", "θ"],
+              ["iota", "ι"],
+              ["kappa", "κ"],
+              ["lambda", "λ"],
+              ["mu", "μ"],
+              ["nu", "ν"],
+              ["xi", "ξ"],
+              ["omicron", "ο"],
+              ["pi", "π"],
+              ["rho", "ρ"],
+              ["sigma", "σ"],
+              ["tau", "τ"],
+              ["upsilon", "υ"],
+              ["varphi", "φ"],
+              ["chi", "χ"],
+              ["psi", "ψ"],
+              ["omega", "ω"],
+            ].map(([characterName, character], index) => (
+              <ToolbarControl
+                label={`Insert ${characterName}`}
+                command={`math insert \\${characterName}`}
+                key={index}
+              >
+                {character}
+              </ToolbarControl>
+            ))}
+          </div>
+        </Menu.Dropdown>
+      </Menu>
     </ToolbarControlGroup>
   )
 }
@@ -541,10 +609,10 @@ const UndoRedoControls = () => {
   return (
     <ToolbarControlGroup>
       <ToolbarControl label="Undo" command="undo" disabled={!canUndo}>
-        <IconArrowBackUp stroke={1.5} />
+        <IconArrowBackUp />
       </ToolbarControl>
       <ToolbarControl label="Redo" command="redo" disabled={!canRedo}>
-        <IconArrowForwardUp stroke={1.5} />
+        <IconArrowForwardUp />
       </ToolbarControl>
     </ToolbarControlGroup>
   )
@@ -564,6 +632,9 @@ const ToolbarPlugin = () => {
       <FormatControls />
       <InsertControls />
       <AlignmentControls />
+      <IndentationControls />
+      <TableControls />
+      <MathControls />
       <UndoRedoControls />
     </div>
   )

@@ -62,7 +62,7 @@ const RemoveDefaultShortcutsPlugin = () => {
     )
   }, [editor])
 
-  return <></>
+  return null
 }
 
 export default RemoveDefaultShortcutsPlugin

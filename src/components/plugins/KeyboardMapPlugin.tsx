@@ -2,8 +2,8 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import {
   $getSelection,
   COMMAND_PRIORITY_EDITOR,
-  createCommand,
-  LexicalCommand,
+  COMMAND_PRIORITY_HIGH,
+  KEY_DOWN_COMMAND,
 } from "lexical"
 import { useEffect } from "react"
 import { TyXSettings } from "../../models"
@@ -12,54 +12,7 @@ import {
   setLocalStorage,
   useLocalStorage,
 } from "../../utilities/hooks"
-
-export const TOGGLE_KEYBOARD_MAP_COMMAND: LexicalCommand<string | null> =
-  createCommand()
-
-export const KEYBOARD_MAPS: Record<string, Record<string, string>> = {
-  Hebrew: {
-    a: "ש",
-    b: "נ",
-    c: "ב",
-    d: "ג",
-    e: "ק",
-    f: "כ",
-    g: "ע",
-    h: "י",
-    i: "ן",
-    j: "ח",
-    k: "ל",
-    l: "ך",
-    m: "צ",
-    n: "מ",
-    o: "ם",
-    p: "פ",
-    q: "/",
-    r: "ר",
-    s: "ד",
-    t: "א",
-    u: "ו",
-    v: "ה",
-    w: "'",
-    x: "ס",
-    y: "ט",
-    z: "ז",
-    ",": "ת",
-    ".": "ץ",
-    ";": "ף",
-    "'": ",",
-    "/": ".",
-    "`": ";",
-    "(": ")",
-    ")": "(",
-    "[": "]",
-    "]": "[",
-    "{": "}",
-    "}": "{",
-    "<": ">",
-    ">": "<",
-  },
-}
+import { KEYBOARD_MAPS, TOGGLE_KEYBOARD_MAP_COMMAND } from "./keyboardMap"
 
 const KeyboardMapPlugin = () => {
   const [editor] = useLexicalComposerContext()
@@ -74,7 +27,7 @@ const KeyboardMapPlugin = () => {
       const keyboardMap = getLocalStorage<string | null>("Keyboard Map", null)
 
       if (!keyboardMap || ctrlKey || metaKey || altKey) {
-        return
+        return false
       }
 
       const replacement = KEYBOARD_MAPS[keyboardMap][key.toLowerCase()]
@@ -83,13 +36,28 @@ const KeyboardMapPlugin = () => {
           $getSelection()?.insertText(replacement)
         })
         event.preventDefault()
+        return true
+      } else if (
+        Object.values(KEYBOARD_MAPS[keyboardMap]).includes(key.toLowerCase())
+      ) {
+        setLocalStorage(
+          "Current Warning",
+          "Verify your OS keyboard layout is English when using a keyboard map",
+        )
       }
+
+      return false
     }
 
-    return editor.registerRootListener((rootElement, prevRootElement) => {
-      rootElement?.addEventListener("keypress", listener)
-      prevRootElement?.removeEventListener("keypress", listener)
-    })
+    // return editor.registerRootListener((rootElement, prevRootElement) => {
+    //   rootElement?.addEventListener("keypress", listener)
+    //   prevRootElement?.removeEventListener("keypress", listener)
+    // })
+    return editor.registerCommand(
+      KEY_DOWN_COMMAND,
+      listener,
+      COMMAND_PRIORITY_HIGH,
+    )
   }, [editor])
 
   useEffect(() => {
@@ -108,7 +76,7 @@ const KeyboardMapPlugin = () => {
     setLocalStorage("Keyboard Map", settings.keyboardMap ?? null)
   }, [settings])
 
-  return <></>
+  return null
 }
 
 export default KeyboardMapPlugin

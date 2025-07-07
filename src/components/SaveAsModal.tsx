@@ -9,7 +9,7 @@ import { useState } from "react"
 import { onSaveAs } from "../backend"
 
 const SaveAsModal = () => {
-  let [name, setName] = useState("")
+  const [name, setName] = useState("")
 
   return (
     <>
@@ -23,10 +23,7 @@ const SaveAsModal = () => {
         mt="xs"
         leftSection={<IconDeviceFloppy />}
         onClick={() => {
-          if (!name.endsWith(".tyx")) {
-            name += ".tyx"
-          }
-          onSaveAs(name)
+          onSaveAs(name.endsWith(".tyx") ? name : name + ".tyx")
           modals.closeAll()
         }}
       >

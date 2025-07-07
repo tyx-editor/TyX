@@ -58,7 +58,9 @@ ${document.preamble}
 
 `
   }
-  content += "// Content\n" + lexical2typst(document.content.root)
+  if (document.content) {
+    content += "// Content\n" + lexical2typst(document.content.root)
+  }
   return content
 }
 

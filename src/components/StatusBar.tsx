@@ -1,6 +1,10 @@
 import { Tooltip } from "@mantine/core"
 import { useTimeout } from "@mantine/hooks"
-import { IconKeyboard, IconTerminal } from "@tabler/icons-react"
+import {
+  IconAlertCircle,
+  IconKeyboard,
+  IconTerminal,
+} from "@tabler/icons-react"
 import React, { CSSProperties, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { useLocalStorage } from "../utilities/hooks"
@@ -43,7 +47,7 @@ const KeyboardMapStatusBarItem = () => {
   const { t } = useTranslation()
 
   if (!keyboardMap) {
-    return <></>
+    return null
   }
 
   return (
@@ -71,7 +75,7 @@ const CurrentCommandStatusBarItem = () => {
   })
 
   if (!currentCommand) {
-    return <></>
+    return null
   }
 
   return (
@@ -89,6 +93,39 @@ const CurrentCommandStatusBarItem = () => {
   )
 }
 
+const CurrentWarningStatusBarItem = () => {
+  const [currentWarning, setCurrentWarning] = useLocalStorage<string | null>({
+    key: "Current Warning",
+    defaultValue: null,
+  })
+  const timeout = useTimeout(
+    () => setCurrentWarning(null),
+    CURRENT_COMMAND_DELAY_MILLISECONDS,
+  )
+
+  useEffect(() => {
+    timeout.start()
+
+    return timeout.clear
+  })
+
+  if (!currentWarning) {
+    return null
+  }
+
+  return (
+    <StatusBarItem
+      label="Warning"
+      style={{
+        color: "yellow",
+      }}
+    >
+      <IconAlertCircle style={{ marginInlineEnd: 5 }} />
+      {currentWarning}
+    </StatusBarItem>
+  )
+}
+
 const StatusBar = () => {
   return (
     <div
@@ -97,7 +134,7 @@ const StatusBar = () => {
       style={{
         flex: "none",
         height: 28,
-        borderTop: "1px solid var(--mantine-color-dark-4)",
+        borderTop: "1px solid var(--tab-border-color)",
         display: "flex",
         alignItems: "center",
         userSelect: "none",
@@ -108,6 +145,7 @@ const StatusBar = () => {
       }}
     >
       <CurrentCommandStatusBarItem />
+      <CurrentWarningStatusBarItem />
       <span style={{ flexGrow: 1 }} />
       <KeyboardMapStatusBarItem />
     </div>

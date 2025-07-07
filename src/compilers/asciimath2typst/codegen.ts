@@ -3,7 +3,7 @@ import { NodeTypes } from "./parser"
 
 function getArrayBoundary(node: MatrixNode) {
   // const div = node.dividerIndices
-  let beginArray = `mat(delim: "${node.lparen}", `
+  const beginArray = `mat(delim: "${node.lparen}", `
   // const ch = node.alignment
 
   // if (div.length) {

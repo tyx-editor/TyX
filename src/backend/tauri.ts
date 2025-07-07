@@ -33,14 +33,13 @@ export const initializeBackend = () => {
         await relaunch()
       }
     })
-    .catch((_) => {})
+    .catch(() => {})
 }
 
 export const onNew = () => {
   const newDocument: TyXDocument = {
     version,
     preamble: "",
-    content: {},
     settings: getLocalStorage("Default Settings", {}),
   }
   onOpen(undefined, JSON.stringify(newDocument))
@@ -154,11 +153,7 @@ export const insertImage = () => {
 }
 
 export const onInsertImage = (path: string, contents: string) => {
-  window.currentEditor?.commands.setImage({
-    src: `data:image/${path.split(".").at(-1)};base64,${contents}`,
-    // TODO: add `path` attribute instead of overriding alt
-    alt: path,
-  })
+  console.log(path, contents)
 }
 
 export { getVersion }
