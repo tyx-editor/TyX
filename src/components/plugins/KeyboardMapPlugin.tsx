@@ -6,7 +6,12 @@ import {
   LexicalCommand,
 } from "lexical"
 import { useEffect } from "react"
-import { getLocalStorage, setLocalStorage } from "../../utilities/hooks"
+import { TyXSettings } from "../../models"
+import {
+  getLocalStorage,
+  setLocalStorage,
+  useLocalStorage,
+} from "../../utilities/hooks"
 
 export const TOGGLE_KEYBOARD_MAP_COMMAND: LexicalCommand<string | null> =
   createCommand()
@@ -58,6 +63,10 @@ export const KEYBOARD_MAPS: Record<string, Record<string, string>> = {
 
 const KeyboardMapPlugin = () => {
   const [editor] = useLexicalComposerContext()
+  const [settings] = useLocalStorage<TyXSettings>({
+    key: "Settings",
+    defaultValue: {},
+  })
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -94,6 +103,10 @@ const KeyboardMapPlugin = () => {
       COMMAND_PRIORITY_EDITOR,
     )
   }, [editor])
+
+  useEffect(() => {
+    setLocalStorage("Keyboard Map", settings.keyboardMap ?? null)
+  }, [settings])
 
   return <></>
 }

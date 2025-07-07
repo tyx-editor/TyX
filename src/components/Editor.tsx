@@ -45,7 +45,6 @@ import { TyXDocument } from "../models"
 import { useLocalStorage, useUpdateOnChange } from "../utilities/hooks"
 import KeyboardMapPlugin from "./plugins/KeyboardMapPlugin"
 import MathPlugin, { MathNode } from "./plugins/MathPlugin"
-import { PageBreakNode } from "./plugins/PageBreakPlugin"
 import RemoveDefaultShortcutsPlugin from "./plugins/RemoveDefaultShortcutsPlugin"
 import ToolbarPlugin from "./plugins/ToolbarPlugin"
 
@@ -185,7 +184,7 @@ const initialConfig: InitialConfigType = {
   onError: (error) => {
     console.error(error)
   },
-  nodes: [PageBreakNode, ListNode, ListItemNode, QuoteNode, MathNode],
+  nodes: [ListNode, ListItemNode, QuoteNode, MathNode],
 }
 
 const Editor = () => {
@@ -220,11 +219,13 @@ const Editor = () => {
     const editor = editorRef.current
 
     if (editor) {
-      editor.update(() => {
-        const editorState = editor.parseEditorState(doc.content)
-        editor.setEditorState(editorState)
-        editor.dispatchCommand(CLEAR_HISTORY_COMMAND, undefined)
-      })
+      if (Object.keys(doc.content).length !== 0) {
+        editor.update(() => {
+          const editorState = editor.parseEditorState(doc.content)
+          editor.setEditorState(editorState)
+          editor.dispatchCommand(CLEAR_HISTORY_COMMAND, undefined)
+        })
+      }
 
       return editor.registerUpdateListener(({ editorState }) => {
         update(editorState.toJSON())

@@ -49,6 +49,10 @@ math-field {
   color: var(--mantine-color-blue-7);
 }
 
+.math-block {
+  text-align: center;
+  font-size: 20px;
+}
 .math-block math-field:empty {
   padding-right: 7.5px;
   padding-left: 7.5px;
@@ -151,4 +155,8 @@ div[data-lexical-editor="true"]:focus {
 
 .underline.strikethrough {
   text-decoration: underline line-through;
+}
+
+math-field::part(content) {
+  padding: 2px;
 }

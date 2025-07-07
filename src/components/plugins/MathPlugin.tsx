@@ -2,26 +2,41 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { useLexicalNodeSelection } from "@lexical/react/useLexicalNodeSelection"
 import {
   $applyNodeReplacement,
+  $createNodeSelection,
   $getNodeByKey,
   $getSelection,
   $insertNodes,
-  $isRangeSelection,
-  CLICK_COMMAND,
+  $setSelection,
   COMMAND_PRIORITY_EDITOR,
-  COMMAND_PRIORITY_LOW,
   createCommand,
   DecoratorNode,
   LexicalCommand,
   LexicalNode,
+  LexicalUpdateJSON,
   NodeKey,
-  SELECTION_CHANGE_COMMAND,
+  SerializedLexicalNode,
+  Spread,
 } from "lexical"
 import { MathfieldElement } from "mathlive"
 import { ReactNode, useEffect, useRef, useState } from "react"
 import { DEFAULT_MATH_INLINE_SHORTCUTS, getSettings } from "../../settings"
-import { $createPageBreakNode } from "./PageBreakPlugin"
+
+declare module "mathlive" {
+  interface MathfieldElement {
+    isRegistered?: boolean
+  }
+}
 
 export const INSERT_MATH_INLINE_COMMAND: LexicalCommand<void> = createCommand()
+
+export type SerializedMathNode = Spread<
+  {
+    inline?: boolean
+    formula?: string
+    asciimath?: string
+  },
+  SerializedLexicalNode
+>
 
 export class MathNode extends DecoratorNode<ReactNode> {
   __inline: boolean
@@ -39,6 +54,40 @@ export class MathNode extends DecoratorNode<ReactNode> {
       node.__inline,
       node.__key,
     )
+  }
+
+  static importJSON(
+    serializedNode: LexicalUpdateJSON<SerializedMathNode>,
+  ): MathNode {
+    return new MathNode().updateFromJSON(serializedNode)
+  }
+
+  updateFromJSON(serializedNode: LexicalUpdateJSON<SerializedMathNode>): this {
+    const self = super.updateFromJSON(serializedNode)
+    if (typeof serializedNode.inline === "boolean") {
+      self.setInline(serializedNode.inline)
+    }
+    if (typeof serializedNode.formula === "string") {
+      self.setFormula(serializedNode.formula)
+    }
+    if (typeof serializedNode.asciimath === "string") {
+      self.setAsciimath(serializedNode.asciimath)
+    }
+    return self
+  }
+
+  exportJSON(): SerializedMathNode {
+    const serializedNode: SerializedMathNode = super.exportJSON()
+    serializedNode.inline = this.getLatest().__inline
+    serializedNode.formula = this.getLatest().__formula
+    serializedNode.asciimath = this.getLatest().__asciimath
+    return serializedNode
+  }
+
+  setInline(inline: boolean) {
+    const self = this.getWritable()
+    self.__inline = inline
+    return self
   }
 
   setFormula(formula: string) {
@@ -70,10 +119,15 @@ export class MathNode extends DecoratorNode<ReactNode> {
   }
 
   createDOM(): HTMLElement {
-    const span = document.createElement("span")
-    span.classList.add(this.__inline ? "math-inline" : "math-block")
-    span.style.display = "contents"
-    return span
+    if (this.__inline) {
+      const span = document.createElement("span")
+      span.classList.add("math-inline")
+      return span
+    } else {
+      const div = document.createElement("div")
+      div.classList.add("math-block")
+      return div
+    }
   }
 
   updateDOM(): false {
@@ -82,20 +136,23 @@ export class MathNode extends DecoratorNode<ReactNode> {
 
   decorate(): ReactNode {
     return (
-      <PageBreakComponent
-        // formula={this.__formula}
+      <MathEditor
+        formula={this.__formula}
         nodeKey={this.getKey()}
-        // inline={this.__inline}
+        inline={this.__inline}
       />
     )
   }
 }
 
-export function $createInlineMathNode(contents: string = ""): MathNode {
-  return $applyNodeReplacement(new MathNode(contents))
+export function $createMathNode(
+  contents: string = "",
+  inline: boolean = true,
+): MathNode {
+  return $applyNodeReplacement(new MathNode(contents, undefined, inline))
 }
 
-export function $isInlineMathNode(
+export function $isMathNode(
   node: LexicalNode | null | undefined,
 ): node is MathNode {
   return node instanceof MathNode
@@ -130,7 +187,7 @@ export const MathEditor = ({
     setFormula(formula)
     editor.update(() => {
       const node = $getNodeByKey(nodeKey)
-      if ($isInlineMathNode(node)) {
+      if ($isMathNode(node)) {
         node.setFormula(formula)
         node.setAsciimath(asciimath)
       }
@@ -147,46 +204,63 @@ export const MathEditor = ({
       mf.defaultMode = inline ? "inline-math" : "math"
       mf.mathVirtualKeyboardPolicy = "manual"
 
-      if (mf.isConnected) {
+      if (mf.isConnected && !mf.isRegistered) {
+        mf.isRegistered = true
+
         mf.addEventListener("focus", updateCurrentMathEditor)
         mf.addEventListener("blur", updateCurrentMathEditor)
-        mf.addEventListener("keypress", (e) => e.stopPropagation())
 
         mf.inlineShortcuts = Object.fromEntries(
           getSettings().mathInlineShortcuts ?? DEFAULT_MATH_INLINE_SHORTCUTS,
         )
-
-        //   mf.addEventListener("keydown", (e) => {
-        //     if (e.key === " ") {
-        //       e.preventDefault()
-        //       const position = mf.position
-        //       mf.executeCommand("moveAfterParent")
-        //       if (mf.position === position) {
-        //         moveForward(props)
-        //       }
-        //     }
-        //   })
-
-        let element: HTMLElement | null = mf
-        while (element && !element.dir) {
-          element = element.parentElement
-        }
-        const dir = element?.dir ?? "ltr"
 
         mf.addEventListener("input", (e) => {
           const target = e.target as MathfieldElement
           updateValue(target.getValue(), target.getValue("ascii-math"))
         })
 
-        //   mf.addEventListener("move-out", (e) => {
-        //     const position = props.getPos()
-        //     let isForward =
-        //       !e?.detail?.direction ||
-        //       e.detail.direction === "forward" ||
-        //       e.detail.direction === "downward"
-        //     if (dir === "rtl") {
-        //       isForward = !isForward
-        //     }
+        mf.addEventListener("move-out", (e) => {
+          let isForward =
+            !e?.detail?.direction ||
+            e.detail.direction === "forward" ||
+            e.detail.direction === "downward"
+
+          let element: HTMLElement | null = mf
+          while (element && !element.dir) {
+            element = element.parentElement
+          }
+          const dir = element?.dir ?? "ltr"
+
+          if (dir === "rtl") {
+            isForward = !isForward
+          }
+
+          mf.blur()
+          editor.update(() => {
+            const node = $getNodeByKey(nodeKey)
+            if (node) {
+              $setSelection(isForward ? node.selectEnd() : node.selectStart())
+            }
+          })
+        })
+
+        mf.addEventListener("keydown", (e) => {
+          if (e.key === " ") {
+            e.preventDefault()
+            const position = mf.position
+            mf.executeCommand("moveAfterParent")
+            if (mf.position === position) {
+              mf.blur()
+              editor.update(() => {
+                const node = $getNodeByKey(nodeKey)
+                if (node) {
+                  $setSelection(node.selectEnd())
+                }
+              })
+            }
+          }
+          e.stopImmediatePropagation()
+        })
 
         //     if (isForward) {
         //       moveForward(props)
@@ -212,47 +286,33 @@ export const MathEditor = ({
         //     }
         //   })
 
-        //   mf.addEventListener("beforeinput", (e: any) => {
-        //     if (!e.target.value && e.inputType === "deleteContentBackward") {
-        //       props.editor.chain().deleteSelection().run()
-        //     }
-        //   })
+        mf.addEventListener("beforeinput", (e: InputEvent) => {
+          const target = e.target as MathfieldElement
+          if (!target.value && e.inputType === "deleteContentBackward") {
+            e.preventDefault()
+            e.stopImmediatePropagation()
+            editor.update(() => {
+              const node = $getNodeByKey(nodeKey)
+              node?.remove()
+            })
+          }
+        })
 
         mf.menuItems = []
       }
     }
-  }, [mathfieldRef, mathfieldRef.current?.isConnected])
+  }, [mathfieldRef])
 
   useEffect(() => {
-    return editor.registerCommand(
-      SELECTION_CHANGE_COMMAND,
-      () => {
-        // mathfieldRef.current?.focus()
-        return false
-      },
-      COMMAND_PRIORITY_EDITOR,
-    )
-  }, [editor])
-
-  useEffect(() => {
-    return editor.registerUpdateListener(({ editorState }) => {
-      editorState.read(() => {
+    if (isSelected) {
+      editor.read(() => {
         const selection = $getSelection()
-        console.log(selection, nodeKey)
-        if ($isRangeSelection(selection)) {
-          const anchor = selection.anchor
-          const focus = selection.focus
-          if (anchor.key === nodeKey || focus.key === nodeKey) {
-            console.log("Hi!")
-          }
+        if (selection?.getNodes().length === 1) {
+          mathfieldRef.current?.focus()
         }
       })
-    })
-  }, [editor])
-
-  useEffect(() => {
-    console.log("Is selected", isSelected)
-  }, [isSelected])
+    }
+  }, [mathfieldRef, isSelected])
 
   return <math-field ref={mathfieldRef}>{formula}</math-field>
 }
@@ -264,8 +324,13 @@ const MathPlugin = () => {
     return editor.registerCommand(
       INSERT_MATH_INLINE_COMMAND,
       () => {
-        $insertNodes([$createPageBreakNode()])
-        // $insertNodes([$createInlineMathNode()])
+        const node = $createMathNode()
+        $insertNodes([node])
+
+        const selection = $createNodeSelection()
+        selection.add(node.getKey())
+        $setSelection(selection)
+
         return true
       },
       COMMAND_PRIORITY_EDITOR,
@@ -276,39 +341,3 @@ const MathPlugin = () => {
 }
 
 export default MathPlugin
-
-function PageBreakComponent({ nodeKey }: { nodeKey: NodeKey }) {
-  const [editor] = useLexicalComposerContext()
-  const [isSelected, setSelected, clearSelection] =
-    useLexicalNodeSelection(nodeKey)
-
-  useEffect(() => {
-    return editor.registerCommand(
-      CLICK_COMMAND,
-      (event: MouseEvent) => {
-        const pbElem = editor.getElementByKey(nodeKey)
-
-        if (event.target === pbElem) {
-          if (!event.shiftKey) {
-            clearSelection()
-          }
-          setSelected(!isSelected)
-          return true
-        }
-
-        return false
-      },
-      COMMAND_PRIORITY_LOW,
-    )
-  }, [clearSelection, editor, isSelected, nodeKey, setSelected])
-
-  useEffect(() => {
-    const pbElem = editor.getElementByKey(nodeKey)
-    if (pbElem !== null) {
-      pbElem.className = isSelected ? "selected" : ""
-    }
-    console.log("Is selected", isSelected)
-  }, [editor, isSelected, nodeKey])
-
-  return null
-}

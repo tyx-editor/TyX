@@ -15,7 +15,7 @@
     "deploy": "bun run build-web && netlify deploy -d dist --prod --site tyx-editor"
   },
   "dependencies": {
-    "@lexical/react": "^0.32.1",
+    "@lexical/react": "^0.33.0",
     "@mantine/core": "^8.0.0",
     "@mantine/hooks": "^8.0.0",
     "@mantine/modals": "^8.0.0",
@@ -46,7 +46,7 @@
     "@tiptap/react": "^2.12.0",
     "@tiptap/starter-kit": "^2.12.0",
     "i18next": "^25.2.1",
-    "lexical": "^0.32.1",
+    "lexical": "^0.33.0",
     "mathlive": "^0.105.3",
     "mousetrap": "^1.6.5",
     "mousetrap-global-bind": "^1.1.0",
