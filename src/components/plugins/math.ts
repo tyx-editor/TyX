@@ -10,7 +10,7 @@ import {
   SerializedLexicalNode,
   Spread,
 } from "lexical"
-import React, { ReactNode } from "react"
+import React from "react"
 import { MathEditor } from "./MathPlugin"
 
 export const INSERT_MATH_COMMAND: LexicalCommand<boolean> = createCommand()
@@ -26,7 +26,7 @@ export type SerializedMathNode = Spread<
   SerializedLexicalNode
 >
 
-export class MathNode extends DecoratorNode<ReactNode> {
+export class MathNode extends DecoratorNode<React.ReactNode> {
   __inline: boolean
   __formula: string
   __asciimath: string
@@ -123,7 +123,7 @@ export class MathNode extends DecoratorNode<ReactNode> {
     return false
   }
 
-  decorate(): ReactNode {
+  decorate(): React.ReactNode {
     return React.createElement(MathEditor, {
       formula: this.__formula,
       nodeKey: this.getKey(),

@@ -1,13 +1,17 @@
 import {
   $applyNodeReplacement,
   createCommand,
+  DecoratorNode,
   EditorConfig,
-  ElementNode,
   LexicalCommand,
   LexicalNode,
+  LexicalUpdateJSON,
+  NodeKey,
   SerializedLexicalNode,
   Spread,
 } from "lexical"
+import React from "react"
+import { TypstCodeEditor } from "./TypstCodePlugin"
 
 export const INSERT_TYPST_CODE_COMMAND: LexicalCommand<void> = createCommand()
 
@@ -18,7 +22,9 @@ export type SerializedTypstCodeNode = Spread<
   SerializedLexicalNode
 >
 
-export class TypstCodeNode extends ElementNode {
+export class TypstCodeNode extends DecoratorNode<React.ReactNode> {
+  __text: string
+
   static getType(): string {
     return "typstcode"
   }
@@ -33,16 +39,46 @@ export class TypstCodeNode extends ElementNode {
     return false
   }
 
+  constructor(text: string = "", key?: NodeKey) {
+    super(key)
+    this.__text = text
+  }
+
   static clone(node: TypstCodeNode): TypstCodeNode {
     return new TypstCodeNode(node.__key)
+  }
+
+  static importJSON(
+    serializedNode: LexicalUpdateJSON<SerializedTypstCodeNode>,
+  ): TypstCodeNode {
+    return new TypstCodeNode().updateFromJSON(serializedNode)
+  }
+
+  updateFromJSON(
+    serializedNode: LexicalUpdateJSON<SerializedTypstCodeNode>,
+  ): this {
+    const self = super.updateFromJSON(serializedNode)
+    if (typeof serializedNode.text === "string") {
+      self.setText(serializedNode.text)
+    }
+    return self
   }
 
   isInline(): true {
     return true
   }
 
-  canInsertTextAfter(): false {
-    return false
+  setText(text: string) {
+    const self = this.getWritable()
+    self.__text = text
+    return self
+  }
+
+  decorate(): React.ReactNode {
+    return React.createElement(TypstCodeEditor, {
+      text: this.__text,
+      nodeKey: this.getKey(),
+    })
   }
 }
 
