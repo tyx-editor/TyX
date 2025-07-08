@@ -151,6 +151,18 @@ math-field::part(content) {
   padding: 10px;
 }
 
+.editor .typst-code {
+  direction: ltr;
+  display: inline;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #181818;
+}
+.editor .typst-code:empty {
+  padding-left: 7.5px;
+  padding-right: 7.5px;
+}
+
 .editor table td,
 .editor table th,
 .editor table {

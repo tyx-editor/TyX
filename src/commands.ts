@@ -34,6 +34,7 @@ import {
   TABLE_REMOVE_COLUMN_COMMAND,
   TABLE_REMOVE_ROW_COMMAND,
 } from "./components/plugins/tableCommands"
+import { INSERT_TYPST_CODE_COMMAND } from "./components/plugins/typstCode"
 
 const COMMANDS: Record<string, LexicalCommand<any>> = {
   toggleKeyboardMap: TOGGLE_KEYBOARD_MAP_COMMAND,
@@ -46,6 +47,7 @@ const COMMANDS: Record<string, LexicalCommand<any>> = {
   insertUnorderedList: INSERT_UNORDERED_LIST_COMMAND,
   insertLineBreak: INSERT_LINE_BREAK_COMMAND,
   insertHorizontalLine: INSERT_HORIZONTAL_RULE_COMMAND,
+  insertTypstCode: INSERT_TYPST_CODE_COMMAND,
   toggleMathInline: TOGGLE_MATH_INLINE_COMMAND,
   math: MATH_COMMAND,
   indent: INDENT_CONTENT_COMMAND,

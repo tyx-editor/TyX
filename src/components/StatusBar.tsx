@@ -44,6 +44,7 @@ const KeyboardMapStatusBarItem = () => {
     key: "Keyboard Map",
     defaultValue: null,
   })
+
   const { t } = useTranslation()
 
   if (!keyboardMap) {

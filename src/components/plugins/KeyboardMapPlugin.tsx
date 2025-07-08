@@ -49,10 +49,6 @@ const KeyboardMapPlugin = () => {
       return false
     }
 
-    // return editor.registerRootListener((rootElement, prevRootElement) => {
-    //   rootElement?.addEventListener("keypress", listener)
-    //   prevRootElement?.removeEventListener("keypress", listener)
-    // })
     return editor.registerCommand(
       KEY_DOWN_COMMAND,
       listener,

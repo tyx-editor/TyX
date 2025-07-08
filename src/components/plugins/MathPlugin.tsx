@@ -10,15 +10,11 @@ import {
   $setSelection,
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_EDITOR,
-  DecoratorNode,
   KEY_DOWN_COMMAND,
-  LexicalUpdateJSON,
   NodeKey,
-  SerializedLexicalNode,
-  Spread,
 } from "lexical"
 import { MathfieldElement } from "mathlive"
-import { ReactNode, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { DEFAULT_MATH_INLINE_SHORTCUTS, getSettings } from "../../settings"
 import {
   $createMathNode,
@@ -49,126 +45,13 @@ declare global {
   }
 }
 
-export type SerializedMathNode = Spread<
-  {
-    inline?: boolean
-    formula?: string
-    asciimath?: string
-  },
-  SerializedLexicalNode
->
-
-export class MathNode extends DecoratorNode<ReactNode> {
-  __inline: boolean
-  __formula: string
-  __asciimath: string
-
-  static getType(): string {
-    return "math"
-  }
-
-  static clone(node: MathNode): MathNode {
-    return new MathNode(
-      node.__formula,
-      node.__asciimath,
-      node.__inline,
-      node.__key,
-    )
-  }
-
-  static importJSON(
-    serializedNode: LexicalUpdateJSON<SerializedMathNode>,
-  ): MathNode {
-    return new MathNode().updateFromJSON(serializedNode)
-  }
-
-  updateFromJSON(serializedNode: LexicalUpdateJSON<SerializedMathNode>): this {
-    const self = super.updateFromJSON(serializedNode)
-    if (typeof serializedNode.inline === "boolean") {
-      self.setInline(serializedNode.inline)
-    }
-    if (typeof serializedNode.formula === "string") {
-      self.setFormula(serializedNode.formula)
-    }
-    if (typeof serializedNode.asciimath === "string") {
-      self.setAsciimath(serializedNode.asciimath)
-    }
-    return self
-  }
-
-  exportJSON(): SerializedMathNode {
-    const serializedNode: SerializedMathNode = super.exportJSON()
-    serializedNode.inline = this.getLatest().__inline
-    serializedNode.formula = this.getLatest().__formula
-    serializedNode.asciimath = this.getLatest().__asciimath
-    return serializedNode
-  }
-
-  setInline(inline: boolean) {
-    const self = this.getWritable()
-    self.__inline = inline
-    return self
-  }
-
-  setFormula(formula: string) {
-    const self = this.getWritable()
-    self.__formula = formula
-    return self
-  }
-
-  setAsciimath(asciimath: string) {
-    const self = this.getWritable()
-    self.__asciimath = asciimath
-    return self
-  }
-
-  constructor(
-    formula: string = "",
-    asciimath: string = "",
-    inline: boolean = true,
-    key?: NodeKey,
-  ) {
-    super(key)
-    this.__formula = formula
-    this.__asciimath = asciimath
-    this.__inline = inline
-  }
-
-  isInline() {
-    return this.getLatest().__inline
-  }
-
-  createDOM(): HTMLElement {
-    const div = document.createElement("div")
-    div.className = this.__inline ? "math-inline" : "math-block"
-    return div
-  }
-
-  updateDOM(prevNode: this, dom: HTMLElement): false {
-    if (prevNode.__inline !== this.__inline) {
-      dom.className = this.__inline ? "math-inline" : "math-block"
-    }
-    return false
-  }
-
-  decorate(): ReactNode {
-    return (
-      <MathEditor
-        formula={this.__formula}
-        nodeKey={this.getKey()}
-        inline={this.__inline}
-      />
-    )
-  }
-}
-
 export const MathEditor = ({
   formula: initialFormula,
   nodeKey,
   inline,
 }: {
   formula: string
-  nodeKey: string
+  nodeKey: NodeKey
   inline?: boolean
 }) => {
   const [editor] = useLexicalComposerContext()

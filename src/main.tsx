@@ -18,6 +18,7 @@ import { initializeKeyboardShortcuts } from "./shortcuts"
 /** Initialize everything and render the main application. */
 const main = () => {
   MathfieldElement.fontsDirectory = "/fonts"
+  MathfieldElement.soundsDirectory = null
   initializeBackend()
   initializeKeyboardShortcuts()
 
@@ -26,6 +27,10 @@ const main = () => {
       <App />
     </React.StrictMode>,
   )
+
+  customElements
+    .whenDefined("math-field")
+    .then(() => document.body.classList.add("ready"))
 }
 
 main()

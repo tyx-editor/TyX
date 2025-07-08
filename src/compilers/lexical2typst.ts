@@ -12,13 +12,14 @@ import {
 } from "@lexical/table"
 import {
   ElementFormatType,
+  SerializedElementNode,
   SerializedLexicalNode,
   SerializedParagraphNode,
   SerializedRootNode,
   SerializedTextNode,
   TEXT_TYPE_TO_FORMAT,
 } from "lexical"
-import { SerializedMathNode } from "../components/plugins/MathPlugin"
+import { SerializedMathNode } from "../components/plugins/math"
 import asciimath2typst from "./asciimath2typst"
 
 export const convertCSSColor = (color: string) => {
@@ -103,7 +104,9 @@ export const converters: Record<string, (d: SerializedLexicalNode) => string> =
   {
     root: (d) => {
       const root = d as SerializedRootNode<SerializedLexicalNode>
-      return root.children.map(lexical2typst).join("")
+      let result = root.children.map(lexical2typst).join("")
+      result = applyDirection(result, root.direction)
+      return result
     },
     paragraph: (d) => {
       const paragraph = d as SerializedParagraphNode
@@ -170,11 +173,10 @@ export const converters: Record<string, (d: SerializedLexicalNode) => string> =
     },
     code: (d) => {
       const code = d as SerializedCodeNode
-      return `#raw(block: true, lang: ${JSON.stringify(code.language ?? "none")}, ${JSON.stringify(lexical2text(code))})`
+      return `#text(dir: ltr)[#raw(block: true, lang: ${JSON.stringify(code.language ?? "none")}, ${JSON.stringify(lexical2text(code))})]`
     },
     table: (d) => {
       const table = d as SerializedTableNode
-      console.log(table)
       const columns = new Array(table.children.length).fill("1fr").join(", ")
       let result = `#table(columns: (${columns}), ${table.children.map(lexical2typst).join(", ")})`
       result = applyDirection(result, table.direction)
@@ -192,6 +194,10 @@ export const converters: Record<string, (d: SerializedLexicalNode) => string> =
     },
     linebreak: () => "\\ \n",
     horizontalrule: () => "#line(length: 100%)\n",
+    typstcode: (d) => {
+      const typstCode = d as SerializedElementNode
+      return lexical2text(typstCode)
+    },
   }
 
 export const typstEscape = (text: string) => {

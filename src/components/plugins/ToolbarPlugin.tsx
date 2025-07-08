@@ -306,7 +306,7 @@ const InsertControls = () => {
       <ToolbarControl label="Insert image">
         <IconPhoto />
       </ToolbarControl>
-      <ToolbarControl label="Insert Typst code">
+      <ToolbarControl label="Insert Typst code" command="insertTypstCode">
         <IconCodeAsterisk />
       </ToolbarControl>
       <ToolbarControl label="Insert math" command="insertMathInline">

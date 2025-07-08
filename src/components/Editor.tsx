@@ -34,10 +34,13 @@ import { useLocalStorage } from "../utilities/hooks"
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin"
 import CurrentEditorPlugin from "./plugins/CurrentEditorPlugin"
 import KeyboardMapPlugin from "./plugins/KeyboardMapPlugin"
-import MathPlugin, { MathNode } from "./plugins/MathPlugin"
+import { MathNode } from "./plugins/math"
+import MathPlugin from "./plugins/MathPlugin"
 import RemoveDefaultShortcutsPlugin from "./plugins/RemoveDefaultShortcutsPlugin"
 import TableCommandsPlugin from "./plugins/TableCommandsPlugin"
 import ToolbarPlugin from "./plugins/ToolbarPlugin"
+import { TypstCodeNode } from "./plugins/typstCode"
+import TypstCodePlugin from "./plugins/TypstCodePlugin"
 
 declare global {
   interface Window {
@@ -87,6 +90,9 @@ const initialConfig: InitialConfigType = {
       url: "token url",
       variable: "token variable",
     },
+    mathInline: "math-inline",
+    mathBlock: "math-block",
+    typstCode: "typst-code",
   },
   onError: (error) => {
     console.error(error)
@@ -104,6 +110,7 @@ const initialConfig: InitialConfigType = {
     ListItemNode,
     QuoteNode,
     MathNode,
+    TypstCodeNode,
   ],
 }
 
@@ -157,11 +164,12 @@ const Editor = () => {
       />
 
       <TableCommandsPlugin />
-      <KeyboardMapPlugin />
-      <RemoveDefaultShortcutsPlugin />
-      <MathPlugin />
-      <CurrentEditorPlugin />
       <CodeHighlightPlugin />
+      <RemoveDefaultShortcutsPlugin />
+      <CurrentEditorPlugin />
+      <KeyboardMapPlugin />
+      <MathPlugin />
+      <TypstCodePlugin />
     </LexicalComposer>
   )
 }
