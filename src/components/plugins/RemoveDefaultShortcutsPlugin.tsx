@@ -1,36 +1,11 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
-import { COMMAND_PRIORITY_CRITICAL, KEY_DOWN_COMMAND } from "lexical"
+import {
+  COMMAND_PRIORITY_CRITICAL,
+  isModifierMatch,
+  KEY_DOWN_COMMAND,
+} from "lexical"
 import { useEffect } from "react"
-
-const CAN_USE_DOM: boolean =
-  typeof window !== "undefined" &&
-  typeof window.document !== "undefined" &&
-  typeof window.document.createElement !== "undefined"
-const IS_APPLE: boolean =
-  CAN_USE_DOM && /Mac|iPod|iPhone|iPad/.test(navigator.platform)
-const CONTROL_OR_META = { ctrlKey: !IS_APPLE, metaKey: IS_APPLE }
-type ModifierMask = {
-  ctrlKey?: boolean
-  altKey?: boolean
-  shiftKey?: boolean
-  metaKey?: boolean
-}
-function matchModifier(
-  event: KeyboardEvent,
-  mask: ModifierMask,
-  prop: keyof ModifierMask,
-) {
-  return (mask[prop] || false) == event[prop]
-}
-
-function isModifierMatch(event: KeyboardEvent, mask: ModifierMask): boolean {
-  return (
-    matchModifier(event, mask, "altKey") &&
-    matchModifier(event, mask, "ctrlKey") &&
-    matchModifier(event, mask, "shiftKey") &&
-    matchModifier(event, mask, "metaKey")
-  )
-}
+import { CONTROL_OR_META } from "../../resources/playground"
 
 /** @brief Remove the default shortcuts set in https://github.com/facebook/lexical/blob/main/packages/lexical/src/LexicalUtils.ts */
 const RemoveDefaultShortcutsPlugin = () => {

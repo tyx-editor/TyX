@@ -1,12 +1,15 @@
 import {
   $applyNodeReplacement,
   createCommand,
+  createEditor,
   DecoratorNode,
   EditorConfig,
   LexicalCommand,
+  LexicalEditor,
   LexicalNode,
   LexicalUpdateJSON,
   NodeKey,
+  SerializedEditor,
   SerializedLexicalNode,
   Spread,
 } from "lexical"
@@ -17,13 +20,13 @@ export const INSERT_TYPST_CODE_COMMAND: LexicalCommand<void> = createCommand()
 
 export type SerializedTypstCodeNode = Spread<
   {
-    text?: string
+    text?: SerializedEditor
   },
   SerializedLexicalNode
 >
 
 export class TypstCodeNode extends DecoratorNode<React.ReactNode> {
-  __text: string
+  __text: LexicalEditor
 
   static getType(): string {
     return "typstcode"
@@ -39,13 +42,13 @@ export class TypstCodeNode extends DecoratorNode<React.ReactNode> {
     return false
   }
 
-  constructor(text: string = "", key?: NodeKey) {
+  constructor(text?: LexicalEditor, key?: NodeKey) {
     super(key)
-    this.__text = text
+    this.__text = text ?? createEditor()
   }
 
   static clone(node: TypstCodeNode): TypstCodeNode {
-    return new TypstCodeNode(node.__key)
+    return new TypstCodeNode(node.__text, node.__key)
   }
 
   static importJSON(
@@ -58,20 +61,27 @@ export class TypstCodeNode extends DecoratorNode<React.ReactNode> {
     serializedNode: LexicalUpdateJSON<SerializedTypstCodeNode>,
   ): this {
     const self = super.updateFromJSON(serializedNode)
-    if (typeof serializedNode.text === "string") {
-      self.setText(serializedNode.text)
+    const serializedEditor = serializedNode.text
+    if (serializedEditor) {
+      const editorState = self.__text.parseEditorState(
+        serializedEditor.editorState,
+      )
+      if (!editorState.isEmpty()) {
+        self.__text.setEditorState(editorState)
+      }
     }
     return self
   }
 
-  isInline(): true {
-    return true
+  exportJSON(): SerializedTypstCodeNode {
+    return {
+      ...super.exportJSON(),
+      text: this.__text.toJSON(),
+    }
   }
 
-  setText(text: string) {
-    const self = this.getWritable()
-    self.__text = text
-    return self
+  isInline(): true {
+    return true
   }
 
   decorate(): React.ReactNode {

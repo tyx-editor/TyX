@@ -158,3 +158,27 @@ export const $isParentElementRTL = (selection: RangeSelection): boolean => {
 
   return parent.getDirection() === "rtl"
 }
+
+export const CAN_USE_DOM: boolean =
+  typeof window !== "undefined" &&
+  typeof window.document !== "undefined" &&
+  typeof window.document.createElement !== "undefined"
+export const IS_APPLE: boolean =
+  CAN_USE_DOM && /Mac|iPod|iPhone|iPad/.test(navigator.platform)
+export const CONTROL_OR_META = { ctrlKey: !IS_APPLE, metaKey: IS_APPLE }
+export const CONTROL_OR_ALT = { altKey: IS_APPLE, ctrlKey: !IS_APPLE }
+
+type ModifierMask = {
+  ctrlKey?: boolean
+  altKey?: boolean
+  shiftKey?: boolean
+  metaKey?: boolean
+}
+
+export function matchModifier(
+  event: KeyboardEvent,
+  mask: ModifierMask,
+  prop: keyof ModifierMask,
+) {
+  return (mask[prop] || false) == event[prop]
+}

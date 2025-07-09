@@ -17,22 +17,20 @@ import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode"
 import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin"
 import { ListPlugin } from "@lexical/react/LexicalListPlugin"
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin"
-import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin"
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin"
 import { TablePlugin } from "@lexical/react/LexicalTablePlugin"
 import { HeadingNode, QuoteNode } from "@lexical/rich-text"
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table"
-import {
-  LexicalEditor,
-  SerializedEditorState,
-  SerializedLexicalNode,
-} from "lexical"
+import { LexicalEditor } from "lexical"
 
+import { useMemo } from "react"
 import { TyXDocument } from "../models"
-import { useLocalStorage } from "../utilities/hooks"
+import { getLocalStorage } from "../utilities/hooks"
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin"
 import CurrentEditorPlugin from "./plugins/CurrentEditorPlugin"
+import { ImageNode } from "./plugins/image"
+import ImagePlugin from "./plugins/ImagePlugin"
 import KeyboardMapPlugin from "./plugins/KeyboardMapPlugin"
 import { MathNode } from "./plugins/math"
 import MathPlugin from "./plugins/MathPlugin"
@@ -41,6 +39,7 @@ import TableCommandsPlugin from "./plugins/TableCommandsPlugin"
 import ToolbarPlugin from "./plugins/ToolbarPlugin"
 import { TypstCodeNode } from "./plugins/typstCode"
 import TypstCodePlugin from "./plugins/TypstCodePlugin"
+import UpdateLocalStoragePlugin from "./plugins/UpdateLocalStoragePlugin"
 
 declare global {
   interface Window {
@@ -111,35 +110,23 @@ const initialConfig: InitialConfigType = {
     QuoteNode,
     MathNode,
     TypstCodeNode,
+    ImageNode,
   ],
 }
 
 const Editor = () => {
-  const [openDocuments, setOpenDocuments] = useLocalStorage<TyXDocument[]>({
-    key: "Open Documents",
-    defaultValue: [],
-    silent: true,
-  })
-  const [currentDocument] = useLocalStorage<number>({
-    key: "Current Document",
-    defaultValue: 0,
-    silent: true,
-  })
-
-  const doc = openDocuments[currentDocument]
-  const update = (content: SerializedEditorState<SerializedLexicalNode>) => {
-    doc.content = content
-    doc.dirty = true
-    setOpenDocuments(openDocuments)
-  }
+  const config: InitialConfigType = useMemo(() => {
+    const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
+    const currentDocument = getLocalStorage<number>("Current Document", 0)
+    const doc = openDocuments[currentDocument]
+    return {
+      ...initialConfig,
+      editorState: doc.content ? JSON.stringify(doc.content) : undefined,
+    }
+  }, [])
 
   return (
-    <LexicalComposer
-      initialConfig={{
-        ...initialConfig,
-        editorState: doc.content ? JSON.stringify(doc.content) : undefined,
-      }}
-    >
+    <LexicalComposer initialConfig={config}>
       <ToolbarPlugin />
 
       <div style={{ flexGrow: 1, padding: 10, overflowY: "auto" }}>
@@ -158,18 +145,17 @@ const Editor = () => {
       <TabIndentationPlugin />
       <MarkdownShortcutPlugin />
       <AutoFocusPlugin />
-      <OnChangePlugin
-        ignoreSelectionChange
-        onChange={(editorState) => update(editorState.toJSON())}
-      />
 
+      <UpdateLocalStoragePlugin />
       <TableCommandsPlugin />
       <CodeHighlightPlugin />
       <RemoveDefaultShortcutsPlugin />
       <CurrentEditorPlugin />
       <KeyboardMapPlugin />
+
       <MathPlugin />
       <TypstCodePlugin />
+      <ImagePlugin />
     </LexicalComposer>
   )
 }

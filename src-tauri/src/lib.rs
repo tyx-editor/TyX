@@ -6,6 +6,7 @@ use std::{
 };
 
 use base64::{Engine, engine::general_purpose::STANDARD};
+
 use tauri::Emitter;
 
 use tauri_plugin_dialog::DialogExt;
@@ -14,7 +15,6 @@ use tinymist_project::{
 };
 use typst_pdf::PdfOptions;
 
-//
 #[tauri::command]
 fn save(filename: &str, content: &str) {
     if let Ok(mut f) = File::create(filename) {
@@ -89,7 +89,7 @@ fn open(handle: tauri::AppHandle) {
     handle
         .dialog()
         .file()
-        .add_filter("tyx", &["tyx", "typ"])
+        .add_filter("tyx", &["tyx"])
         .pick_file(move |f| {
             if let Some(f) = f {
                 if let Some(path) = f.as_path() {
@@ -97,6 +97,28 @@ fn open(handle: tauri::AppHandle) {
                 }
             }
         });
+}
+
+#[tauri::command]
+fn readimage(filename: &str, image: &str) -> String {
+    let image_path = Path::new(filename)
+        .parent()
+        .unwrap_or(Path::new(""))
+        .join(Path::new(image));
+    let bytes = fs::read(image_path).unwrap();
+
+    let extension = image.split(".").last();
+
+    let mimetype = match extension {
+        Some("png") => "image/png",
+        Some("jpg") => "image/jpeg",
+        Some("jpeg") => "image/jpeg",
+        Some("svg") => "image/svg+xml",
+        Some("gif") => "image/gif",
+        _ => return String::new(),
+    };
+
+    String::from("data:") + mimetype + ";base64," + STANDARD.encode(&bytes).as_str()
 }
 
 #[tauri::command]
@@ -183,13 +205,9 @@ fn insertimage(handle: tauri::AppHandle, filename: &str) {
         .pick_file(move |f| {
             if let Some(f) = f {
                 if let Some(path) = f.as_path() {
-                    let bytes = fs::read(path).unwrap();
                     h.emit(
                         "insertImage",
-                        (
-                            path.strip_prefix(dirname).unwrap_or(path).to_str().unwrap(),
-                            STANDARD.encode(&bytes),
-                        ),
+                        (path.strip_prefix(dirname).unwrap_or(path).to_str().unwrap(),),
                     )
                     .unwrap();
                 }
@@ -259,7 +277,8 @@ pub fn run() {
             save,
             saveas,
             preview,
-            insertimage
+            insertimage,
+            readimage
         ])
         .on_menu_event(|handle, event| handle.emit(event.id().0.as_str(), ()).unwrap())
         .setup(|app| {

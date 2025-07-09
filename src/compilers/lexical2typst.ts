@@ -12,14 +12,15 @@ import {
 } from "@lexical/table"
 import {
   ElementFormatType,
-  SerializedElementNode,
   SerializedLexicalNode,
   SerializedParagraphNode,
   SerializedRootNode,
   SerializedTextNode,
   TEXT_TYPE_TO_FORMAT,
 } from "lexical"
+import { SerializedImageNode } from "../components/plugins/image"
 import { SerializedMathNode } from "../components/plugins/math"
+import { SerializedTypstCodeNode } from "../components/plugins/typstCode"
 import asciimath2typst from "./asciimath2typst"
 
 export const convertCSSColor = (color: string) => {
@@ -195,8 +196,13 @@ export const converters: Record<string, (d: SerializedLexicalNode) => string> =
     linebreak: () => "\\ \n",
     horizontalrule: () => "#line(length: 100%)\n",
     typstcode: (d) => {
-      const typstCode = d as SerializedElementNode
-      return lexical2text(typstCode)
+      const typstCode = d as SerializedTypstCodeNode
+      const root = typstCode.text?.editorState.root
+      return root ? lexical2text(root) : ""
+    },
+    image: (d) => {
+      const image = d as SerializedImageNode
+      return `#image(${JSON.stringify(image.src)})`
     },
   }
 

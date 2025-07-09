@@ -63,22 +63,22 @@ export const MathEditor = ({
     const mf = mathfieldRef.current
     if (mf && mf.hasFocus() && window.currentMathEditor !== mf) {
       window.currentMathEditor = mf
-      window.dispatchEvent(new Event("mathEditorChanged"))
     } else if (mf && !mf.hasFocus() && window.currentMathEditor === mf) {
       delete window.currentMathEditor
-      window.dispatchEvent(new Event("mathEditorChanged"))
     }
   }
 
   const updateValue = (formula: string, asciimath: string) => {
     setFormula(formula)
-    editor.update(() => {
-      const node = $getNodeByKey(nodeKey)
-      if ($isMathNode(node)) {
-        node.setFormula(formula)
-        node.setAsciimath(asciimath)
-      }
-    })
+    setTimeout(() => {
+      editor.update(() => {
+        const node = $getNodeByKey(nodeKey)
+        if ($isMathNode(node)) {
+          node.setFormula(formula)
+          node.setAsciimath(asciimath)
+        }
+      })
+    }, 0)
   }
 
   useEffect(() => {
@@ -102,7 +102,6 @@ export const MathEditor = ({
           })
         })
         mf.addEventListener("blur", updateCurrentMathEditor)
-        // mf.addEventListener("keypress", (e) => e.stopPropagation())
 
         mf.inlineShortcuts = Object.fromEntries(
           getSettings().mathInlineShortcuts ?? DEFAULT_MATH_INLINE_SHORTCUTS,
@@ -181,12 +180,17 @@ export const MathEditor = ({
 
   useEffect(() => {
     if (isSelected) {
-      editor.read(() => {
+      const shouldFocus = editor.read(() => {
         const selection = $getSelection()
         if (selection?.getNodes().length === 1) {
-          mathfieldRef.current?.focus()
+          return true
         }
+        return false
       })
+
+      if (shouldFocus) {
+        mathfieldRef.current?.focus()
+      }
     }
 
     return updateCurrentMathEditor

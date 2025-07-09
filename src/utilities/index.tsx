@@ -5,6 +5,8 @@
 import { modals } from "@mantine/modals"
 import { notifications } from "@mantine/notifications"
 import { IconCheck, IconExclamationMark } from "@tabler/icons-react"
+import { TyXDocument } from "../models"
+import { getLocalStorage } from "./hooks"
 
 interface MessageOptions {
   title?: string
@@ -57,4 +59,10 @@ export const showConfirmModal = (message: string, onConfirm: () => void) => {
     onConfirm,
     labels: { confirm: "Confirm", cancel: "Cancel" },
   })
+}
+
+export const getCurrentDocument = () => {
+  const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
+  const currentDocument = getLocalStorage<number>("Current Document")
+  return openDocuments[currentDocument]
 }

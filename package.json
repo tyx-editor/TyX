@@ -4,10 +4,9 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "bun run setup && vite",
+    "dev": "vite",
     "dev:app": "tauri dev",
-    "setup": "echo todo",
-    "build": "bun run setup && tsc && vite build",
+    "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
     "prettier": "prettier",

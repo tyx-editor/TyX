@@ -131,6 +131,10 @@ math-field::part(content) {
   padding: 2px;
 }
 
+.editor {
+  height: 100%;
+}
+
 .editor:focus {
   outline: none !important;
 }
@@ -152,12 +156,12 @@ math-field::part(content) {
 }
 
 .editor .typst-code {
-  direction: ltr;
-  display: inline;
+  display: inline-block;
   padding: 5px;
   border-radius: 5px;
   background-color: #181818;
 }
+
 .editor .typst-code:empty {
   padding-left: 7.5px;
   padding-right: 7.5px;

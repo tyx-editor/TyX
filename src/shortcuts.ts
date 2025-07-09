@@ -37,7 +37,7 @@ export const DEFAULT_KEYBOARD_SHORTCUTS: [string, string][] = [
   ["mod+shift+z", "redo"],
   ["shift+enter", "insertLineBreak false"],
   ["mod+enter", "insertLineBreak false"],
-  ["mod+l", "toggleTypstCode"],
+  ["mod+l", "insertTypstCode"],
   ["mod+m", "insertMath true"],
   ["mod+shift+m", "toggleMathInline"],
   ["ctrl+g a", "math insert \\alpha"],

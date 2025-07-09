@@ -103,7 +103,7 @@ export class MathNode extends DecoratorNode<React.ReactNode> {
   }
 
   isInline() {
-    return this.getLatest().__inline
+    return this.__inline
   }
 
   createDOM(config: EditorConfig): HTMLElement {

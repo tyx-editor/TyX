@@ -52,7 +52,7 @@ import {
   SELECTION_CHANGE_COMMAND,
 } from "lexical"
 import React, { useCallback, useEffect, useState } from "react"
-import { onPreview, onSave, save } from "../../backend"
+import { insertImage, onPreview, onSave, save } from "../../backend"
 import { executeCommand, parseCommandSequence } from "../../commands"
 import tyx2typst from "../../compilers/tyx2typst"
 import { TyXDocument } from "../../models"
@@ -303,7 +303,7 @@ const InsertControls = () => {
 
   return (
     <ToolbarControlGroup>
-      <ToolbarControl label="Insert image">
+      <ToolbarControl label="Insert image" onClick={insertImage}>
         <IconPhoto />
       </ToolbarControl>
       <ToolbarControl label="Insert Typst code" command="insertTypstCode">

@@ -152,4 +152,6 @@ export const saveAs = () =>
 
 export const getVersion = async () => version
 
+export const readImage = async () => ""
+
 export const isWeb = true

@@ -22,6 +22,7 @@ import {
   REDO_COMMAND,
   UNDO_COMMAND,
 } from "lexical"
+import { INSERT_IMAGE_COMMAND } from "./components/plugins/image"
 import { TOGGLE_KEYBOARD_MAP_COMMAND } from "./components/plugins/keyboardMap"
 import {
   INSERT_MATH_COMMAND,
@@ -48,6 +49,7 @@ const COMMANDS: Record<string, LexicalCommand<any>> = {
   insertLineBreak: INSERT_LINE_BREAK_COMMAND,
   insertHorizontalLine: INSERT_HORIZONTAL_RULE_COMMAND,
   insertTypstCode: INSERT_TYPST_CODE_COMMAND,
+  insertImage: INSERT_IMAGE_COMMAND,
   toggleMathInline: TOGGLE_MATH_INLINE_COMMAND,
   math: MATH_COMMAND,
   indent: INDENT_CONTENT_COMMAND,
