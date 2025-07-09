@@ -127,13 +127,20 @@ export const onOpen = (filename?: string | undefined, content?: string) => {
     open()
     return
   }
+  const parsedContent = JSON.parse(content)
+  if (parsedContent?.version?.startsWith("0.1")) {
+    showFailureMessage(
+      `This TyX file is not compatible with this version of TyX!`,
+    )
+    return
+  }
 
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   if (filename && !filename.endsWith(".tyx")) {
     const lastDot = filename?.lastIndexOf(".")
     filename = filename.slice(0, lastDot) + " (Imported).tyx"
   }
-  openDocuments.push({ ...JSON.parse(content), filename })
+  openDocuments.push({ ...parsedContent, filename })
   setLocalStorage("Open Documents", openDocuments)
   setLocalStorage("Current Document", openDocuments.length - 1)
 }

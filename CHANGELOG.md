@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.0] - 2025-07-09
+
+### Breaking Changes
+
+- Files saved with TyX 0.1 are sadly not compatible.
+- TyX 0.1 commands (and thus keyboard shortcuts) no longer work.
+
+### Changed
+
+- The underlying editor library was changed from TipTap to Lexical.
+- Code nodes are now easier to notice when empty (previously nothing was shown).
+- Image contents are no longer saved in the TyX file, only the relative image path.
+
 ## [0.1.17] - 2025-06-09
 
 ### Added

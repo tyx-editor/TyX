@@ -9,6 +9,7 @@ import { version } from "../../src-tauri/tauri.conf.json"
 import tyx2typst from "../compilers/tyx2typst"
 import SaveAsModal from "../components/SaveAsModal"
 import { TyXDocument } from "../models"
+import { showFailureMessage } from "../utilities"
 import { getLocalStorage, setLocalStorage } from "../utilities/hooks"
 
 let compiler: TypstCompiler
@@ -100,7 +101,14 @@ export const onSave = async () => {
 
 export const onOpen = (filename: string | undefined, content: string) => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
-  openDocuments.push({ ...JSON.parse(content), filename })
+  const parsedContent = JSON.parse(content)
+  if (parsedContent?.version?.startsWith("0.1")) {
+    showFailureMessage(
+      `This TyX file is not compatible with this version of TyX!`,
+    )
+    return
+  }
+  openDocuments.push({ ...parsedContent, filename })
   setLocalStorage("Open Documents", openDocuments)
   setLocalStorage("Current Document", openDocuments.length - 1)
 
