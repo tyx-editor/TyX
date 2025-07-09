@@ -26,9 +26,6 @@ jobs:
       - name: install frontend dependencies
         run: bun install
 
-      - name: run setup
-        run: bun run setup
-
       - name: run clippy
         run: cargo clippy --all-targets --all-features
 
