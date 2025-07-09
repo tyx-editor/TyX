@@ -68,7 +68,7 @@ TyX would not be possible without the following open-source libraries:
 - [typst.ts](https://github.com/Myriad-Dreamin/typst.ts/) (Apache-2.0 License)
 - [tinymist](https://github.com/Myriad-Dreamin/tinymist/) (Apache-2.0 License)
 - [mathlive](https://github.com/arnog/mathlive/) (MIT License)
-- [tiptap](https://github.com/ueberdosis/tiptap/) (MIT License)
+- [lexical](https://github.com/facebook/lexical/) (MIT License)
 - [tauri](https://github.com/tauri-apps/tauri/) (Apache-2.0/MIT License)
 - [mantine](https://github.com/mantinedev/mantine/) (MIT License)
 - [tabler](https://github.com/tabler/tabler-icons/) (MIT License)
