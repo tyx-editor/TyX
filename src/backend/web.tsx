@@ -160,6 +160,7 @@ export const saveAs = () =>
 
 export const getVersion = async () => version
 
-export const readImage = async () => ""
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const readImage = async (_filename: string, _image: string) => ""
 
 export const isWeb = true
