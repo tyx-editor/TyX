@@ -1,7 +1,7 @@
 Commands
 ========
 
-TyX commands are based on TipTap commands.
+TyX commands are based on Lexical and Mathfield commands.
 The keyboard shortcuts correspond to command sequences, which are commands separated by a semicolon.
 
 Commands consist of a command function followed by optional arguments.

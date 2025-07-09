@@ -128,6 +128,20 @@
       "content": "paragraph block*",
       "defining": true,
       "parseDOM": [{ "tag": "li" }]
+    },
+    "functionCallBlock": {
+      "content": "block*",
+      "group": "block",
+      "defining": true,
+      "attrs": { "name": { "default": "" }, "parameters": { "default": {} } },
+      "parseDOM": [{ "tag": "function-call-block" }]
+    },
+    "functionCallInline": {
+      "content": "inline*",
+      "group": "inline",
+      "inline": true,
+      "attrs": { "name": { "default": "" }, "parameters": { "default": {} } },
+      "parseDOM": [{ "tag": "function-call-inline" }]
     }
   },
   "marks": {

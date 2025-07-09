@@ -15,7 +15,6 @@
 > [!WARNING]
 > TyX is currently in early development and breaking changes
 > are introduced frequently.
-> In fact, the base editor is now being refactored to use Lexical.
 
 ## Getting Started
 
@@ -46,6 +45,9 @@ This enables you to write in your language without having to switch to English e
 ![keyboard map](docs/_static/keyboard-map.gif)
 
 ### Typst Importing
+
+> [!WARNING]
+> This feature has not yet been updated to work with Lexical.
 
 Thanks to [contributions by Myriad-Dreamin](https://github.com/tyx-editor/TyX/commits?author=Myriad-Dreamin) you can open `.typ` files into TyX!
 

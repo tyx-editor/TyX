@@ -10,7 +10,6 @@ import {
   IconRotate,
 } from "@tabler/icons-react"
 import { useTranslation } from "react-i18next"
-import { KEYBOARD_MAPS } from "../editor/KeyboardMapExtension"
 import { TyXSettings } from "../models"
 import { DEFAULT_MATH_INLINE_SHORTCUTS } from "../settings"
 import {
@@ -21,6 +20,7 @@ import { TRANSLATIONS } from "../translations"
 import { useLocalStorage } from "../utilities/hooks"
 import KeyboardShortcutEditor from "./KeyboardShortcutEditor"
 import MathInlineShortcutEditor from "./MathInlineShortcutEditor"
+import { KEYBOARD_MAPS } from "./plugins/keyboardMap"
 
 const SettingsModal = () => {
   const { t } = useTranslation()

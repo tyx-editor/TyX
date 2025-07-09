@@ -9,6 +9,7 @@ import { relaunch } from "@tauri-apps/plugin-process"
 import { check } from "@tauri-apps/plugin-updater"
 
 import { getVersion } from "@tauri-apps/api/app"
+import { executeCommand } from "../commands"
 import tyx2typst from "../compilers/tyx2typst"
 import { TyXDocument } from "../models"
 import { showFailureMessage } from "../utilities"
@@ -23,7 +24,7 @@ export const initializeBackend = () => {
   listen("save", onSave)
   listen("close", onClose)
   listen("preview", onPreview)
-  listen<[string, string]>("insertImage", (e) => onInsertImage(...e.payload))
+  listen<[string]>("insertImage", (e) => onInsertImage(...e.payload))
   listen<[string]>("saveas", (e) => onSaveAs(...e.payload))
 
   check()
@@ -33,14 +34,13 @@ export const initializeBackend = () => {
         await relaunch()
       }
     })
-    .catch((_) => {})
+    .catch(() => {})
 }
 
 export const onNew = () => {
   const newDocument: TyXDocument = {
     version,
     preamble: "",
-    content: {},
     settings: getLocalStorage("Default Settings", {}),
   }
   onOpen(undefined, JSON.stringify(newDocument))
@@ -153,12 +153,12 @@ export const insertImage = () => {
   invoke("insertimage", { filename: document.filename ?? "" })
 }
 
-export const onInsertImage = (path: string, contents: string) => {
-  window.currentEditor?.commands.setImage({
-    src: `data:image/${path.split(".").at(-1)};base64,${contents}`,
-    // TODO: add `path` attribute instead of overriding alt
-    alt: path,
-  })
+export const onInsertImage = (path: string) => {
+  executeCommand(["insertImage", path])
+}
+
+export const readImage = async (filename: string, image: string) => {
+  return await invoke<string>("readimage", { filename, image })
 }
 
 export { getVersion }

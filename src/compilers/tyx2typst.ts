@@ -3,7 +3,7 @@
  */
 
 import { TyXDocument, TyXDocumentSettings } from "../models"
-import tiptap2typst from "./tiptap2typst"
+import lexical2typst from "./lexical2typst"
 
 const setProperty = (
   element: string,
@@ -58,7 +58,9 @@ ${document.preamble}
 
 `
   }
-  content += "// Content\n" + tiptap2typst(document.content)
+  if (document.content) {
+    content += "// Content\n" + lexical2typst(document.content.root)
+  }
   return content
 }
 

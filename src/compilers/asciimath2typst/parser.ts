@@ -147,6 +147,7 @@ function createParamTwoNode(): ParamTwoNode {
 
 function createParenOfFlatNodeFrom(
   token: TokenizedValue,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _: boolean,
 ): ConstNode {
   return {
@@ -898,7 +899,7 @@ function walk(
       current++
       if (current >= tokens.length) {
         node = createConstNode(
-          `${token.typst.replace(/[\{\[] \$\d+ [\}\]]/g, "")}{}`,
+          `${token.typst.replace(/[{[] \$\d+ [}\]]/g, "")}{}`,
         )
         break
       }

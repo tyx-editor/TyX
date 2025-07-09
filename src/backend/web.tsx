@@ -26,7 +26,6 @@ export const onNew = () => {
   const newDocument: TyXDocument = {
     version,
     preamble: "",
-    content: {},
     settings: getLocalStorage("Default Settings", {}),
   }
   onOpen(undefined, JSON.stringify(newDocument))
@@ -152,5 +151,7 @@ export const saveAs = () =>
   })
 
 export const getVersion = async () => version
+
+export const readImage = async () => ""
 
 export const isWeb = true

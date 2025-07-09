@@ -9,7 +9,7 @@ import { ErrorBoundary } from "react-error-boundary"
 import { onNew } from "../backend"
 import { TyXDocument } from "../models"
 import { showConfirmModal } from "../utilities"
-import { useLocalStorage } from "../utilities/hooks"
+import { getLocalStorage, useLocalStorage } from "../utilities/hooks"
 import Editor from "./Editor"
 import StatusBar from "./StatusBar"
 
@@ -24,6 +24,7 @@ const DocumentTabs = () => {
   })
 
   const closeDocument = (index: number) => {
+    const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents")
     openDocuments.splice(index, 1)
     setOpenDocuments([...openDocuments])
     if (index <= currentDocument) {
@@ -101,7 +102,14 @@ const DocumentTabs = () => {
             flex: 1,
           }}
         >
-          <div style={{ overflowY: "auto", flex: 1 }}>
+          <div
+            style={{
+              overflowY: "auto",
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             <ErrorBoundary
               fallbackRender={({ error }) => (
                 <>

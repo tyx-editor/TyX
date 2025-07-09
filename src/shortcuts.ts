@@ -27,19 +27,19 @@ declare global {
 
 // TODO: add more default shortcuts.
 export const DEFAULT_KEYBOARD_SHORTCUTS: [string, string][] = [
-  ["mod+b", "toggleBold"],
-  ["mod+i", "toggleItalic"],
-  ["mod+u", "toggleUnderline"],
-  ["mod+shift+x", "toggleStrike"],
-  ["mod+shift+h", "toggleHighlight"],
-  ["mod+e", "toggleCode"],
+  ["mod+b", "formatText bold"],
+  ["mod+i", "formatText italic"],
+  ["mod+u", "formatText underline"],
+  ["mod+shift+x", "formatText strikethrough"],
+  ["mod+shift+h", "formatText highlight"],
+  ["mod+e", "formatText code"],
   ["mod+z", "undo"],
   ["mod+shift+z", "redo"],
-  ["shift+enter", "setHardBreak"],
-  ["mod+enter", "setHardBreak"],
-  ["mod+l", "toggleTypstCode"],
-  ["mod+m", "insertMathInline"],
-  ["mod+shift+m", "insertMathBlock"],
+  ["shift+enter", "insertLineBreak false"],
+  ["mod+enter", "insertLineBreak false"],
+  ["mod+l", "insertTypstCode"],
+  ["mod+m", "insertMath true"],
+  ["mod+shift+m", "toggleMathInline"],
   ["ctrl+g a", "math insert \\alpha"],
 ]
 

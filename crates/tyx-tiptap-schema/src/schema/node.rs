@@ -38,6 +38,38 @@ pub struct Doc {
     pub content: Option<Content>,
 }
 
+/// A `functionCallBlock` node.
+#[derive(Debug, Clone, Hash, Serialize, Deserialize)]
+pub struct FunctionCallBlock {
+    /// The node's content.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub content: Option<Content>,
+
+    /// The `name` attribute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    /// The `parameters` attribute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<serde_json::Value>,
+}
+
+/// A `functionCallInline` node.
+#[derive(Debug, Clone, Hash, Serialize, Deserialize)]
+pub struct FunctionCallInline {
+    /// The node's content.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub content: Option<Content>,
+
+    /// The `name` attribute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    /// The `parameters` attribute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<serde_json::Value>,
+}
+
 /// A `hardBreak` node.
 #[derive(Debug, Clone, Hash, Serialize, Deserialize)]
 pub struct HardBreak {

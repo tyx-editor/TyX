@@ -20,7 +20,7 @@ const CREATED_WITH_LINKS = [
   { label: "typst.ts", href: "https://github.com/Myriad-Dreamin/typst.ts/" },
   { label: "tinymist", href: "https://github.com/Myriad-Dreamin/tinymist/" },
   { label: "mathlive", href: "https://github.com/arnog/mathlive/" },
-  { label: "tiptap", href: "https://github.com/ueberdosis/tiptap/" },
+  { label: "lexical", href: "https://github.com/facebook/lexical/" },
   { label: "tauri", href: "https://github.com/tauri-apps/tauri/" },
   { label: "mantine", href: "https://github.com/mantinedev/mantine/" },
   { label: "tabler", href: "https://github.com/tabler/tabler-icons/" },

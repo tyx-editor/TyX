@@ -3,6 +3,7 @@ body,
 #root {
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 h1,
@@ -18,16 +19,6 @@ p {
 .tabler-icon {
   width: 18px;
   height: 18px;
-}
-
-.mantine-RichTextEditor-content table td {
-  border-width: 1px;
-  border-style: solid;
-  border-color: #666666;
-}
-
-.mantine-RichTextEditor-content table {
-  table-layout: fixed;
 }
 
 math-field::part(virtual-keyboard-toggle),
@@ -49,11 +40,18 @@ math-field {
   color: var(--mantine-color-blue-7);
 }
 
-.mathBlock math-field:empty {
+.math-block {
+  text-align: center;
+  font-size: 20px;
+}
+.math-block math-field:empty {
   padding-right: 7.5px;
   padding-left: 7.5px;
 }
-.mathInline math-field:empty {
+.math-inline {
+  display: inline-block;
+}
+.math-inline math-field:empty {
   padding-right: 5px;
   padding-left: 5px;
 }
@@ -75,21 +73,121 @@ math-field::part(container) {
   align-items: center;
 }
 
-.mantine-RichTextEditor-root,
-.mantine-RichTextEditor-content,
-.mantine-RichTextEditor-content > .tiptap {
+.function-call {
+  border-radius: 10px;
+  border: 2px dashed gray;
+  padding: 5px;
+}
+
+.function-call > span {
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
+
+.function-call.functionCallInline > div {
+  display: inline-block;
+}
+
+.function-call.functionCallInline {
+  display: inline-block;
+}
+
+.function-call.functionCallBlock {
+  display: block;
+}
+
+.function-call.functionCallInline > span {
+  margin-inline-end: 5px;
+}
+
+.function-call.functionCallBlock {
+  width: 100%;
+}
+
+.function-call.functionCallBlock > span {
+  display: block;
+  font-weight: bold;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+}
+
+.underline.strikethrough {
+  text-decoration: underline line-through;
+}
+
+math-field::part(content) {
+  padding: 2px;
+}
+
+.editor {
   height: 100%;
 }
 
-.mantine-RichTextEditor-root {
-  display: flex;
-  flex-direction: column;
+.editor:focus {
+  outline: none !important;
 }
 
-.mantine-RichTextEditor-typographyStylesProvider {
-  flex-grow: 1;
+.editor blockquote {
+  margin: 0px;
+  padding-right: 10px;
+  border-right: 1px solid var(--tab-border-color);
+  opacity: 0.6;
 }
 
-.mantine-RichTextEditor-content pre {
+.editor .code {
+  display: block;
   direction: ltr;
+  background: #181818;
+  color: white;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.editor .typst-code {
+  display: inline-block;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #181818;
+}
+
+.editor .typst-code:empty {
+  padding-left: 7.5px;
+  padding-right: 7.5px;
+}
+
+.editor table td,
+.editor table th,
+.editor table {
+  border: 1px solid var(--tab-border-color);
+  border-collapse: collapse;
+}
+
+.editor table th {
+  text-align: initial;
+}
+
+.editor table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.toolbar-control .tabler-icon {
+  stroke-width: 1.25;
+}
+
+li:has(ol),
+li:has(ul) {
+  list-style-type: none;
 }

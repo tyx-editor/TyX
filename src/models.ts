@@ -2,7 +2,7 @@
  * @file TypeScript models used by TyX.
  */
 
-import type { JSONContent, SingleCommands } from "@tiptap/react"
+import { SerializedEditorState, SerializedLexicalNode } from "lexical"
 import { z } from "zod/v4"
 
 /** An object representing Typst `relative` or `fraction` types. */
@@ -32,7 +32,7 @@ export interface TyXDocument {
   version: string
   preamble?: string
   filename?: string
-  content: JSONContent
+  content?: SerializedEditorState<SerializedLexicalNode>
   dirty?: boolean
   settings?: TyXDocumentSettings
 }
@@ -48,4 +48,4 @@ export type TyXSettings = z.infer<typeof TyXSettings>
 
 // TODO: perhaps support "global" commands, such as switching between documents etc.
 /** The type of TyX commands which can be executed on the current document. */
-export type TyXCommand = [keyof SingleCommands, ...any]
+export type TyXCommand = [string, ...any]

@@ -1,345 +1,162 @@
 /**
- * @file The TipTap editor for a TyX document.
+ * @file The Lexical editor for a TyX document.
  */
 
+import { CodeHighlightNode, CodeNode } from "@lexical/code"
+import { LinkNode } from "@lexical/link"
+import { ListItemNode, ListNode } from "@lexical/list"
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin"
 import {
-  RichTextEditor,
-  RichTextEditorControlProps,
-  useRichTextEditorContext,
-} from "@mantine/tiptap"
-import { Editor as EditorType, JSONContent, useEditor } from "@tiptap/react"
-import extensions from "../editor/extensions"
+  type InitialConfigType,
+  LexicalComposer,
+} from "@lexical/react/LexicalComposer"
+import { ContentEditable } from "@lexical/react/LexicalContentEditable"
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary"
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin"
+import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode"
+import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin"
+import { ListPlugin } from "@lexical/react/LexicalListPlugin"
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin"
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
+import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin"
+import { TablePlugin } from "@lexical/react/LexicalTablePlugin"
+import { HeadingNode, QuoteNode } from "@lexical/rich-text"
+import { TableCellNode, TableNode, TableRowNode } from "@lexical/table"
+import { LexicalEditor } from "lexical"
 
-import { Loader } from "@mantine/core"
-import { modals } from "@mantine/modals"
-import {
-  IconCodeAsterisk,
-  IconColumnInsertRight,
-  IconColumnRemove,
-  IconDeviceFloppy,
-  IconEye,
-  IconFileFunction,
-  IconIndentDecrease,
-  IconIndentIncrease,
-  IconPhoto,
-  IconRowInsertBottom,
-  IconRowRemove,
-  IconSettings,
-  IconSum,
-  IconTableMinus,
-  IconTablePlus,
-} from "@tabler/icons-react"
-import { useEffect, useState } from "react"
-import { insertImage, isWeb, onPreview, onSave, save } from "../backend"
-import tyx2typst from "../compilers/tyx2typst"
+import { useMemo } from "react"
 import { TyXDocument } from "../models"
-import { getSettings } from "../settings"
-import { showSuccessMessage } from "../utilities"
-import { useLocalStorage, useUpdateOnChange } from "../utilities/hooks"
-import DocumentSettingsModal from "./DocumentSettingsModal"
-import MathControls from "./MathControls"
+import { getLocalStorage } from "../utilities/hooks"
+import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin"
+import CurrentEditorPlugin from "./plugins/CurrentEditorPlugin"
+import { ImageNode } from "./plugins/image"
+import ImagePlugin from "./plugins/ImagePlugin"
+import KeyboardMapPlugin from "./plugins/KeyboardMapPlugin"
+import { MathNode } from "./plugins/math"
+import MathPlugin from "./plugins/MathPlugin"
+import RemoveDefaultShortcutsPlugin from "./plugins/RemoveDefaultShortcutsPlugin"
+import TableCommandsPlugin from "./plugins/TableCommandsPlugin"
+import ToolbarPlugin from "./plugins/ToolbarPlugin"
+import { TypstCodeNode } from "./plugins/typstCode"
+import TypstCodePlugin from "./plugins/TypstCodePlugin"
+import UpdateLocalStoragePlugin from "./plugins/UpdateLocalStoragePlugin"
 
 declare global {
   interface Window {
-    currentEditor?: EditorType
+    currentEditor?: LexicalEditor
   }
 }
 
-const PreviewControl = (props: RichTextEditorControlProps) => {
-  const [loading, setLoading] = useState(false)
-
-  return (
-    <RichTextEditor.Control
-      onClick={() => {
-        setLoading(true)
-        onPreview()
-          .then(() => setLoading(false))
-          .catch(() => setLoading(false))
-      }}
-      aria-label="Preview as PDF"
-      title="Preview as PDF"
-      {...props}
-    >
-      {loading ? <Loader size={10} /> : <IconEye />}
-    </RichTextEditor.Control>
-  )
-}
-
-const TableControls = () => {
-  const { editor } = useRichTextEditorContext()
-  useUpdateOnChange(editor)
-
-  return (
-    <RichTextEditor.ControlsGroup>
-      <RichTextEditor.Control
-        title="Insert table"
-        aria-label="Insert table"
-        onClick={() =>
-          editor
-            ?.chain()
-            .focus()
-            .insertTable({ rows: 3, cols: 3, withHeaderRow: false })
-            .run()
-        }
-      >
-        <IconTablePlus />
-      </RichTextEditor.Control>
-      {editor?.isFocused && editor?.isActive("table") && (
-        <>
-          <RichTextEditor.Control
-            title="Remove table"
-            aria-label="Remove table"
-            onClick={() => editor?.chain().focus().deleteTable().run()}
-          >
-            <IconTableMinus />
-          </RichTextEditor.Control>
-          <RichTextEditor.Control
-            title="Insert row below"
-            aria-label="Insert row below"
-            onClick={() => editor?.chain().focus().addRowAfter().run()}
-          >
-            <IconRowInsertBottom />
-          </RichTextEditor.Control>
-          <RichTextEditor.Control
-            title="Insert column to the right"
-            aria-label="Insert column to the right"
-            onClick={() => editor?.chain().focus().addColumnAfter().run()}
-          >
-            <IconColumnInsertRight />
-          </RichTextEditor.Control>
-          <RichTextEditor.Control
-            title="Delete row"
-            aria-label="Delete row"
-            onClick={() => editor?.chain().focus().deleteRow().run()}
-          >
-            <IconRowRemove />
-          </RichTextEditor.Control>
-          <RichTextEditor.Control
-            title="Delete column"
-            aria-label="Delete column"
-            onClick={() => editor?.chain().focus().deleteColumn().run()}
-          >
-            <IconColumnRemove />
-          </RichTextEditor.Control>
-        </>
-      )}
-    </RichTextEditor.ControlsGroup>
-  )
-}
-
-const ListControls = () => {
-  const { editor } = useRichTextEditorContext()
-  useUpdateOnChange(editor)
-
-  if (
-    !editor?.isFocused ||
-    (!editor?.isActive("bulletList") && !editor?.isActive("orderedList"))
-  ) {
-    return <></>
-  }
-
-  return (
-    <RichTextEditor.ControlsGroup>
-      <RichTextEditor.Control
-        title="Lift list item"
-        aria-label="Lift list item"
-        onClick={() => editor?.chain().focus().liftListItem("listItem").run()}
-      >
-        <IconIndentDecrease />
-      </RichTextEditor.Control>
-      <RichTextEditor.Control
-        title="Sink list item"
-        aria-label="Sink list item"
-        onClick={() => editor?.chain().focus().sinkListItem("listItem").run()}
-      >
-        <IconIndentIncrease />
-      </RichTextEditor.Control>
-    </RichTextEditor.ControlsGroup>
-  )
-}
-
-const LinkControls = () => {
-  return (
-    <RichTextEditor.ControlsGroup>
-      <RichTextEditor.Link />
-      <RichTextEditor.Unlink />
-    </RichTextEditor.ControlsGroup>
-  )
+const initialConfig: InitialConfigType = {
+  namespace: "TyX",
+  theme: {
+    root: "editor",
+    code: "code",
+    text: {
+      underline: "underline",
+      strikethrough: "strikethrough",
+      italic: "italic",
+    },
+    codeHighlight: {
+      atrule: "token atrule",
+      attr: "token attr",
+      boolean: "token boolean",
+      builtin: "token builtin",
+      cdata: "token cdata",
+      char: "token char",
+      class: "token class",
+      "class-name": "token class-name",
+      comment: "token comment",
+      constant: "token constant",
+      deleted: "token deleted",
+      doctype: "token doctype",
+      entity: "token entity",
+      function: "token function",
+      important: "token important",
+      inserted: "token inserted",
+      keyword: "token keyword",
+      namespace: "token namespace",
+      number: "token number",
+      operator: "token operator",
+      prolog: "token prolog",
+      property: "token property",
+      punctuation: "token punctuation",
+      regex: "token regex",
+      selector: "token selector",
+      string: "token string",
+      symbol: "token symbol",
+      tag: "token tag",
+      url: "token url",
+      variable: "token variable",
+    },
+    mathInline: "math-inline",
+    mathBlock: "math-block",
+    typstCode: "typst-code",
+  },
+  onError: (error) => {
+    console.error(error)
+  },
+  nodes: [
+    TableNode,
+    TableRowNode,
+    TableCellNode,
+    LinkNode,
+    CodeNode,
+    CodeHighlightNode,
+    HeadingNode,
+    HorizontalRuleNode,
+    ListNode,
+    ListItemNode,
+    QuoteNode,
+    MathNode,
+    TypstCodeNode,
+    ImageNode,
+  ],
 }
 
 const Editor = () => {
-  const [openDocuments, setOpenDocuments] = useLocalStorage<TyXDocument[]>({
-    key: "Open Documents",
-    defaultValue: [],
-    silent: true,
-  })
-  const [currentDocument] = useLocalStorage<number>({
-    key: "Current Document",
-    defaultValue: 0,
-    silent: true,
-  })
-
-  const doc = openDocuments[currentDocument]
-  const update = (content: JSONContent) => {
-    openDocuments[currentDocument].content = content
-    openDocuments[currentDocument].dirty = true
-    setOpenDocuments(openDocuments)
-  }
-
-  const editor = useEditor({
-    extensions,
-    content: Object.keys(doc.content).length > 0 ? doc.content : undefined,
-    onUpdate: ({ editor }) => update(editor.getJSON()),
-    shouldRerenderOnTransaction: false,
-  })
-
-  useEffect(() => {
-    editor?.commands.focus()
-    window.currentEditor = editor ?? undefined
-
-    const settings = getSettings()
-    editor?.commands.setKeyboardLayout(settings.keyboardMap ?? null)
-
-    return () => (window.currentEditor = undefined)
-  }, [editor])
-
-  const basename = (doc.filename ?? "Untitled")
-    .split("/")
-    .pop()!
-    .split("\\")
-    .pop()
+  const config: InitialConfigType = useMemo(() => {
+    const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
+    const currentDocument = getLocalStorage<number>("Current Document", 0)
+    const doc = openDocuments[currentDocument]
+    return {
+      ...initialConfig,
+      editorState: doc.content ? JSON.stringify(doc.content) : undefined,
+    }
+  }, [])
 
   return (
-    <RichTextEditor editor={editor} bd="none">
-      <RichTextEditor.Toolbar sticky>
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Control
-            onClick={onSave}
-            aria-label="Save"
-            title="Save"
-            disabled={doc.filename !== undefined && !doc.dirty}
-          >
-            <IconDeviceFloppy />
-          </RichTextEditor.Control>
-          <RichTextEditor.Control
-            onClick={() => {
-              const filename = (doc.filename ?? "Untitled.tyx").replace(
-                ".tyx",
-                ".typ",
-              )
-              save(filename, tyx2typst(doc)).then(() =>
-                showSuccessMessage(`Document exported to ${filename}.`),
-              )
-            }}
-            aria-label="Export to Typst"
-            title="Export to Typst"
-            disabled={!isWeb && doc.filename === undefined}
-          >
-            <IconFileFunction />
-          </RichTextEditor.Control>
-          <PreviewControl disabled={!isWeb && doc.filename === undefined} />
-          <RichTextEditor.Control
-            title="Document settings"
-            aria-label="Document settings"
-            onClick={() =>
-              modals.open({
-                title: `Document Settings (${basename})`,
-                children: <DocumentSettingsModal />,
-              })
-            }
-          >
-            <IconSettings />
-          </RichTextEditor.Control>
-        </RichTextEditor.ControlsGroup>
+    <LexicalComposer initialConfig={config}>
+      <ToolbarPlugin />
 
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.ColorPicker
-            colors={[
-              "#25262b",
-              "#868e96",
-              "#fa5252",
-              "#e64980",
-              "#be4bdb",
-              "#7950f2",
-              "#4c6ef5",
-              "#228be6",
-              "#15aabf",
-              "#12b886",
-              "#40c057",
-              "#82c91e",
-              "#fab005",
-              "#fd7e14",
-            ]}
-          />
-          <RichTextEditor.Bold />
-          <RichTextEditor.Italic />
-          <RichTextEditor.Underline />
-          <RichTextEditor.Strikethrough />
-          <RichTextEditor.Subscript />
-          <RichTextEditor.Superscript />
-          <RichTextEditor.Code />
-          <RichTextEditor.ClearFormatting />
-        </RichTextEditor.ControlsGroup>
+      <div style={{ flexGrow: 1, padding: 10, overflowY: "auto" }}>
+        <RichTextPlugin
+          contentEditable={
+            <ContentEditable aria-placeholder="" placeholder={<></>} />
+          }
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+      </div>
+      <HistoryPlugin />
+      <HorizontalRulePlugin />
+      <ListPlugin hasStrictIndent />
+      <TablePlugin />
 
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.H1 />
-          <RichTextEditor.H2 />
-          <RichTextEditor.H3 />
-          <RichTextEditor.H4 />
-        </RichTextEditor.ControlsGroup>
+      <TabIndentationPlugin />
+      <MarkdownShortcutPlugin />
+      <AutoFocusPlugin />
 
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Control
-            title="Insert image"
-            aria-label="Insert image"
-            onClick={insertImage}
-          >
-            <IconPhoto />
-          </RichTextEditor.Control>
-          <RichTextEditor.Control
-            title="Insert typst code"
-            aria-label="Insert typst code"
-            onClick={() => editor?.chain().focus().toggleTypstCode().run()}
-          >
-            <IconCodeAsterisk />
-          </RichTextEditor.Control>
-          <RichTextEditor.Control
-            title="Insert math"
-            aria-label="Insert math"
-            onClick={() => editor?.chain().focus().insertMathInline().run()}
-          >
-            <IconSum />
-          </RichTextEditor.Control>
-          <RichTextEditor.Blockquote />
-          <RichTextEditor.Hr />
-          <RichTextEditor.BulletList />
-          <RichTextEditor.OrderedList />
-          <RichTextEditor.CodeBlock />
-        </RichTextEditor.ControlsGroup>
+      <UpdateLocalStoragePlugin />
+      <TableCommandsPlugin />
+      <CodeHighlightPlugin />
+      <RemoveDefaultShortcutsPlugin />
+      <CurrentEditorPlugin />
+      <KeyboardMapPlugin />
 
-        <TableControls />
-
-        <ListControls />
-
-        <LinkControls />
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.AlignLeft />
-          <RichTextEditor.AlignCenter />
-          <RichTextEditor.AlignRight />
-          <RichTextEditor.AlignJustify />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Undo />
-          <RichTextEditor.Redo />
-        </RichTextEditor.ControlsGroup>
-
-        <MathControls />
-      </RichTextEditor.Toolbar>
-
-      <RichTextEditor.Content spellCheck={false} />
-    </RichTextEditor>
+      <MathPlugin />
+      <TypstCodePlugin />
+      <ImagePlugin />
+    </LexicalComposer>
   )
 }
 
