@@ -41,6 +41,7 @@ export const DEFAULT_KEYBOARD_SHORTCUTS: [string, string][] = [
   ["mod+m", "insertMath true"],
   ["mod+shift+m", "toggleMathInline"],
   ["ctrl+g a", "math insert \\alpha"],
+  ["mod+k", "openLinkPopup"],
 ]
 
 /** Bind the shortcuts from the user's settings to their commands. */

@@ -6,6 +6,7 @@ import { TyXCommand } from "./models"
 import { showFailureMessage } from "./utilities"
 import { setLocalStorage } from "./utilities/hooks"
 
+import { TOGGLE_LINK_COMMAND } from "@lexical/link"
 import {
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
@@ -36,6 +37,7 @@ import {
   TABLE_REMOVE_ROW_COMMAND,
 } from "./components/plugins/tableCommands"
 import { INSERT_TYPST_CODE_COMMAND } from "./components/plugins/typstCode"
+import { OPEN_LINK_POPUP_COMMAND } from "./components/plugins/tyxCommands"
 
 const COMMANDS: Record<string, LexicalCommand<any>> = {
   toggleKeyboardMap: TOGGLE_KEYBOARD_MAP_COMMAND,
@@ -59,6 +61,8 @@ const COMMANDS: Record<string, LexicalCommand<any>> = {
   tableInsertColumnRight: TABLE_INSERT_COLUMN_RIGHT_COMMAND,
   tableRemoveRow: TABLE_REMOVE_ROW_COMMAND,
   tableRemoveColumn: TABLE_REMOVE_COLUMN_COMMAND,
+  toggleLink: TOGGLE_LINK_COMMAND,
+  openLinkPopup: OPEN_LINK_POPUP_COMMAND,
 }
 
 /** Parse the given parameter into the corresponding JS object, to be passed to command functions. */

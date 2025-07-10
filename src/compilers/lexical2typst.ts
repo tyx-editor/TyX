@@ -3,6 +3,7 @@
  */
 
 import { SerializedCodeNode } from "@lexical/code"
+import { SerializedLinkNode } from "@lexical/link"
 import { SerializedListItemNode, SerializedListNode } from "@lexical/list"
 import { SerializedQuoteNode } from "@lexical/rich-text"
 import {
@@ -203,6 +204,10 @@ export const converters: Record<string, (d: SerializedLexicalNode) => string> =
     image: (d) => {
       const image = d as SerializedImageNode
       return `#image(${JSON.stringify(image.src)})`
+    },
+    link: (d) => {
+      const link = d as SerializedLinkNode
+      return `#link(${JSON.stringify(link.url)})[${link.children.map(lexical2typst).join("")}]`
     },
   }
 

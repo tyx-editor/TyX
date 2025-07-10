@@ -1,7 +1,14 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { $findTableNode } from "@lexical/table"
 import { mergeRegister } from "@lexical/utils"
-import { ActionIcon, Loader, Menu, Tooltip } from "@mantine/core"
+import {
+  ActionIcon,
+  Loader,
+  Menu,
+  Popover,
+  TextInput,
+  Tooltip,
+} from "@mantine/core"
 import { modals } from "@mantine/modals"
 import {
   IconAlignCenter,
@@ -25,6 +32,7 @@ import {
   IconIndentIncrease,
   IconItalic,
   IconLineDotted,
+  IconLink,
   IconList,
   IconListNumbers,
   IconMatrix,
@@ -38,12 +46,15 @@ import {
   IconSuperscript,
   IconTablePlus,
   IconUnderline,
+  IconUnlink,
 } from "@tabler/icons-react"
 import {
   $getSelection,
   $isElementNode,
   $isNodeSelection,
   $isRangeSelection,
+  $setSelection,
+  BaseSelection,
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
@@ -51,7 +62,7 @@ import {
   ElementFormatType,
   SELECTION_CHANGE_COMMAND,
 } from "lexical"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { insertImage, onPreview, onSave, save } from "../../backend"
 import { executeCommand, parseCommandSequence } from "../../commands"
 import tyx2typst from "../../compilers/tyx2typst"
@@ -66,6 +77,7 @@ import {
 import { showSuccessMessage } from "../../utilities"
 import { useLocalStorage } from "../../utilities/hooks"
 import DocumentSettingsModal from "../DocumentSettingsModal"
+import { OPEN_LINK_POPUP_COMMAND } from "./tyxCommands"
 
 interface ToolbarState {
   isBold?: boolean
@@ -86,30 +98,36 @@ const ToolbarControl = React.forwardRef<
     children?: React.ReactNode
     command?: string
     active?: boolean
+    enabled?: boolean
     disabled?: boolean
     loading?: boolean
     onClick?: React.MouseEventHandler<HTMLButtonElement>
   }
->(({ label, children, command, active, disabled, loading, onClick }, ref) => {
-  if (command) {
-    onClick ??= () => parseCommandSequence(command).forEach(executeCommand)
-  }
+>(
+  (
+    { label, children, command, active, disabled, enabled, loading, onClick },
+    ref,
+  ) => {
+    if (command) {
+      onClick ??= () => parseCommandSequence(command).forEach(executeCommand)
+    }
 
-  return (
-    <Tooltip label={label} ref={ref}>
-      <ActionIcon
-        className="toolbar-control"
-        size="md"
-        variant={active ? undefined : "default"}
-        disabled={disabled || !onClick || loading}
-        onClick={onClick}
-        onMouseDown={(e) => e.preventDefault()}
-      >
-        {loading ? <Loader size="xs" /> : children}
-      </ActionIcon>
-    </Tooltip>
-  )
-})
+    return (
+      <Tooltip label={label} ref={ref}>
+        <ActionIcon
+          className="toolbar-control"
+          size="md"
+          variant={active ? undefined : "default"}
+          disabled={!enabled && (disabled || !onClick || loading)}
+          onClick={onClick}
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          {loading ? <Loader size="xs" /> : children}
+        </ActionIcon>
+      </Tooltip>
+    )
+  },
+)
 
 const ToolbarControlGroup = ({ children }: { children?: React.ReactNode }) => {
   return (
@@ -420,6 +438,81 @@ const AlignmentControls = () => {
   )
 }
 
+const LinkControls = () => {
+  const [editor] = useLexicalComposerContext()
+  const [opened, setOpened] = useState(false)
+  const [selection, setSelection] = useState<BaseSelection | null>(null)
+  const ref = useRef<HTMLInputElement>(null)
+
+  const save = () => {
+    window.currentEditor?.update(() => {
+      $setSelection(selection?.clone() ?? null)
+    })
+    executeCommand(["toggleLink", ref.current!.value])
+    setOpened(false)
+  }
+
+  const changeOpened = (opened: boolean) => {
+    if (!opened) {
+      window.currentEditor?.update(() => {
+        $setSelection(selection?.clone() ?? null)
+      })
+    } else {
+      setSelection(window.currentEditor?.read(() => $getSelection()) ?? null)
+    }
+    setOpened(opened)
+  }
+
+  useEffect(() => {
+    return editor.registerCommand(
+      OPEN_LINK_POPUP_COMMAND,
+      () => {
+        changeOpened(true)
+        return true
+      },
+      COMMAND_PRIORITY_EDITOR,
+    )
+  }, [editor])
+
+  return (
+    <ToolbarControlGroup>
+      <Popover opened={opened} onChange={changeOpened}>
+        <Popover.Target>
+          <ToolbarControl
+            label="Link"
+            onClick={() => {
+              changeOpened(true)
+            }}
+          >
+            <IconLink />
+          </ToolbarControl>
+        </Popover.Target>
+        <Popover.Dropdown>
+          <TextInput
+            ref={ref}
+            autoFocus
+            placeholder="https://example.com"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault()
+                save()
+              }
+            }}
+            rightSection={
+              <ActionIcon onClick={save}>
+                <IconDeviceFloppy />
+              </ActionIcon>
+            }
+          />
+        </Popover.Dropdown>
+      </Popover>
+      <ToolbarControl label="Unlink" command="toggleLink null">
+        <IconUnlink />
+      </ToolbarControl>
+    </ToolbarControlGroup>
+  )
+}
+
 const IndentationControls = () => {
   return (
     <ToolbarControlGroup>
@@ -632,6 +725,7 @@ const ToolbarPlugin = () => {
       <FormatControls />
       <InsertControls />
       <AlignmentControls />
+      <LinkControls />
       <IndentationControls />
       <TableControls />
       <MathControls />
