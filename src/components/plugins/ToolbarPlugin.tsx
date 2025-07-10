@@ -1,4 +1,5 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
+import { $isHeadingNode } from "@lexical/rich-text"
 import { $findTableNode } from "@lexical/table"
 import { mergeRegister } from "@lexical/utils"
 import {
@@ -28,6 +29,10 @@ import {
   IconDeviceFloppy,
   IconEye,
   IconFileCode,
+  IconH1,
+  IconH2,
+  IconH3,
+  IconH4,
   IconIndentDecrease,
   IconIndentIncrease,
   IconItalic,
@@ -62,7 +67,13 @@ import {
   ElementFormatType,
   SELECTION_CHANGE_COMMAND,
 } from "lexical"
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 import { insertImage, onPreview, onSave, save } from "../../backend"
 import { executeCommand, parseCommandSequence } from "../../commands"
 import tyx2typst from "../../compilers/tyx2typst"
@@ -71,6 +82,7 @@ import {
   $findTopLevelElement,
   clearFormatting,
   formatCode,
+  formatHeading,
   formatQuote,
   getSelectedNode,
 } from "../../resources/playground"
@@ -87,9 +99,12 @@ interface ToolbarState {
   isSubscript?: boolean
   isSuperscript?: boolean
   isCode?: boolean
+  blockType?: string
 }
 type ToolbarStateKey = keyof ToolbarState
 type ToolbarStateValue<Key extends keyof ToolbarState> = ToolbarState[Key]
+const ToolbarContext = React.createContext<ToolbarState>({})
+const useToolbarState = () => useContext(ToolbarContext)
 
 const ToolbarControl = React.forwardRef<
   HTMLDivElement,
@@ -207,53 +222,7 @@ const ManagementControls = () => {
 
 const FormatControls = () => {
   const [editor] = useLexicalComposerContext()
-  const [toolbarState, setToolbarState] = useState<ToolbarState>({})
-
-  const updateToolbarState = useCallback(
-    <Key extends ToolbarStateKey>(key: Key, value: ToolbarStateValue<Key>) => {
-      setToolbarState((state) => ({ ...state, [key]: value }))
-    },
-    [],
-  )
-
-  const $updateToolbar = useCallback(() => {
-    const selection = $getSelection()
-    if ($isRangeSelection(selection)) {
-      updateToolbarState("isBold", selection.hasFormat("bold"))
-      updateToolbarState("isItalic", selection.hasFormat("italic"))
-      updateToolbarState("isUnderline", selection.hasFormat("underline"))
-      updateToolbarState(
-        "isStrikethrough",
-        selection.hasFormat("strikethrough"),
-      )
-      updateToolbarState("isSubscript", selection.hasFormat("subscript"))
-      updateToolbarState("isSuperscript", selection.hasFormat("superscript"))
-      updateToolbarState("isCode", selection.hasFormat("code"))
-    }
-  }, [])
-
-  useEffect(() => {
-    return editor.registerCommand(
-      SELECTION_CHANGE_COMMAND,
-      () => {
-        $updateToolbar()
-        return false
-      },
-      COMMAND_PRIORITY_CRITICAL,
-    )
-  }, [editor, $updateToolbar])
-
-  useEffect(() => {
-    editor.getEditorState().read(() => {
-      $updateToolbar()
-    })
-
-    return editor.registerUpdateListener(({ editorState }) => {
-      editorState.read(() => {
-        $updateToolbar()
-      })
-    })
-  }, [editor])
+  const toolbarState = useToolbarState()
 
   return (
     <ToolbarControlGroup>
@@ -318,6 +287,7 @@ const FormatControls = () => {
 
 const InsertControls = () => {
   const [editor] = useLexicalComposerContext()
+  const toolbarState = useToolbarState()
 
   return (
     <ToolbarControlGroup>
@@ -332,7 +302,7 @@ const InsertControls = () => {
       </ToolbarControl>
       <ToolbarControl
         label="Insert quote"
-        onClick={() => formatQuote(editor, "")}
+        onClick={() => formatQuote(editor, toolbarState.blockType ?? "")}
       >
         <IconBlockquote />
       </ToolbarControl>
@@ -353,9 +323,55 @@ const InsertControls = () => {
       </ToolbarControl>
       <ToolbarControl
         label="Insert code block"
-        onClick={() => formatCode(editor, "")}
+        onClick={() => formatCode(editor, toolbarState.blockType ?? "")}
       >
         <IconCode />
+      </ToolbarControl>
+    </ToolbarControlGroup>
+  )
+}
+
+const HeadingControls = () => {
+  const [editor] = useLexicalComposerContext()
+  const toolbarState = useToolbarState()
+
+  return (
+    <ToolbarControlGroup>
+      <ToolbarControl
+        active={toolbarState.blockType === "h1"}
+        label="Insert heading"
+        onClick={() =>
+          formatHeading(editor, toolbarState.blockType ?? "", "h1")
+        }
+      >
+        <IconH1 />
+      </ToolbarControl>
+      <ToolbarControl
+        active={toolbarState.blockType === "h2"}
+        label="Insert subheading"
+        onClick={() =>
+          formatHeading(editor, toolbarState.blockType ?? "", "h2")
+        }
+      >
+        <IconH2 />
+      </ToolbarControl>
+      <ToolbarControl
+        active={toolbarState.blockType === "h3"}
+        label="Insert subsubheading"
+        onClick={() =>
+          formatHeading(editor, toolbarState.blockType ?? "", "h3")
+        }
+      >
+        <IconH3 />
+      </ToolbarControl>
+      <ToolbarControl
+        active={toolbarState.blockType === "h4"}
+        label="Insert subsubsubheading"
+        onClick={() =>
+          formatHeading(editor, toolbarState.blockType ?? "", "h4")
+        }
+      >
+        <IconH4 />
       </ToolbarControl>
     </ToolbarControlGroup>
   )
@@ -712,6 +728,61 @@ const UndoRedoControls = () => {
 }
 
 const ToolbarPlugin = () => {
+  const [editor] = useLexicalComposerContext()
+  const [toolbarState, setToolbarState] = useState<ToolbarState>({})
+
+  const updateToolbarState = useCallback(
+    <Key extends ToolbarStateKey>(key: Key, value: ToolbarStateValue<Key>) => {
+      setToolbarState((state) => ({ ...state, [key]: value }))
+    },
+    [],
+  )
+
+  const $updateToolbar = useCallback(() => {
+    const selection = $getSelection()
+    if ($isRangeSelection(selection)) {
+      const anchorNode = selection.anchor.getNode()
+      const element = $findTopLevelElement(anchorNode)
+      updateToolbarState("isBold", selection.hasFormat("bold"))
+      updateToolbarState("isItalic", selection.hasFormat("italic"))
+      updateToolbarState("isUnderline", selection.hasFormat("underline"))
+      updateToolbarState(
+        "isStrikethrough",
+        selection.hasFormat("strikethrough"),
+      )
+      updateToolbarState("isSubscript", selection.hasFormat("subscript"))
+      updateToolbarState("isSuperscript", selection.hasFormat("superscript"))
+      updateToolbarState("isCode", selection.hasFormat("code"))
+      updateToolbarState(
+        "blockType",
+        $isHeadingNode(element) ? element.getTag() : element.getType(),
+      )
+    }
+  }, [])
+
+  useEffect(() => {
+    return editor.registerCommand(
+      SELECTION_CHANGE_COMMAND,
+      () => {
+        $updateToolbar()
+        return false
+      },
+      COMMAND_PRIORITY_CRITICAL,
+    )
+  }, [editor, $updateToolbar])
+
+  useEffect(() => {
+    editor.getEditorState().read(() => {
+      $updateToolbar()
+    })
+
+    return editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
+        $updateToolbar()
+      })
+    })
+  }, [editor])
+
   return (
     <div
       style={{
@@ -721,15 +792,18 @@ const ToolbarPlugin = () => {
         borderBottom: "1px solid var(--tab-border-color)",
       }}
     >
-      <ManagementControls />
-      <FormatControls />
-      <InsertControls />
-      <AlignmentControls />
-      <LinkControls />
-      <IndentationControls />
-      <TableControls />
-      <MathControls />
-      <UndoRedoControls />
+      <ToolbarContext.Provider value={toolbarState}>
+        <ManagementControls />
+        <FormatControls />
+        <InsertControls />
+        <HeadingControls />
+        <AlignmentControls />
+        <LinkControls />
+        <IndentationControls />
+        <TableControls />
+        <MathControls />
+        <UndoRedoControls />
+      </ToolbarContext.Provider>
     </div>
   )
 }

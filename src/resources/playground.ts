@@ -1,9 +1,11 @@
 // Utilities from Lexical Playground.
 import { $createCodeNode } from "@lexical/code"
 import {
+  $createHeadingNode,
   $createQuoteNode,
   $isHeadingNode,
   $isQuoteNode,
+  HeadingTagType,
 } from "@lexical/rich-text"
 import { $isAtNodeEnd, $setBlocksType } from "@lexical/selection"
 import { $isTableSelection } from "@lexical/table"
@@ -84,6 +86,19 @@ export const clearFormatting = (editor: LexicalEditor) => {
       })
     }
   })
+}
+
+export const formatHeading = (
+  editor: LexicalEditor,
+  blockType: string,
+  headingSize: HeadingTagType,
+) => {
+  if (blockType !== headingSize) {
+    editor.update(() => {
+      const selection = $getSelection()
+      $setBlocksType(selection, () => $createHeadingNode(headingSize))
+    })
+  }
 }
 
 export const formatCode = (editor: LexicalEditor, blockType: string) => {

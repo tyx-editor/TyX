@@ -5,7 +5,7 @@
 import { SerializedCodeNode } from "@lexical/code"
 import { SerializedLinkNode } from "@lexical/link"
 import { SerializedListItemNode, SerializedListNode } from "@lexical/list"
-import { SerializedQuoteNode } from "@lexical/rich-text"
+import { SerializedHeadingNode, SerializedQuoteNode } from "@lexical/rich-text"
 import {
   SerializedTableCellNode,
   SerializedTableNode,
@@ -208,6 +208,10 @@ export const converters: Record<string, (d: SerializedLexicalNode) => string> =
     link: (d) => {
       const link = d as SerializedLinkNode
       return `#link(${JSON.stringify(link.url)})[${link.children.map(lexical2typst).join("")}]`
+    },
+    heading: (d) => {
+      const heading = d as SerializedHeadingNode
+      return `#heading(level: ${parseInt(heading.tag[1], 10)})[${heading.children.map(lexical2typst).join("")}]`
     },
   }
 
