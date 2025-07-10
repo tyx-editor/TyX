@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.1] - 2025-07-10
+
+### Added
+
+- Headings can now be inserted with toolbar buttons again.
+- Links can now be inserted again.
+- When selecting a code node, you can now change its language.
+
 ## [0.2.0] - 2025-07-09
 
 ### Breaking Changes
