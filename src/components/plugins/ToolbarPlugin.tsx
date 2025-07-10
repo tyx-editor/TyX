@@ -1,3 +1,4 @@
+import { $isCodeNode } from "@lexical/code"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { $isHeadingNode } from "@lexical/rich-text"
 import { $findTableNode } from "@lexical/table"
@@ -54,6 +55,7 @@ import {
   IconUnlink,
 } from "@tabler/icons-react"
 import {
+  $getNodeByKey,
   $getSelection,
   $isElementNode,
   $isNodeSelection,
@@ -65,6 +67,7 @@ import {
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_EDITOR,
   ElementFormatType,
+  NodeKey,
   SELECTION_CHANGE_COMMAND,
 } from "lexical"
 import React, {
@@ -100,6 +103,8 @@ interface ToolbarState {
   isSuperscript?: boolean
   isCode?: boolean
   blockType?: string
+  codeLanguage?: string
+  elementKey?: NodeKey
 }
 type ToolbarStateKey = keyof ToolbarState
 type ToolbarStateValue<Key extends keyof ToolbarState> = ToolbarState[Key]
@@ -131,7 +136,7 @@ const ToolbarControl = React.forwardRef<
       <Tooltip label={label} ref={ref}>
         <ActionIcon
           className="toolbar-control"
-          size="md"
+          size={30}
           variant={active ? undefined : "default"}
           disabled={!enabled && (disabled || !onClick || loading)}
           onClick={onClick}
@@ -146,7 +151,12 @@ const ToolbarControl = React.forwardRef<
 
 const ToolbarControlGroup = ({ children }: { children?: React.ReactNode }) => {
   return (
-    <ActionIcon.Group display="inline-block" mr={10} mb={10}>
+    <ActionIcon.Group
+      display="inline-block"
+      mr={10}
+      mb={10}
+      style={{ verticalAlign: "middle" }}
+    >
       {children}
     </ActionIcon.Group>
   )
@@ -689,6 +699,52 @@ const MathControls = () => {
   )
 }
 
+const CodeControls = () => {
+  const [editor] = useLexicalComposerContext()
+  const toolbarState = useToolbarState()
+  const [value, setValue] = useState("")
+
+  useEffect(() => {
+    setValue(toolbarState.codeLanguage ?? "")
+  }, [toolbarState.codeLanguage])
+
+  if (toolbarState.blockType !== "code") {
+    return null
+  }
+
+  const save = (value: string) => {
+    const key = toolbarState.elementKey
+    if (!key) {
+      return
+    }
+    editor.update(() => {
+      const node = $getNodeByKey(key)
+      if ($isCodeNode(node)) {
+        node.setLanguage(value)
+      }
+    })
+  }
+
+  return (
+    <ToolbarControlGroup>
+      <TextInput
+        leftSection={<IconFileCode />}
+        size="xs"
+        value={value}
+        onChange={(e) => setValue(e.currentTarget.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault()
+            e.stopPropagation()
+            save(e.currentTarget.value)
+          }
+        }}
+        onBlur={(e) => save(e.currentTarget.value)}
+      />
+    </ToolbarControlGroup>
+  )
+}
+
 const UndoRedoControls = () => {
   const [editor] = useLexicalComposerContext()
   const [canUndo, setCanUndo] = useState(false)
@@ -757,6 +813,11 @@ const ToolbarPlugin = () => {
         "blockType",
         $isHeadingNode(element) ? element.getTag() : element.getType(),
       )
+      updateToolbarState(
+        "codeLanguage",
+        $isCodeNode(element) ? (element.getLanguage() ?? undefined) : undefined,
+      )
+      updateToolbarState("elementKey", element.getKey())
     }
   }, [])
 
@@ -802,6 +863,7 @@ const ToolbarPlugin = () => {
         <IndentationControls />
         <TableControls />
         <MathControls />
+        <CodeControls />
         <UndoRedoControls />
       </ToolbarContext.Provider>
     </div>
