@@ -183,64 +183,64 @@ impl Converter {
     }
 
     /// Applies the given text format to any child text nodes.
-    fn text_format(&self, mask: u64, node: &mut TyXNode) {
+    fn text_format(mask: u64, node: &mut TyXNode) {
         if let TyXNode::Text(text) = node {
             text.format |= mask;
         }
         match node {
             TyXNode::Root(node) => {
                 for child in node.children.iter_mut() {
-                    self.text_format(mask, child);
+                    Converter::text_format(mask, child);
                 }
             }
             TyXNode::Paragraph(node) => {
                 for child in node.children.iter_mut() {
-                    self.text_format(mask, child);
+                    Converter::text_format(mask, child);
                 }
             }
             TyXNode::List(node) => {
                 for child in node.children.iter_mut() {
-                    self.text_format(mask, child);
+                    Converter::text_format(mask, child);
                 }
             }
             TyXNode::ListItem(node) => {
                 for child in node.children.iter_mut() {
-                    self.text_format(mask, child);
+                    Converter::text_format(mask, child);
                 }
             }
             TyXNode::Quote(node) => {
                 for child in node.children.iter_mut() {
-                    self.text_format(mask, child);
+                    Converter::text_format(mask, child);
                 }
             }
             TyXNode::Code(node) => {
                 for child in node.children.iter_mut() {
-                    self.text_format(mask, child);
+                    Converter::text_format(mask, child);
                 }
             }
             TyXNode::Table(node) => {
                 for child in node.children.iter_mut() {
-                    self.text_format(mask, child);
+                    Converter::text_format(mask, child);
                 }
             }
             TyXNode::TableRow(node) => {
                 for child in node.children.iter_mut() {
-                    self.text_format(mask, child);
+                    Converter::text_format(mask, child);
                 }
             }
             TyXNode::TableCell(node) => {
                 for child in node.children.iter_mut() {
-                    self.text_format(mask, child);
+                    Converter::text_format(mask, child);
                 }
             }
             TyXNode::Link(node) => {
                 for child in node.children.iter_mut() {
-                    self.text_format(mask, child);
+                    Converter::text_format(mask, child);
                 }
             }
             TyXNode::Heading(node) => {
                 for child in node.children.iter_mut() {
-                    self.text_format(mask, child);
+                    Converter::text_format(mask, child);
                 }
             }
             _ => {}
@@ -354,7 +354,7 @@ impl Converter {
         }
         Some(TyXNode::List(s::List {
             version: 1,
-            children: children,
+            children,
             direction: None,
             format: "".into(),
             indent: 0,
@@ -378,7 +378,7 @@ impl Converter {
 
         Some(TyXNode::List(s::List {
             version: 1,
-            children: children,
+            children,
             direction: None,
             format: "".into(),
             indent: 0,
@@ -495,7 +495,7 @@ impl Converter {
 
         Some(TyXNode::Table(s::Table {
             version: 1,
-            children: children,
+            children,
             direction: None,
             format: "".into(),
             indent: 0,
@@ -507,7 +507,7 @@ impl Converter {
     /// Converts an inline code.
     fn inline_code(&self, code: String) -> Option<TyXNode> {
         let mut node = TyXNode::plain(code.into());
-        self.text_format(TextFormat::Code as u64, &mut node);
+        Converter::text_format(TextFormat::Code as u64, &mut node);
         Some(node)
     }
 
@@ -516,7 +516,7 @@ impl Converter {
         let mut worked = self.children(nodes);
         for node in worked.iter_mut() {
             // todo: we loss semantics here, assuming `emphasis` => `italic`.
-            self.text_format(TextFormat::Italic as u64, node);
+            Converter::text_format(TextFormat::Italic as u64, node);
         }
         worked
     }
@@ -526,7 +526,7 @@ impl Converter {
         let mut worked = self.children(nodes);
         for node in worked.iter_mut() {
             // todo: we loss semantics here, assuming `strong` => `bold`.
-            self.text_format(TextFormat::Bold as u64, node);
+            Converter::text_format(TextFormat::Bold as u64, node);
         }
         worked
     }
@@ -535,7 +535,7 @@ impl Converter {
     fn strikethrough(&self, nodes: Vec<ast::Node>) -> Vec<TyXNode> {
         let mut worked = self.children(nodes);
         for node in worked.iter_mut() {
-            self.text_format(TextFormat::Strikethrough as u64, node);
+            Converter::text_format(TextFormat::Strikethrough as u64, node);
         }
         worked
     }
