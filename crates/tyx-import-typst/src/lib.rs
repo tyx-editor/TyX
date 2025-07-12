@@ -394,7 +394,7 @@ impl Converter {
     fn list_item(&self, item: ast::ListItem) -> Option<TyXNode> {
         // todo: preserve id.
         let value = match &item {
-            ast::ListItem::Ordered { number, .. } => number.clone(),
+            ast::ListItem::Ordered { number, .. } => *number,
             _ => None,
         };
         let nodes = match item {
