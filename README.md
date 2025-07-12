@@ -39,7 +39,7 @@ TyX supports customizable keyboard shortcuts!
 
 ### Keyboard Map
 
-TyX supports keyboard maps (currently only a Hebrew keyboard map has been added [in the Keyboard Map TipTap Extension](src/components/editor/KeyboardMapExtension.ts)).
+TyX supports keyboard maps (currently only a Hebrew keyboard map has been added [in the Keyboard Map Plugin](src/components/plugins/KeyboardMapPlugin.tsx)).
 This enables you to write in your language without having to switch to English every time you edit math environments!
 
 ![keyboard map](docs/_static/keyboard-map.gif)
