@@ -22,7 +22,6 @@ import {
 import { SerializedImageNode } from "../components/plugins/image"
 import { SerializedMathNode } from "../components/plugins/math"
 import { SerializedTypstCodeNode } from "../components/plugins/typstCode"
-import asciimath2typst from "./asciimath2typst"
 
 export const convertCSSColor = (color: string) => {
   const context = document.createElement("canvas").getContext("2d")!
@@ -125,7 +124,7 @@ export const converters: Record<string, (d: SerializedLexicalNode) => string> =
     },
     math: (d) => {
       const math = d as SerializedMathNode
-      let result = asciimath2typst(math.asciimath ?? "")
+      let result = math.typst ?? ""
       if (math.inline) {
         result = `$${result}$`
       } else {

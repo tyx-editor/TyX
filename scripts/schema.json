@@ -37,7 +37,7 @@
     "version": "number",
     "inline": "boolean | undefined",
     "formula": "string | undefined",
-    "asciimath": "string | undefined"
+    "typst": "string | undefined"
   },
   "ListItem": {
     "$": "Record<string, unknown> | undefined",

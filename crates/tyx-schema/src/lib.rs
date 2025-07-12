@@ -444,9 +444,9 @@ pub struct Math {
     /// Formula.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub formula: Option<EcoString>,
-    /// ASCII Math.
+    /// Typst formula.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub asciimath: Option<EcoString>,
+    pub typst: Option<EcoString>,
 }
 
 impl Node {

@@ -68,14 +68,14 @@ export const MathEditor = ({
     }
   }
 
-  const updateValue = (formula: string, asciimath: string) => {
+  const updateValue = (formula: string, typst: string) => {
     setFormula(formula)
     setTimeout(() => {
       editor.update(() => {
         const node = $getNodeByKey(nodeKey)
         if ($isMathNode(node)) {
           node.setFormula(formula)
-          node.setAsciimath(asciimath)
+          node.setTypst(typst)
         }
       })
     }, 0)
@@ -109,7 +109,7 @@ export const MathEditor = ({
 
         mf.addEventListener("input", (e) => {
           const target = e.target as MathfieldElement
-          updateValue(target.getValue(), target.getValue("ascii-math"))
+          updateValue(target.getValue(), target.getValue("typst"))
         })
 
         mf.addEventListener("move-out", (e) => {
