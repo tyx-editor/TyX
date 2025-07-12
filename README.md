@@ -46,9 +46,6 @@ This enables you to write in your language without having to switch to English e
 
 ### Typst Importing
 
-> [!WARNING]
-> This feature has not yet been updated to work with Lexical.
-
 Thanks to [contributions by Myriad-Dreamin](https://github.com/tyx-editor/TyX/commits?author=Myriad-Dreamin) you can open `.typ` files into TyX!
 
 > [!NOTE]
