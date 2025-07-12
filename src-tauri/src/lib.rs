@@ -68,7 +68,7 @@ fn openfile(handle: &tauri::AppHandle, path: &Path) {
             return;
         }
 
-        let Some(doc) = tyx_tiptap_typst::convert(Arc::new(world)) else {
+        let Some(doc) = tyx_import_typst::convert(Arc::new(world)) else {
             return;
         };
         // todo: we serialize it here.
@@ -89,7 +89,7 @@ fn open(handle: tauri::AppHandle) {
     handle
         .dialog()
         .file()
-        .add_filter("tyx", &["tyx"])
+        .add_filter("tyx", &["tyx", "typ"])
         .pick_file(move |f| {
             if let Some(f) = f {
                 if let Some(path) = f.as_path() {

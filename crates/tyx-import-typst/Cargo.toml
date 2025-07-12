@@ -1,6 +1,6 @@
 [package]
-name = "tyx-tiptap-schema"
-description = "The strong-typed tiptap JSON schema for TyX."
+name = "tyx-import-typst"
+description = "This crates provides a converter from Typst to TyX."
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
@@ -8,14 +8,23 @@ license.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+cmark-writer.workspace = true
 ecow.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+tinymist-project = { workspace = true, features = ["lsp"] }
+typlite.workspace = true
 typst.workspace = true
+tyx-schema.workspace = true
+
+[dev-dependencies]
+insta.workspace = true
+tinymist-tests.workspace = true
 
 [build-dependencies]
 serde.workspace = true
 serde_json.workspace = true
+
 
 [lints]
 workspace = true

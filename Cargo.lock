@@ -6294,22 +6294,12 @@ dependencies = [
  "tinymist-project",
  "typst",
  "typst-pdf",
- "tyx-tiptap-typst",
+ "tyx-import-typst",
  "url",
 ]
 
 [[package]]
-name = "tyx-tiptap-schema"
-version = "0.1.0"
-dependencies = [
- "ecow",
- "serde",
- "serde_json",
- "typst",
-]
-
-[[package]]
-name = "tyx-tiptap-typst"
+name = "tyx-import-typst"
 version = "0.1.0"
 dependencies = [
  "cmark-writer",
@@ -6321,7 +6311,17 @@ dependencies = [
  "tinymist-tests",
  "typlite",
  "typst",
- "tyx-tiptap-schema",
+ "tyx-schema",
+]
+
+[[package]]
+name = "tyx-schema"
+version = "0.1.0"
+dependencies = [
+ "ecow",
+ "serde",
+ "serde_json",
+ "typst",
 ]
 
 [[package]]

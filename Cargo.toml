@@ -29,8 +29,8 @@ serde_json = "1"
 
 insta = "1"
 
-tyx-tiptap-schema = { path = "crates/tyx-tiptap-schema", version = "0.1.0" }
-tyx-tiptap-typst = { path = "crates/tyx-tiptap-typst", version = "0.1.0" }
+tyx-schema = { path = "crates/tyx-schema", version = "0.1.0" }
+tyx-import-typst = { path = "crates/tyx-import-typst", version = "0.1.0" }
 
 tinymist-project = "0.13.12"
 tinymist-std = "0.13.12"

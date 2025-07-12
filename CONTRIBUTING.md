@@ -44,14 +44,16 @@ To run rust tests, run:
 cargo test --workspace
 ```
 
-## Developing the typst-tiptap Converter
+## Developing the Typst to TyX Converter
 
-TyX uses tiptap to build its wysiwyg editor. To convert typst documents into tiptap format, TyX adopts a custom converter. The converter is located in [`crates/tyx-tiptap-typst`](./crates/tyx-tiptap-typst).
+TyX uses lexical to build its wysiwyg editor. To convert typst documents into lexical format, TyX adopts a custom converter. The converter is located in [`crates/tyx-import-typst`](./crates/tyx-import-typst).
 
 To perform snapshot testing about the converter, please run:
 
 ```bash
-cargo insta test -p tyx-tiptap-typst --accept
+cargo insta test -p tyx-import-typst --accept
 ```
+
+You may need to install [cargo-insta](https://crates.io/crates/cargo-insta)
 
 <!-- todo: build locally -->
