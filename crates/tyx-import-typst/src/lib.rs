@@ -254,9 +254,9 @@ impl Converter {
             children: self.children(nodes),
             format: "".into(),
             indent: 0,
-            direction: Option::None,
-            text_format: Option::None,
-            text_style: Option::None,
+            direction: None,
+            text_format: None,
+            text_style: None,
         }))
     }
 
@@ -270,11 +270,11 @@ impl Converter {
         Some(TyXNode::Heading(s::Heading {
             version: 1,
             children: self.children(nodes),
-            direction: Option::None,
+            direction: None,
             format: "".into(),
             indent: 0,
-            text_format: Option::None,
-            text_style: Option::None,
+            text_format: None,
+            text_style: None,
             tag: format!("h{level}").into(),
         }))
     }
@@ -284,11 +284,11 @@ impl Converter {
         Some(TyXNode::Code(s::Code {
             version: 1,
             children: vec![TyXNode::plain(content.into())],
-            direction: Option::None,
+            direction: None,
             format: "".into(),
             indent: 0,
-            text_format: Option::None,
-            text_style: Option::None,
+            text_format: None,
+            text_style: None,
             language: language.map(EcoString::from),
         }))
     }
@@ -323,11 +323,11 @@ impl Converter {
         Some(TyXNode::Paragraph(s::Paragraph {
             version: 1,
             children: self.children(nodes),
-            direction: Option::None,
+            direction: None,
             format: "".into(),
             indent: 0,
-            text_format: Option::None,
-            text_style: Option::None,
+            text_format: None,
+            text_style: None,
         }))
     }
 
@@ -336,11 +336,11 @@ impl Converter {
         Some(TyXNode::Quote(s::Quote {
             version: 1,
             children: self.children(nodes),
-            direction: Option::None,
+            direction: None,
             format: "".into(),
             indent: 0,
-            text_format: Option::None,
-            text_style: Option::None,
+            text_format: None,
+            text_style: None,
         }))
     }
 
@@ -355,11 +355,11 @@ impl Converter {
         Some(TyXNode::List(s::List {
             version: 1,
             children: children,
-            direction: Option::None,
+            direction: None,
             format: "".into(),
             indent: 0,
-            text_format: Option::None,
-            text_style: Option::None,
+            text_format: None,
+            text_style: None,
             list_type: "number".into(),
             start: start as u64,
             tag: "ol".into(),
@@ -379,11 +379,11 @@ impl Converter {
         Some(TyXNode::List(s::List {
             version: 1,
             children: children,
-            direction: Option::None,
+            direction: None,
             format: "".into(),
             indent: 0,
-            text_format: Option::None,
-            text_style: Option::None,
+            text_format: None,
+            text_style: None,
             list_type: "bullet".into(),
             start: 0,
             tag: "ul".into(),
@@ -395,7 +395,7 @@ impl Converter {
         // todo: preserve id.
         let value = match &item {
             ast::ListItem::Ordered { number, .. } => number.clone(),
-            _ => Option::None,
+            _ => None,
         };
         let nodes = match item {
             ast::ListItem::Unordered { content, .. } => content,
@@ -406,12 +406,12 @@ impl Converter {
         Some(TyXNode::ListItem(s::ListItem {
             version: 1,
             children: self.children(nodes),
-            direction: Option::None,
+            direction: None,
             format: "".into(),
             indent: 0,
-            text_format: Option::None,
-            text_style: Option::None,
-            checked: Option::None,
+            text_format: None,
+            text_style: None,
+            checked: None,
             value: value.unwrap_or(0) as u64,
         }))
     }
@@ -428,27 +428,32 @@ impl Converter {
             let mut header_children = Vec::new();
             for header in headers {
                 if let NodeOptionOrList::Node(Some(child)) = self.work(header) {
-                    header_children.push(TyXNode::TableRow(s::TableRow {
+                    header_children.push(TyXNode::TableCell(s::TableCell {
                         version: 1,
                         children: vec![child],
-                        direction: Option::None,
+                        direction: None,
                         format: "".into(),
                         indent: 0,
-                        text_format: Option::None,
-                        text_style: Option::None,
-                        height: Option::None,
+                        text_format: None,
+                        text_style: None,
+                        col_span: None,
+                        row_span: None,
+                        header_state: 1,
+                        width: None,
+                        background_color: None,
+                        vertical_align: None,
                     }));
                 }
             }
             children.push(TyXNode::TableRow(s::TableRow {
                 version: 1,
                 children: header_children,
-                direction: Option::None,
+                direction: None,
                 format: "".into(),
                 indent: 0,
-                text_format: Option::None,
-                text_style: Option::None,
-                height: Option::None,
+                text_format: None,
+                text_style: None,
+                height: None,
             }));
 
             // todo: alignments
@@ -462,40 +467,40 @@ impl Converter {
                     row_children.push(TyXNode::TableCell(s::TableCell {
                         version: 1,
                         children: vec![child],
-                        direction: Option::None,
+                        direction: None,
                         format: "".into(),
                         indent: 0,
-                        text_format: Option::None,
-                        text_style: Option::None,
-                        col_span: Option::None,
-                        row_span: Option::None,
+                        text_format: None,
+                        text_style: None,
+                        col_span: None,
+                        row_span: None,
                         header_state: 0,
-                        width: Option::None,
-                        background_color: Option::None,
-                        vertical_align: Option::None,
+                        width: None,
+                        background_color: None,
+                        vertical_align: None,
                     }));
                 }
             }
             children.push(TyXNode::TableRow(s::TableRow {
                 version: 1,
                 children: row_children,
-                direction: Option::None,
+                direction: None,
                 format: "".into(),
                 indent: 0,
-                text_format: Option::None,
-                text_style: Option::None,
-                height: Option::None,
+                text_format: None,
+                text_style: None,
+                height: None,
             }));
         }
 
         Some(TyXNode::Table(s::Table {
             version: 1,
             children: children,
-            direction: Option::None,
+            direction: None,
             format: "".into(),
             indent: 0,
-            text_format: Option::None,
-            text_style: Option::None,
+            text_format: None,
+            text_style: None,
         }))
     }
 
@@ -540,13 +545,13 @@ impl Converter {
         Some(TyXNode::Link(s::Link {
             version: 1,
             children: self.children(content),
-            direction: Option::None,
+            direction: None,
             format: "".into(),
             indent: 0,
-            text_format: Option::None,
-            text_style: Option::None,
-            rel: Option::None,
-            target: Option::None,
+            text_format: None,
+            text_style: None,
+            rel: None,
+            target: None,
             title: title.map(EcoString::from),
             url: url.into(),
         }))
@@ -557,7 +562,7 @@ impl Converter {
         Some(TyXNode::Link(s::Link {
             version: 1,
             children: self.children(content),
-            direction: Option::None,
+            direction: None,
             format: "".into(),
             indent: 0,
             text_format: None,
@@ -586,7 +591,7 @@ impl Converter {
         Some(TyXNode::Link(s::Link {
             version: 1,
             children: vec![TyXNode::plain(url.clone().into())],
-            direction: Option::None,
+            direction: None,
             format: "".into(),
             indent: 0,
             text_format: None,
@@ -603,7 +608,7 @@ impl Converter {
         Some(TyXNode::Link(s::Link {
             version: 1,
             children: vec![TyXNode::plain(link.clone().into())],
-            direction: Option::None,
+            direction: None,
             format: "".into(),
             indent: 0,
             text_format: None,
