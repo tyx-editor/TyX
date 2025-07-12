@@ -1,185 +1,185 @@
 {
-    "Root": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "children": "SerializedLexicalNode[]",
-        "direction": "\"ltr\" | \"rtl\" | null",
-        "format": "ElementFormatType",
-        "indent": "number",
-        "textFormat": "number | undefined",
-        "textStyle": "string | undefined"
-    },
-    "Paragraph": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "children": "SerializedLexicalNode[]",
-        "direction": "\"ltr\" | \"rtl\" | null",
-        "format": "ElementFormatType",
-        "indent": "number",
-        "textFormat": "number",
-        "textStyle": "string"
-    },
-    "Text": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "detail": "number",
-        "format": "number",
-        "mode": "TextModeType",
-        "style": "string",
-        "text": "string"
-    },
-    "Math": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "inline": "boolean | undefined",
-        "formula": "string | undefined",
-        "asciimath": "string | undefined"
-    },
-    "ListItem": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "children": "SerializedLexicalNode[]",
-        "direction": "\"ltr\" | \"rtl\" | null",
-        "format": "ElementFormatType",
-        "indent": "number",
-        "textFormat": "number | undefined",
-        "textStyle": "string | undefined",
-        "checked": "boolean | undefined",
-        "value": "number"
-    },
-    "List": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "children": "SerializedLexicalNode[]",
-        "direction": "\"ltr\" | \"rtl\" | null",
-        "format": "ElementFormatType",
-        "indent": "number",
-        "textFormat": "number | undefined",
-        "textStyle": "string | undefined",
-        "listType": "ListType",
-        "start": "number",
-        "tag": "ListNodeTagType"
-    },
-    "Quote": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "children": "SerializedLexicalNode[]",
-        "direction": "\"ltr\" | \"rtl\" | null",
-        "format": "ElementFormatType",
-        "indent": "number",
-        "textFormat": "number | undefined",
-        "textStyle": "string | undefined"
-    },
-    "Code": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "children": "SerializedLexicalNode[]",
-        "direction": "\"ltr\" | \"rtl\" | null",
-        "format": "ElementFormatType",
-        "indent": "number",
-        "textFormat": "number | undefined",
-        "textStyle": "string | undefined",
-        "language": "string | null | undefined"
-    },
-    "Table": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "children": "SerializedLexicalNode[]",
-        "direction": "\"ltr\" | \"rtl\" | null",
-        "format": "ElementFormatType",
-        "indent": "number",
-        "textFormat": "number | undefined",
-        "textStyle": "string | undefined",
-        "colWidths": "readonly number[] | undefined",
-        "rowStriping": "boolean | undefined",
-        "frozenColumnCount": "number | undefined",
-        "frozenRowCount": "number | undefined"
-    },
-    "TableRow": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "children": "SerializedLexicalNode[]",
-        "direction": "\"ltr\" | \"rtl\" | null",
-        "format": "ElementFormatType",
-        "indent": "number",
-        "textFormat": "number | undefined",
-        "textStyle": "string | undefined",
-        "height": "number | undefined"
-    },
-    "TableCell": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "children": "SerializedLexicalNode[]",
-        "direction": "\"ltr\" | \"rtl\" | null",
-        "format": "ElementFormatType",
-        "indent": "number",
-        "textFormat": "number | undefined",
-        "textStyle": "string | undefined",
-        "colSpan": "number | undefined",
-        "rowSpan": "number | undefined",
-        "headerState": "number",
-        "width": "number | undefined",
-        "backgroundColor": "string | null | undefined",
-        "verticalAlign": "string | undefined"
-    },
-    "LineBreak": {
-        "type": "string",
-        "version": "number",
-        "$": "Record<string, unknown> | undefined"
-    },
-    "HorizontalRule": {
-        "type": "string",
-        "version": "number",
-        "$": "Record<string, unknown> | undefined"
-    },
-    "TypstCode": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "text": "SerializedEditor | undefined"
-    },
-    "Image": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "src": "string"
-    },
-    "Link": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "children": "SerializedLexicalNode[]",
-        "direction": "\"ltr\" | \"rtl\" | null",
-        "format": "ElementFormatType",
-        "indent": "number",
-        "textFormat": "number | undefined",
-        "textStyle": "string | undefined",
-        "rel": "string | null | undefined",
-        "target": "string | null | undefined",
-        "title": "string | null | undefined",
-        "url": "string"
-    },
-    "Heading": {
-        "$": "Record<string, unknown> | undefined",
-        "type": "string",
-        "version": "number",
-        "children": "SerializedLexicalNode[]",
-        "direction": "\"ltr\" | \"rtl\" | null",
-        "format": "ElementFormatType",
-        "indent": "number",
-        "textFormat": "number | undefined",
-        "textStyle": "string | undefined",
-        "tag": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\""
-    }
+  "Root": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "children": "SerializedLexicalNode[]",
+    "direction": "\"ltr\" | \"rtl\" | null",
+    "format": "ElementFormatType",
+    "indent": "number",
+    "textFormat": "number | undefined",
+    "textStyle": "string | undefined"
+  },
+  "Paragraph": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "children": "SerializedLexicalNode[]",
+    "direction": "\"ltr\" | \"rtl\" | null",
+    "format": "ElementFormatType",
+    "indent": "number",
+    "textFormat": "number",
+    "textStyle": "string"
+  },
+  "Text": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "detail": "number",
+    "format": "number",
+    "mode": "TextModeType",
+    "style": "string",
+    "text": "string"
+  },
+  "Math": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "inline": "boolean | undefined",
+    "formula": "string | undefined",
+    "asciimath": "string | undefined"
+  },
+  "ListItem": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "children": "SerializedLexicalNode[]",
+    "direction": "\"ltr\" | \"rtl\" | null",
+    "format": "ElementFormatType",
+    "indent": "number",
+    "textFormat": "number | undefined",
+    "textStyle": "string | undefined",
+    "checked": "boolean | undefined",
+    "value": "number"
+  },
+  "List": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "children": "SerializedLexicalNode[]",
+    "direction": "\"ltr\" | \"rtl\" | null",
+    "format": "ElementFormatType",
+    "indent": "number",
+    "textFormat": "number | undefined",
+    "textStyle": "string | undefined",
+    "listType": "ListType",
+    "start": "number",
+    "tag": "ListNodeTagType"
+  },
+  "Quote": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "children": "SerializedLexicalNode[]",
+    "direction": "\"ltr\" | \"rtl\" | null",
+    "format": "ElementFormatType",
+    "indent": "number",
+    "textFormat": "number | undefined",
+    "textStyle": "string | undefined"
+  },
+  "Code": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "children": "SerializedLexicalNode[]",
+    "direction": "\"ltr\" | \"rtl\" | null",
+    "format": "ElementFormatType",
+    "indent": "number",
+    "textFormat": "number | undefined",
+    "textStyle": "string | undefined",
+    "language": "string | null | undefined"
+  },
+  "Table": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "children": "SerializedLexicalNode[]",
+    "direction": "\"ltr\" | \"rtl\" | null",
+    "format": "ElementFormatType",
+    "indent": "number",
+    "textFormat": "number | undefined",
+    "textStyle": "string | undefined",
+    "colWidths": "readonly number[] | undefined",
+    "rowStriping": "boolean | undefined",
+    "frozenColumnCount": "number | undefined",
+    "frozenRowCount": "number | undefined"
+  },
+  "TableRow": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "children": "SerializedLexicalNode[]",
+    "direction": "\"ltr\" | \"rtl\" | null",
+    "format": "ElementFormatType",
+    "indent": "number",
+    "textFormat": "number | undefined",
+    "textStyle": "string | undefined",
+    "height": "number | undefined"
+  },
+  "TableCell": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "children": "SerializedLexicalNode[]",
+    "direction": "\"ltr\" | \"rtl\" | null",
+    "format": "ElementFormatType",
+    "indent": "number",
+    "textFormat": "number | undefined",
+    "textStyle": "string | undefined",
+    "colSpan": "number | undefined",
+    "rowSpan": "number | undefined",
+    "headerState": "number",
+    "width": "number | undefined",
+    "backgroundColor": "string | null | undefined",
+    "verticalAlign": "string | undefined"
+  },
+  "LineBreak": {
+    "type": "string",
+    "version": "number",
+    "$": "Record<string, unknown> | undefined"
+  },
+  "HorizontalRule": {
+    "type": "string",
+    "version": "number",
+    "$": "Record<string, unknown> | undefined"
+  },
+  "TypstCode": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "text": "SerializedEditor | undefined"
+  },
+  "Image": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "src": "string"
+  },
+  "Link": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "children": "SerializedLexicalNode[]",
+    "direction": "\"ltr\" | \"rtl\" | null",
+    "format": "ElementFormatType",
+    "indent": "number",
+    "textFormat": "number | undefined",
+    "textStyle": "string | undefined",
+    "rel": "string | null | undefined",
+    "target": "string | null | undefined",
+    "title": "string | null | undefined",
+    "url": "string"
+  },
+  "Heading": {
+    "$": "Record<string, unknown> | undefined",
+    "type": "string",
+    "version": "number",
+    "children": "SerializedLexicalNode[]",
+    "direction": "\"ltr\" | \"rtl\" | null",
+    "format": "ElementFormatType",
+    "indent": "number",
+    "textFormat": "number | undefined",
+    "textStyle": "string | undefined",
+    "tag": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\""
+  }
 }
