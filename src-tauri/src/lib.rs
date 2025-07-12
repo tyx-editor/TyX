@@ -78,8 +78,6 @@ fn openfile(handle: &tauri::AppHandle, path: &Path) {
         std::fs::read_to_string(path).unwrap()
     };
 
-    println!("{}", buffer);
-
     handle
         .emit("open", (path.to_str().unwrap(), buffer))
         .unwrap();
