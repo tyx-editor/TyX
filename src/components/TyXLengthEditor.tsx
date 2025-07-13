@@ -5,14 +5,14 @@
 import { Select, TextInput, TextInputProps } from "@mantine/core"
 import { TyXLength } from "../models"
 
-const LengthInput = ({
+const TyXLengthEditor = ({
   value,
   onChange,
   props,
 }: {
   value: TyXLength
   onChange: (v: TyXLength) => void
-  props: TextInputProps
+  props?: TextInputProps
 }) => {
   return (
     <div style={{ display: "flex", alignItems: "end" }}>
@@ -39,4 +39,4 @@ const LengthInput = ({
   )
 }
 
-export default LengthInput
+export default TyXLengthEditor

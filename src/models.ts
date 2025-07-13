@@ -6,7 +6,7 @@ import { SerializedEditorState, SerializedLexicalNode } from "lexical"
 import { z } from "zod/v4"
 
 /** An object representing any TyX value (which in turn, represents some Typst value) */
-export type TyXValue = TyXLengthValue
+export type TyXValue = TyXLengthValue | TyXBooleanValue
 
 export type TyXLengthValue = TyXLength & { type: "length" }
 
@@ -14,6 +14,11 @@ export type TyXLengthValue = TyXLength & { type: "length" }
 export interface TyXLength {
   unit?: string
   value?: string
+}
+
+export interface TyXBooleanValue {
+  type: "boolean"
+  value?: boolean
 }
 
 /** Compilation options passed to the Typst compiler. */

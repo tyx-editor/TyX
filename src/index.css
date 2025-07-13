@@ -180,3 +180,7 @@ li:has(ul) {
 .editor :dir(ltr) > .function-call > div {
   border-left: 1px solid var(--tab-border-color);
 }
+
+.mantine-Switch-track {
+  cursor: pointer;
+}

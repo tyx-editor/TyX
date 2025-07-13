@@ -110,15 +110,23 @@ export const stringifyFunction = (
   namedParameters: Record<string, TyXValue> | undefined,
 ) => {
   const parameters: string[] = []
-  parameters.push(...(positionParameters ?? []).map(tyxValue2typst))
+  parameters.push(
+    ...(positionParameters ?? [])
+      .map(tyxValue2typst)
+      .filter((parameter) => parameter !== undefined),
+  )
 
   parameters.push(
     ...Object.keys(namedParameters ?? {})
       .sort()
-      .map(
-        (parameterName) =>
-          `${parameterName}: ${tyxValue2typst(namedParameters![parameterName])}`,
-      ),
+      .map((parameterName) => {
+        const value = tyxValue2typst(namedParameters![parameterName])
+        if (value === undefined) {
+          return undefined
+        }
+        return `${parameterName}: ${value}`
+      })
+      .filter((parameter) => parameter !== undefined),
   )
 
   return `${name}(${parameters.join(", ")})`

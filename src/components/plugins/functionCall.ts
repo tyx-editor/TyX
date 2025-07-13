@@ -38,10 +38,64 @@ export type SerializedFunctionCallNode = Spread<
   SerializedLexicalNode
 >
 
-export const FUNCTIONS = {
-  h: { content: false },
+export interface ParameterDescription {
+  type: string
+  required?: boolean
+  label?: string
+  documentation?: string
+}
+
+export const FUNCTIONS: Record<
+  string,
+  | {
+      content: boolean
+      positional?: ParameterDescription[]
+      named?: (ParameterDescription & { name: string })[]
+    }
+  | undefined
+> = {
+  h: {
+    content: false,
+    positional: [
+      {
+        type: "length",
+        label: "Amount",
+        documentation: "How much spacing to insert",
+        required: true,
+      },
+    ],
+    named: [
+      {
+        type: "boolean",
+        name: "weak",
+        label: "Weak",
+        documentation:
+          "If true, the spacing collapses at the start or end of a paragraph. Moreover, from multiple adjacent weak spacings all but the largest one collapse",
+      },
+    ],
+  },
+  v: {
+    content: false,
+    positional: [
+      {
+        type: "length",
+        label: "Amount",
+        documentation: "How much spacing to insert",
+        required: true,
+      },
+    ],
+    named: [
+      {
+        type: "boolean",
+        name: "weak",
+        label: "Weak",
+        documentation:
+          "If true, the spacing collapses at the start or end of a paragraph. Moreover, from multiple adjacent weak spacings all but the largest one collapse",
+      },
+    ],
+  },
   footnote: { content: true },
-} as const
+}
 
 export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
   __name: string
@@ -78,7 +132,7 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
     this.__positionParameters = positionParameters
     this.__namedParameters = namedParameters
     this.__content = content
-    if (FUNCTIONS[name as keyof typeof FUNCTIONS]?.content) {
+    if (FUNCTIONS[name]?.content) {
       this.__content ??= createEditor()
     }
     this.__inline = inline ?? true
@@ -121,7 +175,7 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
     if (typeof serializedNode.namedParameters === "object") {
       this.__namedParameters = serializedNode.namedParameters
     }
-    if (FUNCTIONS[serializedNode.name as keyof typeof FUNCTIONS]?.content) {
+    if (serializedNode.name && FUNCTIONS[serializedNode.name]?.content) {
       this.__content ??= createEditor()
     }
     const serializedEditor = serializedNode.content
@@ -149,6 +203,24 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
 
   isInline() {
     return this.__inline
+  }
+
+  setName(name: string) {
+    const self = this.getWritable()
+    self.__name = name
+    return self
+  }
+
+  setPositionParameters(positionParameters: TyXValue[]) {
+    const self = this.getWritable()
+    self.__positionParameters = positionParameters
+    return self
+  }
+
+  setNamedParameters(namedParameters: Record<string, TyXValue>) {
+    const self = this.getWritable()
+    self.__namedParameters = namedParameters
+    return self
   }
 
   isKeyboardSelectable(): boolean {

@@ -23,7 +23,7 @@ import {
 } from "@tabler/icons-react"
 import { TyXDocument, TyXDocumentSettings } from "../models"
 import { setLocalStorage, useLocalStorage } from "../utilities/hooks"
-import LengthInput from "./LengthInput"
+import TyXLengthEditor from "./TyXLengthEditor"
 
 const DocumentSettingsModal = () => {
   const [openDocuments, setOpenDocuments] = useLocalStorage<TyXDocument[]>({
@@ -674,7 +674,7 @@ const DocumentSettingsModal = () => {
             })
           }
         />
-        <LengthInput
+        <TyXLengthEditor
           props={{
             mt: "xs",
             label: "Indentation",
