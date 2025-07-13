@@ -12,6 +12,15 @@ This project is structured as a monorepo. The main components are:
   └── scripts   # The scripts used to build and run the app
 ```
 
+In particular, we would love to receive contributions to extend the current:
+
+- Translations by copying and modifying a JSON in [src/translations](src/translations/) and adding it in [src/translations/index.ts](src/translations/index.ts).
+- Keyboard maps by adding to [src/components/plugins/keyboardMap.ts](src/components/plugins/keyboardMap.ts).
+- Functions by adding to [src/functions.ts](src/functions.ts)
+- Document settings.
+- App settings.
+- Typst import.
+
 ## Setup
 
 Install bun first, according to the instructions at https://bun.sh/docs/installation.
