@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.2] - 2025-07-13
+
+### Added
+
+- Footnotes can now be inserted.
+- Horizontal and vertical spacing can now be inserted and customized.
+- Support for any Typst function call is now available with the function call node.
+
+### Changed
+
+- Math conversion is now using mathlive's typst output implemented [here](https://github.com/arnog/mathlive/blob/master/src/formats/atom-to-typst.ts).
+
+### Fixed
+
+- Typst importing works again, albeit major changes may still occur and the implementation is still partial.
+
 ## [0.2.1] - 2025-07-10
 
 ### Added
