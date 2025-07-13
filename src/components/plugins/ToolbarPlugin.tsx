@@ -20,6 +20,8 @@ import {
   IconAlpha,
   IconArrowBackUp,
   IconArrowForwardUp,
+  IconArrowsHorizontal,
+  IconArrowsVertical,
   IconBlockquote,
   IconBold,
   IconClearFormatting,
@@ -343,6 +345,18 @@ const InsertControls = () => {
         command="insertFunctionCall footnote"
       >
         <IconQuote />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Insert horizontal spacing"
+        command='insertFunctionCall ["h", [{"type": "length", "value": "1", "unit": "em"}]]'
+      >
+        <IconArrowsHorizontal />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Insert vertical spacing"
+        command='insertFunctionCall ["v", [{"type": "length", "value": "1", "unit": "em"}]]'
+      >
+        <IconArrowsVertical />
       </ToolbarControl>
     </ToolbarControlGroup>
   )
