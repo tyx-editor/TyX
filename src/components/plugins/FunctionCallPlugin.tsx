@@ -26,13 +26,13 @@ import {
 } from "lexical"
 import { useEffect, useState } from "react"
 import { stringifyFunction } from "../../compilers/lexical2typst"
+import { FUNCTIONS } from "../../functions"
 import { TyXValue } from "../../models"
 import TyXValueEditor from "../TyXValueEditor"
 import CurrentEditorPlugin from "./CurrentEditorPlugin"
 import {
   $createFunctionCallNode,
   $isFunctionCallNode,
-  FUNCTIONS,
   INSERT_FUNCTION_CALL_COMMAND,
 } from "./functionCall"
 import ImagePlugin from "./ImagePlugin"

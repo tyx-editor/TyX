@@ -34,6 +34,16 @@ TyX supports customizable keyboard shortcuts!
     :width: 100%
 
 
+Function Calls
+^^^^^^^^^^^^^^
+
+TyX supports an easy-to-use wrapper for Typst function calls, including types, labels and documentation for parameters!
+
+.. image:: _static/function-calls.png
+    :width: 100%
+
+More definitions can be added to `the functions file <https://github.com/tyx-editor/TyX/tree/main/src/translations>`_ and adding it to `the translations file <https://github.com/tyx-editor/TyX/blob/main/src/functions.ts>`_
+
 Keyboard Map
 ^^^^^^^^^^^^
 

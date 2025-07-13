@@ -37,6 +37,17 @@ TyX supports customizable keyboard shortcuts!
 
 ![keyboard shortcuts](docs/_static/keyboard-shortcuts.png)
 
+### Function Calls
+
+TyX supports an easy-to-use wrapper for Typst function calls, including types, labels and documentation for parameters!
+
+![function calls](docs/_static/function-calls.png)
+
+> [!TIP]
+> This is how the footnote node is currently implemented!
+
+More definitions can be added to [the functions file](src/functions.ts).
+
 ### Keyboard Map
 
 TyX supports keyboard maps (currently only a Hebrew keyboard map has been added [in the Keyboard Map Plugin](src/components/plugins/KeyboardMapPlugin.tsx)).
