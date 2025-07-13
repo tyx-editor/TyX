@@ -310,7 +310,7 @@ const InsertControls = () => {
       <ToolbarControl label="Insert Typst code" command="insertTypstCode">
         <IconCodeAsterisk />
       </ToolbarControl>
-      <ToolbarControl label="Insert math" command="insertMathInline">
+      <ToolbarControl label="Insert math" command="insertMath true">
         <IconSum />
       </ToolbarControl>
       <ToolbarControl
