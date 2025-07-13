@@ -73,44 +73,6 @@ math-field::part(container) {
   align-items: center;
 }
 
-.function-call {
-  border-radius: 10px;
-  border: 2px dashed gray;
-  padding: 5px;
-}
-
-.function-call > span {
-  text-align: center;
-  user-select: none;
-  -webkit-user-select: none;
-  cursor: pointer;
-}
-
-.function-call.functionCallInline > div {
-  display: inline-block;
-}
-
-.function-call.functionCallInline {
-  display: inline-block;
-}
-
-.function-call.functionCallBlock {
-  display: block;
-}
-
-.function-call.functionCallInline > span {
-  margin-inline-end: 5px;
-}
-
-.function-call.functionCallBlock {
-  width: 100%;
-}
-
-.function-call.functionCallBlock > span {
-  display: block;
-  font-weight: bold;
-}
-
 .italic {
   font-style: italic;
 }
@@ -190,4 +152,31 @@ math-field::part(content) {
 li:has(ol),
 li:has(ul) {
   list-style-type: none;
+}
+
+.editor .function-call {
+  display: inline-block;
+  border: 1px solid var(--tab-border-color);
+  border-radius: 5px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.editor .function-call > span {
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+}
+
+.editor .function-call > div {
+  display: inline-block;
+  padding-inline-start: 5px;
+  margin-inline-start: 5px;
+}
+
+.editor :dir(rtl) > .function-call > div {
+  border-right: 1px solid var(--tab-border-color);
+}
+
+.editor :dir(ltr) > .function-call > div {
+  border-left: 1px solid var(--tab-border-color);
 }

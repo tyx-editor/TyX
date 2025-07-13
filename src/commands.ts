@@ -23,6 +23,7 @@ import {
   REDO_COMMAND,
   UNDO_COMMAND,
 } from "lexical"
+import { INSERT_FUNCTION_CALL_COMMAND } from "./components/plugins/functionCall"
 import { INSERT_IMAGE_COMMAND } from "./components/plugins/image"
 import { TOGGLE_KEYBOARD_MAP_COMMAND } from "./components/plugins/keyboardMap"
 import {
@@ -52,6 +53,7 @@ const COMMANDS: Record<string, LexicalCommand<any>> = {
   insertHorizontalLine: INSERT_HORIZONTAL_RULE_COMMAND,
   insertTypstCode: INSERT_TYPST_CODE_COMMAND,
   insertImage: INSERT_IMAGE_COMMAND,
+  insertFunctionCall: INSERT_FUNCTION_CALL_COMMAND,
   toggleMathInline: TOGGLE_MATH_INLINE_COMMAND,
   math: MATH_COMMAND,
   indent: INDENT_CONTENT_COMMAND,
@@ -97,10 +99,16 @@ export const splitCommand = (command: string) => {
 
   let currentStart = 0
   let braceCount = 0
+  let bracketCount = 0
   let quoteCount = 0
   for (let i = 0; i < command.length; i++) {
     const currentChar = command.charAt(i)
-    if (currentChar === " " && braceCount === 0 && quoteCount === 0) {
+    if (
+      currentChar === " " &&
+      braceCount === 0 &&
+      quoteCount === 0 &&
+      bracketCount === 0
+    ) {
       result.push(command.substring(currentStart, i))
       currentStart = i + 1
     } else if (currentChar === "{") {
@@ -109,6 +117,10 @@ export const splitCommand = (command: string) => {
       quoteCount = (quoteCount + 1) % 2
     } else if (currentChar === "}") {
       braceCount--
+    } else if (currentChar === "[") {
+      bracketCount++
+    } else if (currentChar === "]") {
+      bracketCount--
     }
   }
   result.push(command.substring(currentStart))

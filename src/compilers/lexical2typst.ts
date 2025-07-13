@@ -19,9 +19,12 @@ import {
   SerializedTextNode,
   TEXT_TYPE_TO_FORMAT,
 } from "lexical"
+import { SerializedFunctionCallNode } from "../components/plugins/functionCall"
 import { SerializedImageNode } from "../components/plugins/image"
 import { SerializedMathNode } from "../components/plugins/math"
 import { SerializedTypstCodeNode } from "../components/plugins/typstCode"
+import { TyXValue } from "../models"
+import tyxValue2typst from "./tyxValue2typst"
 
 export const convertCSSColor = (color: string) => {
   const context = document.createElement("canvas").getContext("2d")!
@@ -101,6 +104,26 @@ export const applyFormat = (result: string, format: ElementFormatType) => {
   return result
 }
 
+export const stringifyFunction = (
+  name: string,
+  positionParameters: TyXValue[] | undefined,
+  namedParameters: Record<string, TyXValue> | undefined,
+) => {
+  const parameters: string[] = []
+  parameters.push(...(positionParameters ?? []).map(tyxValue2typst))
+
+  parameters.push(
+    ...Object.keys(namedParameters ?? {})
+      .sort()
+      .map(
+        (parameterName) =>
+          `${parameterName}: ${tyxValue2typst(namedParameters![parameterName])}`,
+      ),
+  )
+
+  return `${name}(${parameters.join(", ")})`
+}
+
 export const converters: Record<string, (d: SerializedLexicalNode) => string> =
   {
     root: (d) => {
@@ -124,7 +147,7 @@ export const converters: Record<string, (d: SerializedLexicalNode) => string> =
     },
     math: (d) => {
       const math = d as SerializedMathNode
-      let result = math.typst ?? ""
+      let result = math.typst?.trim() ?? ""
       if (math.inline) {
         result = `$${result}$`
       } else {
@@ -211,6 +234,16 @@ export const converters: Record<string, (d: SerializedLexicalNode) => string> =
     heading: (d) => {
       const heading = d as SerializedHeadingNode
       return `#heading(level: ${parseInt(heading.tag[1], 10)})[${heading.children.map(lexical2typst).join("")}]`
+    },
+    functioncall: (d) => {
+      const functioncall = d as SerializedFunctionCallNode
+
+      let result = `#${stringifyFunction(functioncall.name!, functioncall.positionParameters, functioncall.namedParameters)}`
+      if (functioncall.content) {
+        result += `[${lexical2typst(functioncall.content.editorState.root)}]`
+      }
+
+      return result
     },
   }
 

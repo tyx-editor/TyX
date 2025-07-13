@@ -5,6 +5,11 @@
 import { SerializedEditorState, SerializedLexicalNode } from "lexical"
 import { z } from "zod/v4"
 
+/** An object representing any TyX value (which in turn, represents some Typst value) */
+export type TyXValue = TyXLengthValue
+
+export type TyXLengthValue = TyXLength & { type: "length" }
+
 /** An object representing Typst `relative` or `fraction` types. */
 export interface TyXLength {
   unit?: string
@@ -23,7 +28,7 @@ export interface TyXDocumentSettings extends TyXCompilationOptions {
   paper?: string
   flipped?: boolean
   justified?: boolean
-  indentation?: { unit?: string; value?: string }
+  indentation?: TyXLength
   columns?: number
 }
 

@@ -43,6 +43,7 @@ import {
   IconListNumbers,
   IconMatrix,
   IconPhoto,
+  IconQuote,
   IconRowInsertBottom,
   IconRowRemove,
   IconSettings,
@@ -336,6 +337,12 @@ const InsertControls = () => {
         onClick={() => formatCode(editor, toolbarState.blockType ?? "")}
       >
         <IconCode />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Insert footnote"
+        command="insertFunctionCall footnote"
+      >
+        <IconQuote />
       </ToolbarControl>
     </ToolbarControlGroup>
   )

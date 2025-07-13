@@ -30,6 +30,8 @@ import { TyXDocument } from "../models"
 import { getLocalStorage } from "../utilities/hooks"
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin"
 import CurrentEditorPlugin from "./plugins/CurrentEditorPlugin"
+import { FunctionCallNode } from "./plugins/functionCall"
+import FunctionCallPlugin from "./plugins/FunctionCallPlugin"
 import { ImageNode } from "./plugins/image"
 import ImagePlugin from "./plugins/ImagePlugin"
 import KeyboardMapPlugin from "./plugins/KeyboardMapPlugin"
@@ -93,6 +95,7 @@ const initialConfig: InitialConfigType = {
     mathInline: "math-inline",
     mathBlock: "math-block",
     typstCode: "typst-code",
+    functionCall: "function-call",
   },
   onError: (error) => {
     console.error(error)
@@ -112,6 +115,7 @@ const initialConfig: InitialConfigType = {
     MathNode,
     TypstCodeNode,
     ImageNode,
+    FunctionCallNode,
   ],
 }
 
@@ -158,6 +162,7 @@ const Editor = () => {
       <MathPlugin />
       <TypstCodePlugin />
       <ImagePlugin />
+      <FunctionCallPlugin />
     </LexicalComposer>
   )
 }

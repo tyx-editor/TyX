@@ -4,6 +4,7 @@
 
 import { TyXDocument, TyXDocumentSettings } from "../models"
 import lexical2typst from "./lexical2typst"
+import tyxValue2typst from "./tyxValue2typst"
 
 const setProperty = (
   element: string,
@@ -33,7 +34,7 @@ export const tyxSettings2typst = (settings: TyXDocumentSettings) => {
     result += setProperty(
       "par",
       "first-line-indent",
-      settings.indentation.value + settings.indentation.unit,
+      tyxValue2typst({ ...settings.indentation, type: "length" }),
       null,
     )
   }
