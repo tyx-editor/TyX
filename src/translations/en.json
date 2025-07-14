@@ -13,6 +13,8 @@
     "resetToDefault": "Reset To Default",
     "editing": "Editing",
     "keyboardMap": "Keyboard Map",
-    "mathInlineShortcuts": "Math Inline Shortcuts"
+    "mathInlineShortcuts": "Math Inline Shortcuts",
+    "output": "Output",
+    "formatTypstWithTypstyle": "Format Typst with Typstyle"
   }
 }

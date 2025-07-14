@@ -12,6 +12,7 @@ import { getVersion } from "@tauri-apps/api/app"
 import { executeCommand } from "../commands"
 import tyx2typst from "../compilers/tyx2typst"
 import { TyXDocument } from "../models"
+import { getSettings } from "../settings"
 import { showFailureMessage } from "../utilities"
 import { getLocalStorage, setLocalStorage } from "../utilities/hooks"
 
@@ -148,7 +149,8 @@ export const onOpen = (filename?: string | undefined, content?: string) => {
 export const open = (filename: string = "") => invoke("open", { filename })
 
 export const save = (filename: string, content: string) => {
-  return invoke("save", { filename, content })
+  const format = getSettings().format ?? false
+  return invoke("save", { filename, content, format })
 }
 
 export const saveAs = () => invoke("saveas")

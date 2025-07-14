@@ -29,6 +29,7 @@ tinymist-project = { workspace = true, features = ["lsp"] }
 typst.workspace = true
 typst-pdf.workspace = true
 tyx-import-typst.workspace = true
+typstyle-core = "0.13.14"
 url = "2.5.4"
 open = "5"
 base64 = "0.22"

@@ -147,6 +147,12 @@ checksum = "76a2e8124351fda1ef8aaaa3bbd7ebbcb486bbcd4225aca0aa0d84bb2db8fecb"
 
 [[package]]
 name = "arrayvec"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
+
+[[package]]
+name = "arrayvec"
 version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7c02d123df017efcdfbd739ef81735b36c5ba83ec3c59c80a9d7ecc718f92e50"
@@ -2490,6 +2496,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "itertools"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b192c782037fadd9cfa75548310488aabdbf3d2da73885b31bd0abd03351285"
+dependencies = [
+ "either",
+]
+
+[[package]]
 name = "itoa"
 version = "0.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2637,7 +2652,7 @@ version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1077d333efea6170d9ccb96d3c3026f300ca0773da4938cc4c811daa6df68b0c"
 dependencies = [
- "arrayvec",
+ "arrayvec 0.7.6",
  "smallvec",
 ]
 
@@ -3672,6 +3687,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "925383efa346730478fb4838dbe9137d2a47675ad789c546d150a6e1dd4ab31c"
 
 [[package]]
+name = "prettyless"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d03ccf1cbd64d88883e4d9363b8ba202cdce66b7bec175233c8b157e772b1165"
+dependencies = [
+ "arrayvec 0.5.2",
+ "typed-arena",
+ "unicode-width 0.2.0",
+]
+
+[[package]]
 name = "proc-macro-crate"
 version = "1.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4171,7 +4197,7 @@ version = "1.37.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "faa7de2ba56ac291bd90c6b9bece784a52ae1411f9506544b3eae36dd2356d50"
 dependencies = [
- "arrayvec",
+ "arrayvec 0.7.6",
  "num-traits",
 ]
 
@@ -5410,7 +5436,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "83d13394d44dae3207b52a326c0c85a8bf87f1541f23b0d143811088497b09ab"
 dependencies = [
  "arrayref",
- "arrayvec",
+ "arrayvec 0.7.6",
  "bytemuck",
  "cfg-if",
  "log",
@@ -5440,7 +5466,7 @@ dependencies = [
  "ena",
  "hashbrown 0.14.5",
  "if_chain",
- "itertools",
+ "itertools 0.13.0",
  "log",
  "lsp-types",
  "parking_lot",
@@ -6151,7 +6177,7 @@ name = "typst-pdf"
 version = "0.13.1"
 source = "git+https://github.com/Myriad-Dreamin/typst.git?tag=tinymist%2Fv0.13.10#946ea31fb554bcf62e3215f64ddda87d70b026af"
 dependencies = [
- "arrayvec",
+ "arrayvec 0.7.6",
  "base64 0.22.1",
  "bytemuck",
  "comemo",
@@ -6178,7 +6204,7 @@ name = "typst-realize"
 version = "0.13.1"
 source = "git+https://github.com/Myriad-Dreamin/typst.git?tag=tinymist%2Fv0.13.10#946ea31fb554bcf62e3215f64ddda87d70b026af"
 dependencies = [
- "arrayvec",
+ "arrayvec 0.7.6",
  "bumpalo",
  "comemo",
  "ecow",
@@ -6279,6 +6305,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "typstyle-core"
+version = "0.13.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a731776328e7f494ab9db9b15152530b5833537666978f12fa0b8d6020a1dfc1"
+dependencies = [
+ "ecow",
+ "itertools 0.14.0",
+ "prettyless",
+ "rustc-hash",
+ "smallvec",
+ "thiserror 2.0.12",
+ "typst-syntax",
+ "unicode-width 0.2.0",
+]
+
+[[package]]
 name = "tyx"
 version = "0.1.0"
 dependencies = [
@@ -6294,6 +6336,7 @@ dependencies = [
  "tinymist-project",
  "typst",
  "typst-pdf",
+ "typstyle-core",
  "tyx-import-typst",
  "url",
 ]
@@ -6741,7 +6784,7 @@ version = "0.40.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a19af97fcb96045dd1d6b4d23e2b4abdbbe81723dbc5c9f016eb52145b320063"
 dependencies = [
- "arrayvec",
+ "arrayvec 0.7.6",
  "multi-stash",
  "smallvec",
  "spin",

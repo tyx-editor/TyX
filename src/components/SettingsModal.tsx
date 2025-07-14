@@ -2,7 +2,7 @@
  * @file A modal for customizing the app-wide settings.
  */
 
-import { Button, Fieldset, Select } from "@mantine/core"
+import { Button, Fieldset, Select, Switch } from "@mantine/core"
 import {
   IconKeyboard,
   IconLanguage,
@@ -10,6 +10,7 @@ import {
   IconRotate,
 } from "@tabler/icons-react"
 import { useTranslation } from "react-i18next"
+import { isWeb } from "../backend"
 import { TyXSettings } from "../models"
 import { DEFAULT_MATH_INLINE_SHORTCUTS } from "../settings"
 import {
@@ -162,6 +163,17 @@ const SettingsModal = () => {
           value={settings.keyboardMap ?? null}
           onChange={(keyboardMap) => setSettings({ ...settings, keyboardMap })}
         />
+      </Fieldset>
+      <Fieldset legend={t("output")} mt="xs">
+        {!isWeb && (
+          <Switch
+            label={t("formatTypstWithTypstyle")}
+            checked={settings.format ?? false}
+            onChange={(e) =>
+              setSettings({ ...settings, format: e.currentTarget.checked })
+            }
+          />
+        )}
       </Fieldset>
     </>
   )

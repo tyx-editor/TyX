@@ -17,9 +17,18 @@ use tinymist_project::{
     CompileFontArgs, CompileOnceArgs, EntryReader, TaskInputs, WorldProvider, base::ShadowApi,
 };
 use typst_pdf::PdfOptions;
+use typstyle_core::Typstyle;
 
 #[tauri::command]
-fn save(filename: &str, content: &str) {
+fn save(filename: &str, content: &str, format: bool) {
+    let mut content = String::from(content);
+    if format {
+        let typstyle = Typstyle::default();
+        if let Ok(text) = typstyle.format_text(&content).render() {
+            content = text;
+        }
+    }
+
     if let Ok(mut f) = File::create(filename) {
         f.write_all(content.as_bytes()).unwrap();
     }

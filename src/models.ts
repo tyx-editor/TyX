@@ -52,6 +52,7 @@ export const TyXSettings = z.object({
   keyboardShortcuts: z.array(z.tuple([z.string(), z.string()])).optional(),
   keyboardMap: z.string().nullable().optional(),
   mathInlineShortcuts: z.array(z.tuple([z.string(), z.string()])).optional(),
+  format: z.boolean().optional(),
 })
 
 export type TyXSettings = z.infer<typeof TyXSettings>

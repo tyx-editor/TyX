@@ -13,6 +13,8 @@
     "resetToDefault": "איפוס לברירת המחדל",
     "editing": "עריכה",
     "keyboardMap": "מיפוי מקלדת",
-    "mathInlineShortcuts": "קיצורים במצב מתמטיקה"
+    "mathInlineShortcuts": "קיצורים במצב מתמטיקה",
+    "output": "פלט",
+    "formatTypstWithTypstyle": "סידור Typst עם Typstyle"
   }
 }
