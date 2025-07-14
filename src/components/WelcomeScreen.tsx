@@ -69,10 +69,14 @@ const WelcomeScreen = () => {
       <Text
         c="grey"
         fz="xs"
+        maw="100%"
+        pb="xs"
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          whiteSpace: "nowrap",
+          overflowX: "auto",
         }}
       >
         <ActionIcon
