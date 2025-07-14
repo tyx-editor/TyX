@@ -140,7 +140,13 @@ fn readimage(filename: &str, image: &str) -> String {
 }
 
 #[tauri::command]
-fn preview(filename: &str, content: &str, root: &str, font_paths: Vec<String>) -> String {
+fn preview(
+    filename: &str,
+    content: &str,
+    root: &str,
+    font_paths: Vec<String>,
+    open: bool,
+) -> String {
     let basename = filename
         .strip_suffix(".tyx")
         .unwrap_or(filename)
@@ -201,7 +207,10 @@ fn preview(filename: &str, content: &str, root: &str, font_paths: Vec<String>) -
     let pdf = typst_pdf::pdf(&doc, &PdfOptions::default()).unwrap();
     let mut f = File::create(&pdf_file).unwrap();
     f.write_all(&pdf).unwrap();
-    let _ = open::that(&pdf_file);
+
+    if open {
+        let _ = open::that(&pdf_file);
+    }
 
     String::new()
 }

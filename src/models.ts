@@ -53,7 +53,10 @@ export const TyXSettings = z.object({
   keyboardMap: z.string().nullable().optional(),
   mathInlineShortcuts: z.array(z.tuple([z.string(), z.string()])).optional(),
   format: z.boolean().optional(),
+  autoStartServer: z.boolean().optional(),
+  serverDebounce: z.number().optional(),
 })
+export const DEFAULT_SERVER_DEBOUNCE_MILLISECONDS = 500
 
 export type TyXSettings = z.infer<typeof TyXSettings>
 

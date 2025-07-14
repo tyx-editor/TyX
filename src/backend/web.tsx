@@ -40,7 +40,8 @@ export const onClose = () => {
   setLocalStorage("Current Document", currentDocument - 1)
 }
 
-export const onPreview = async () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const onPreview = async (_open = false) => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]

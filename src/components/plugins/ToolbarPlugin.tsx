@@ -11,6 +11,7 @@ import {
   TextInput,
   Tooltip,
 } from "@mantine/core"
+import { useDebouncedCallback } from "@mantine/hooks"
 import { modals } from "@mantine/modals"
 import {
   IconAlignCenter,
@@ -46,6 +47,8 @@ import {
   IconMatrix,
   IconPhoto,
   IconQuote,
+  IconRefreshDot,
+  IconRefreshOff,
   IconRowInsertBottom,
   IconRowRemove,
   IconSettings,
@@ -77,13 +80,14 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react"
-import { insertImage, onPreview, onSave, save } from "../../backend"
+import { insertImage, isWeb, onPreview, onSave, save } from "../../backend"
 import { executeCommand, parseCommandSequence } from "../../commands"
 import tyx2typst from "../../compilers/tyx2typst"
-import { TyXDocument } from "../../models"
+import { DEFAULT_SERVER_DEBOUNCE_MILLISECONDS, TyXDocument } from "../../models"
 import {
   $findTopLevelElement,
   clearFormatting,
@@ -92,6 +96,7 @@ import {
   formatQuote,
   getSelectedNode,
 } from "../../resources/playground"
+import { getSettings } from "../../settings"
 import { showSuccessMessage } from "../../utilities"
 import { useLocalStorage } from "../../utilities/hooks"
 import DocumentSettingsModal from "../DocumentSettingsModal"
@@ -166,7 +171,11 @@ const ToolbarControlGroup = ({ children }: { children?: React.ReactNode }) => {
 }
 
 const ManagementControls = () => {
+  const [editor] = useLexicalComposerContext()
   const [loadingPreview, setLoadingPreview] = useState(false)
+  const [runningServer, setRunningServer] = useState(
+    getSettings().autoStartServer ?? false,
+  )
   const [openDocuments] = useLocalStorage<TyXDocument[]>({
     key: "Open Documents",
     defaultValue: [],
@@ -177,6 +186,10 @@ const ManagementControls = () => {
     defaultValue: 0,
     silent: true,
   })
+  const debounce = useMemo(
+    () => getSettings().serverDebounce ?? DEFAULT_SERVER_DEBOUNCE_MILLISECONDS,
+    [],
+  )
 
   const doc = openDocuments[currentDocument]
   const basename = (doc.filename ?? "Untitled")
@@ -185,12 +198,29 @@ const ManagementControls = () => {
     .split("\\")
     .pop()
 
-  const preview = () => {
+  const preview = (open = true) => {
     setLoadingPreview(true)
-    onPreview()
+    onPreview(open)
       .then(() => setLoadingPreview(false))
       .catch(() => setLoadingPreview(false))
   }
+
+  const debouncedPreview = useDebouncedCallback((open?: boolean) => {
+    preview(open)
+  }, debounce)
+
+  const toggleCompilationServer = () => {
+    if (!runningServer) {
+      preview(false)
+    }
+    setRunningServer(!runningServer)
+  }
+
+  useEffect(() => {
+    if (runningServer) {
+      return editor.registerUpdateListener(() => debouncedPreview(false))
+    }
+  }, [runningServer, editor])
 
   return (
     <ToolbarControlGroup>
@@ -214,10 +244,22 @@ const ManagementControls = () => {
       <ToolbarControl
         label="Preview PDF"
         loading={loadingPreview}
-        onClick={preview}
+        onClick={() => preview()}
       >
         <IconEye />
       </ToolbarControl>
+      {!isWeb && (
+        <ToolbarControl
+          label={
+            runningServer
+              ? "Stop compilation server"
+              : "Start compilation server"
+          }
+          onClick={toggleCompilationServer}
+        >
+          {runningServer ? <IconRefreshOff /> : <IconRefreshDot />}
+        </ToolbarControl>
+      )}
       <ToolbarControl
         label="Document settings"
         onClick={() =>

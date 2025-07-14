@@ -2,7 +2,7 @@
  * @file A modal for customizing the app-wide settings.
  */
 
-import { Button, Fieldset, Select, Switch } from "@mantine/core"
+import { Button, Fieldset, NumberInput, Select, Switch } from "@mantine/core"
 import {
   IconKeyboard,
   IconLanguage,
@@ -11,7 +11,7 @@ import {
 } from "@tabler/icons-react"
 import { useTranslation } from "react-i18next"
 import { isWeb } from "../backend"
-import { TyXSettings } from "../models"
+import { DEFAULT_SERVER_DEBOUNCE_MILLISECONDS, TyXSettings } from "../models"
 import { DEFAULT_MATH_INLINE_SHORTCUTS } from "../settings"
 import {
   DEFAULT_KEYBOARD_SHORTCUTS,
@@ -166,13 +166,38 @@ const SettingsModal = () => {
       </Fieldset>
       <Fieldset legend={t("output")} mt="xs">
         {!isWeb && (
-          <Switch
-            label={t("formatTypstWithTypstyle")}
-            checked={settings.format ?? false}
-            onChange={(e) =>
-              setSettings({ ...settings, format: e.currentTarget.checked })
-            }
-          />
+          <>
+            <Switch
+              label={t("formatTypstWithTypstyle")}
+              checked={settings.format ?? false}
+              onChange={(e) =>
+                setSettings({ ...settings, format: e.currentTarget.checked })
+              }
+            />
+            <Switch
+              mt="xs"
+              label={t("autoStartServer")}
+              checked={settings.autoStartServer ?? false}
+              onChange={(e) =>
+                setSettings({
+                  ...settings,
+                  autoStartServer: e.currentTarget.checked,
+                })
+              }
+            />
+            <NumberInput
+              mt="xs"
+              label={t("serverDebounceMs")}
+              value={
+                settings.serverDebounce ?? DEFAULT_SERVER_DEBOUNCE_MILLISECONDS
+              }
+              onChange={(v) => {
+                if (typeof v === "number") {
+                  setSettings({ ...settings, serverDebounce: v })
+                }
+              }}
+            />
+          </>
         )}
       </Fieldset>
     </>

@@ -24,7 +24,7 @@ export const initializeBackend = () => {
   listen("new", onNew)
   listen("save", onSave)
   listen("close", onClose)
-  listen("preview", onPreview)
+  listen("preview", () => onPreview(false))
   listen<[string]>("insertImage", (e) => onInsertImage(...e.payload))
   listen<[string]>("saveas", (e) => onSaveAs(...e.payload))
 
@@ -55,7 +55,7 @@ export const onClose = () => {
   setLocalStorage("Current Document", currentDocument - 1)
 }
 
-export const onPreview = async () => {
+export const onPreview = async (open = false) => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
@@ -83,6 +83,7 @@ export const onPreview = async () => {
     content,
     root: document.settings?.root ?? "",
     fontPaths: document.settings?.fontPaths ?? [],
+    open: open ?? false,
   })
   if (result) {
     showFailureMessage(result.replace(/\n\n/g, "\n"), {
