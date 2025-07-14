@@ -99,7 +99,7 @@ fn openfile(handle: &tauri::AppHandle, path: &Path) {
 fn open(handle: tauri::AppHandle, filename: &str) {
     if !filename.is_empty() {
         let path = Path::new(filename);
-        openfile(&handle, &path);
+        openfile(&handle, path);
         return;
     }
 
