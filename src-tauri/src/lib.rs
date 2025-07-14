@@ -7,7 +7,10 @@ use std::{
 
 use base64::{Engine, engine::general_purpose::STANDARD};
 
-use tauri::Emitter;
+use tauri::{
+    AppHandle, Emitter,
+    menu::{AboutMetadata, MenuBuilder, MenuItemBuilder, SubmenuBuilder},
+};
 
 use tauri_plugin_dialog::DialogExt;
 use tinymist_project::{
@@ -84,7 +87,13 @@ fn openfile(handle: &tauri::AppHandle, path: &Path) {
 }
 
 #[tauri::command]
-fn open(handle: tauri::AppHandle) {
+fn open(handle: tauri::AppHandle, filename: &str) {
+    if !filename.is_empty() {
+        let path = Path::new(filename);
+        openfile(&handle, &path);
+        return;
+    }
+
     let h = handle.clone();
     handle
         .dialog()
@@ -215,6 +224,23 @@ fn insertimage(handle: tauri::AppHandle, filename: &str) {
         });
 }
 
+#[allow(dead_code)]
+fn handle_file_associations(app: AppHandle, files: Vec<PathBuf>) {
+    let files = files
+        .into_iter()
+        .map(|f| {
+            let file = f.to_string_lossy().replace('\\', "\\\\"); // escape backslash
+            format!("\"{file}\"",) // wrap in quotes for JS array
+        })
+        .collect::<Vec<_>>()
+        .join(",");
+
+    tauri::WebviewWindowBuilder::new(&app, "main", Default::default())
+        .initialization_script(format!("window.openedFiles = [{files}]"))
+        .build()
+        .unwrap();
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 #[cfg(any(target_os = "android", target_os = "ios"))]
 pub fn run() {
@@ -235,10 +261,6 @@ pub fn run() {
 
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
 pub fn run() {
-    use std::path::PathBuf;
-
-    use tauri::menu::{AboutMetadata, MenuBuilder, MenuItemBuilder, SubmenuBuilder};
-
     tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
@@ -287,25 +309,54 @@ pub fn run() {
             readimage
         ])
         .on_menu_event(|handle, event| handle.emit(event.id().0.as_str(), ()).unwrap())
-        .setup(|app| {
-            // TODO: FIXME: this happens before the listeners are set up
-            for maybe_file in std::env::args().skip(1) {
-                // skip flags like -f or --flag
-                if maybe_file.starts_with('-') {
-                    continue;
+        .setup(
+            #[allow(unused_variables)]
+            |app| {
+                #[cfg(any(windows, target_os = "linux"))]
+                {
+                    let mut files = Vec::new();
+
+                    // NOTICE: `args` may include URL protocol (`your-app-protocol://`)
+                    // or arguments (`--`) if your app supports them.
+                    // files may aslo be passed as `file://path/to/file`
+                    for maybe_file in std::env::args().skip(1) {
+                        // skip flags like -f or --flag
+                        if maybe_file.starts_with('-') {
+                            continue;
+                        }
+
+                        // handle `file://` path urls and skip other urls
+                        if let Ok(url) = url::Url::parse(&maybe_file) {
+                            if let Ok(path) = url.to_file_path() {
+                                files.push(path);
+                            }
+                        } else {
+                            files.push(PathBuf::from(maybe_file))
+                        }
+                    }
+
+                    handle_file_associations(app.handle().clone(), files);
                 }
 
-                // handle `file://` path urls and skip other urls
-                if let Ok(url) = url::Url::parse(&maybe_file) {
-                    if let Ok(path) = url.to_file_path() {
-                        openfile(app.handle(), path.as_path());
+                Ok(())
+            },
+        )
+        .build(tauri::generate_context!())
+        .expect("error while building tauri application")
+        .run(
+            #[allow(unused_variables)]
+            |app, event| {
+                #[cfg(any(target_os = "macos", target_os = "ios"))]
+                if let tauri::RunEvent::Opened { urls } = event {
+                    let files = urls
+                        .into_iter()
+                        .filter_map(|url| url.to_file_path().ok())
+                        .collect::<Vec<_>>();
+
+                    for file in files {
+                        openfile(app, file.as_path());
                     }
-                } else {
-                    openfile(app.handle(), PathBuf::from(maybe_file).as_path());
                 }
-            }
-            Ok(())
-        })
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+            },
+        );
 }

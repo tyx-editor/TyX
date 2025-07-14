@@ -8,11 +8,18 @@ import { ModalsProvider } from "@mantine/modals"
 import { Notifications } from "@mantine/notifications"
 import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
+import { open } from "./backend"
 import DocumentTabs from "./components/DocumentTabs"
 import WelcomeScreen from "./components/WelcomeScreen"
 import { TyXDocument, TyXSettings } from "./models"
 import { RTL_LANGUAGES } from "./translations"
 import { useLocalStorage } from "./utilities/hooks"
+
+declare global {
+  interface Window {
+    openedFiles?: string[]
+  }
+}
 
 const App = () => {
   const {
@@ -27,6 +34,13 @@ const App = () => {
     key: "Settings",
     defaultValue: {},
   })
+
+  // Open the double-clicked files
+  useEffect(() => {
+    for (const file of window.openedFiles ?? []) {
+      open(file)
+    }
+  }, [])
 
   // Update the i18n language from the user settings and update the document's direction.
   useEffect(() => {

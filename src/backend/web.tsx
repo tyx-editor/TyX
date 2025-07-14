@@ -118,7 +118,8 @@ export const onOpen = (filename: string | undefined, content: string) => {
   }
 }
 
-export const open = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const open = (_filename?: string) => {
   const input = document.createElement("input")
   input.id = "open"
   input.type = "file"

@@ -50,7 +50,7 @@ const WelcomeScreen = () => {
         <Button leftSection={<IconPlus />} onClick={onNew}>
           {t("newEmptyDocument")}
         </Button>
-        <Button leftSection={<IconFolderOpen />} onClick={open}>
+        <Button leftSection={<IconFolderOpen />} onClick={() => open()}>
           {t("openDocument")}
         </Button>
         <Button

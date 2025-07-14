@@ -145,7 +145,7 @@ export const onOpen = (filename?: string | undefined, content?: string) => {
   setLocalStorage("Current Document", openDocuments.length - 1)
 }
 
-export const open = () => invoke("open")
+export const open = (filename: string = "") => invoke("open", { filename })
 
 export const save = (filename: string, content: string) => {
   return invoke("save", { filename, content })
