@@ -8,7 +8,7 @@ import { createTypstCompiler, TypstCompiler } from "@myriaddreamin/typst.ts"
 import { version } from "../../src-tauri/tauri.conf.json"
 import tyx2typst from "../compilers/tyx2typst"
 import SaveAsModal from "../components/SaveAsModal"
-import { TyXDocument } from "../models"
+import { TyXDocument, TyXSettings } from "../models"
 import { showFailureMessage } from "../utilities"
 import { getLocalStorage, setLocalStorage } from "../utilities/hooks"
 
@@ -161,6 +161,16 @@ export const saveAs = () =>
   })
 
 export const getVersion = async () => version
+
+export const getSettingsFromFile = async (): Promise<
+  TyXSettings | undefined
+> => {
+  return
+}
+
+export const saveSettingsToFile = async (): Promise<string> => {
+  return ""
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const readImage = async (_filename: string, _image: string) => ""

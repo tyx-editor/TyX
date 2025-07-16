@@ -4,13 +4,15 @@
 
 import { Button, Fieldset, NumberInput, Select, Switch } from "@mantine/core"
 import {
+  IconDeviceFloppy,
   IconKeyboard,
   IconLanguage,
   IconPlus,
   IconRotate,
 } from "@tabler/icons-react"
+import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
-import { isWeb } from "../backend"
+import { isWeb, saveSettingsToFile } from "../backend"
 import { DEFAULT_SERVER_DEBOUNCE_MILLISECONDS, TyXSettings } from "../models"
 import { DEFAULT_MATH_INLINE_SHORTCUTS } from "../settings"
 import {
@@ -18,6 +20,7 @@ import {
   refreshKeyboardShortcuts,
 } from "../shortcuts"
 import { TRANSLATIONS } from "../translations"
+import { showSuccessMessage } from "../utilities"
 import { useLocalStorage } from "../utilities/hooks"
 import KeyboardShortcutEditor from "./KeyboardShortcutEditor"
 import MathInlineShortcutEditor from "./MathInlineShortcutEditor"
@@ -36,6 +39,12 @@ const SettingsModal = () => {
   settings.mathInlineShortcuts = settings.mathInlineShortcuts ?? [
     ...DEFAULT_MATH_INLINE_SHORTCUTS,
   ]
+
+  useEffect(() => {
+    return () => {
+      saveSettingsToFile()
+    }
+  }, [])
 
   return (
     <>
@@ -200,6 +209,20 @@ const SettingsModal = () => {
           </>
         )}
       </Fieldset>
+      {!isWeb && (
+        <Button
+          mt="xs"
+          fullWidth
+          leftSection={<IconDeviceFloppy />}
+          onClick={() =>
+            saveSettingsToFile().then((f) =>
+              showSuccessMessage(`Settings saved to ${f}`),
+            )
+          }
+        >
+          Save to Filesystem
+        </Button>
+      )}
     </>
   )
 }

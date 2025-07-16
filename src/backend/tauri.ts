@@ -11,7 +11,7 @@ import { check } from "@tauri-apps/plugin-updater"
 import { getVersion } from "@tauri-apps/api/app"
 import { executeCommand } from "../commands"
 import tyx2typst from "../compilers/tyx2typst"
-import { TyXDocument } from "../models"
+import { TyXDocument, TyXSettings } from "../models"
 import { getSettings } from "../settings"
 import { showFailureMessage } from "../utilities"
 import { getLocalStorage, setLocalStorage } from "../utilities/hooks"
@@ -36,6 +36,12 @@ export const initializeBackend = () => {
       }
     })
     .catch(() => {})
+
+  getSettingsFromFile().then((settings) => {
+    if (settings !== undefined) {
+      setLocalStorage("Settings", settings)
+    }
+  })
 }
 
 export const onNew = () => {
@@ -169,6 +175,22 @@ export const onInsertImage = (path: string) => {
 
 export const readImage = async (filename: string, image: string) => {
   return await invoke<string>("readimage", { filename, image })
+}
+
+export const getSettingsFromFile = async (): Promise<
+  TyXSettings | undefined
+> => {
+  const settings = await invoke<string>("getsettings")
+  if (settings) {
+    return JSON.parse(settings) as TyXSettings
+  }
+}
+
+export const saveSettingsToFile = async (): Promise<string> => {
+  const settings = getSettings()
+  return await invoke<string>("setsettings", {
+    settings: JSON.stringify(settings, null, 4),
+  })
 }
 
 export { getVersion }

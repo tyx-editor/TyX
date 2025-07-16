@@ -1,5 +1,5 @@
 use std::{
-    fs::{self, File},
+    fs::{self, File, create_dir_all},
     io::Write,
     path::{Path, PathBuf},
     sync::Arc,
@@ -8,7 +8,7 @@ use std::{
 use base64::{Engine, engine::general_purpose::STANDARD};
 
 use tauri::{
-    AppHandle, Emitter,
+    AppHandle, Emitter, Manager,
     menu::{AboutMetadata, MenuBuilder, MenuItemBuilder, SubmenuBuilder},
 };
 
@@ -115,6 +115,26 @@ fn open(handle: tauri::AppHandle, filename: &str) {
                 }
             }
         });
+}
+
+#[tauri::command]
+fn getsettings(handle: tauri::AppHandle) -> String {
+    let settings_path = handle.path().app_data_dir().unwrap().join("settings.json");
+
+    fs::read_to_string(settings_path).unwrap_or_default()
+}
+
+#[tauri::command]
+fn setsettings(handle: tauri::AppHandle, settings: &str) -> String {
+    let data_dir = handle.path().app_data_dir().unwrap();
+    let _ = create_dir_all(&data_dir);
+    let settings_path = data_dir.join("settings.json");
+
+    if let Ok(mut f) = File::create(&settings_path) {
+        f.write_all(settings.as_bytes()).unwrap();
+    }
+
+    settings_path.to_str().unwrap().into()
 }
 
 #[tauri::command]
@@ -324,7 +344,9 @@ pub fn run() {
             saveas,
             preview,
             insertimage,
-            readimage
+            readimage,
+            getsettings,
+            setsettings
         ])
         .on_menu_event(|handle, event| handle.emit(event.id().0.as_str(), ()).unwrap())
         .setup(
