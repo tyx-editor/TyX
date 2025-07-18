@@ -3,18 +3,18 @@
  * Uses a Typst compiler and renderer that is bundled with the binary.
  */
 
+import { getVersion } from "@tauri-apps/api/app"
 import { invoke } from "@tauri-apps/api/core"
 import { listen } from "@tauri-apps/api/event"
 import { relaunch } from "@tauri-apps/plugin-process"
 import { check } from "@tauri-apps/plugin-updater"
-
-import { getVersion } from "@tauri-apps/api/app"
 import { executeCommand } from "../commands"
 import tyx2typst from "../compilers/tyx2typst"
 import { TyXDocument, TyXSettings } from "../models"
 import { getSettings } from "../settings"
 import { showFailureMessage } from "../utilities"
 import { getLocalStorage, setLocalStorage } from "../utilities/hooks"
+import { Update } from "./base"
 
 let version: string
 
@@ -28,20 +28,15 @@ export const initializeBackend = () => {
   listen<[string]>("insertImage", (e) => onInsertImage(...e.payload))
   listen<[string]>("saveas", (e) => onSaveAs(...e.payload))
 
-  check()
-    .then(async (update) => {
-      if (update?.available) {
-        await update.downloadAndInstall()
-        await relaunch()
-      }
-    })
-    .catch(() => {})
-
   getSettingsFromFile().then((settings) => {
     if (settings !== undefined) {
       setLocalStorage("Settings", settings)
     }
   })
+}
+
+export const checkForUpdates = async (): Promise<Update | null> => {
+  return await check()
 }
 
 export const onNew = () => {
@@ -193,6 +188,6 @@ export const saveSettingsToFile = async (): Promise<string> => {
   })
 }
 
-export { getVersion }
+export { getVersion, relaunch }
 
 export const isWeb = false

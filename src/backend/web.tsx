@@ -11,6 +11,7 @@ import SaveAsModal from "../components/SaveAsModal"
 import { TyXDocument, TyXSettings } from "../models"
 import { showFailureMessage } from "../utilities"
 import { getLocalStorage, setLocalStorage } from "../utilities/hooks"
+import { Update } from "./base"
 
 let compiler: TypstCompiler
 
@@ -174,5 +175,13 @@ export const saveSettingsToFile = async (): Promise<string> => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const readImage = async (_filename: string, _image: string) => ""
+
+export const checkForUpdates = async (): Promise<Update | null> => {
+  return null
+}
+
+export const relaunch = () => {
+  window.location.reload()
+}
 
 export const isWeb = true

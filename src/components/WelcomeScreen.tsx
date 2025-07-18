@@ -12,8 +12,9 @@ import {
 } from "@tabler/icons-react"
 import { t } from "i18next"
 import { useEffect, useState } from "react"
-import { getVersion, onNew, open } from "../backend"
+import { getVersion, isWeb, onNew, open } from "../backend"
 import SettingsModal from "./SettingsModal"
+import UpdateChecker from "./UpdateChecker"
 
 const CREATED_WITH_LINKS = [
   { label: "typst", href: "https://github.com/typst/typst/" },
@@ -96,6 +97,7 @@ const WelcomeScreen = () => {
           </Anchor>
         ))}
       </Text>
+      {!isWeb && <UpdateChecker />}
     </div>
   )
 }
