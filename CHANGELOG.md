@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.3] - 2025-07-18
+
+### Added
+
+- It is not possible to save settings in the filesystem, and they are automatically loaded when TyX is opened.
+- Settings and documents are now saved with the `$schema` set, and a JSON Schema for them is available in the website.
+- The application now prompts the user for updates instead of automatically updating in the background.
+- It is now possible to run a compilation server that updates the PDF whenever the TyX document is edited.
+- It is now possible via the TyX settings to export Typst files with Typstyle in the app version.
+
+### Fixed
+
+- Double-clicking a `.tyx` file should now work better, although it's still not completely fixed.
+
 ## [0.2.2] - 2025-07-13
 
 ### Added
