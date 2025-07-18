@@ -1,0 +1,184 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "ElementFormatType": {
+            "enum": [
+                "",
+                "center",
+                "end",
+                "justify",
+                "left",
+                "right",
+                "start"
+            ],
+            "type": "string"
+        },
+        "Omit<SerializedLexicalNode,\"format\"|\"children\"|\"direction\"|\"indent\"|\"textFormat\"|\"textStyle\">": {
+            "properties": {
+                "$": {
+                    "$ref": "#/definitions/Record<string,unknown>",
+                    "description": "Any state persisted with the NodeState API that is not\nconfigured for flat storage"
+                },
+                "type": {
+                    "description": "The type string used by the Node class",
+                    "type": "string"
+                },
+                "version": {
+                    "description": "A numeric version for this schema, defaulting to 1, but not generally recommended for use",
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "Record<string,unknown>": {
+            "type": "object"
+        },
+        "SerializedEditorState<SerializedLexicalNode>": {
+            "properties": {
+                "root": {
+                    "$ref": "#/definitions/SerializedRootNode<SerializedLexicalNode>"
+                }
+            },
+            "type": "object"
+        },
+        "SerializedRootNode<SerializedLexicalNode>": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Omit<SerializedLexicalNode,\"format\"|\"children\"|\"direction\"|\"indent\"|\"textFormat\"|\"textStyle\">"
+                },
+                {
+                    "properties": {
+                        "children": {
+                            "items": {
+                                "description": "The base type for all serialized nodes",
+                                "properties": {
+                                    "$": {
+                                        "$ref": "#/definitions/Record<string,unknown>",
+                                        "description": "Any state persisted with the NodeState API that is not\nconfigured for flat storage"
+                                    },
+                                    "type": {
+                                        "description": "The type string used by the Node class",
+                                        "type": "string"
+                                    },
+                                    "version": {
+                                        "description": "A numeric version for this schema, defaulting to 1, but not generally recommended for use",
+                                        "type": "number"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "type": "array"
+                        },
+                        "direction": {
+                            "anyOf": [
+                                {
+                                    "enum": [
+                                        "ltr",
+                                        "rtl"
+                                    ],
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
+                        },
+                        "format": {
+                            "$ref": "#/definitions/ElementFormatType"
+                        },
+                        "indent": {
+                            "type": "number"
+                        },
+                        "textFormat": {
+                            "type": "number"
+                        },
+                        "textStyle": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            ]
+        },
+        "TyXDocumentSettings": {
+            "description": "An object wrapping some common Typst document configuration options.",
+            "properties": {
+                "columns": {
+                    "description": "The amount of columns in the document.",
+                    "type": "number"
+                },
+                "flipped": {
+                    "description": "Whether the document's page is flipped.",
+                    "type": "boolean"
+                },
+                "fontPaths": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "indentation": {
+                    "$ref": "#/definitions/TyXLength",
+                    "description": "Optional indentation for paragraphs in the document."
+                },
+                "justified": {
+                    "description": "Whether the document's text is justified.",
+                    "type": "boolean"
+                },
+                "language": {
+                    "description": "The language of the document.",
+                    "type": "string"
+                },
+                "paper": {
+                    "description": "The paper size of the document.",
+                    "type": "string"
+                },
+                "root": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "TyXLength": {
+            "description": "An object representing Typst `relative` or `fraction` types.",
+            "properties": {
+                "unit": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "description": "An object representing an entire TyX document. Saved in `.tyx` files.",
+    "properties": {
+        "content": {
+            "$ref": "#/definitions/SerializedEditorState<SerializedLexicalNode>",
+            "description": "The serialized content of the editor."
+        },
+        "dirty": {
+            "description": "Whether the document has been modified since loading, unused.",
+            "type": "boolean"
+        },
+        "filename": {
+            "description": "The filename of the document, unused.",
+            "type": "string"
+        },
+        "preamble": {
+            "description": "Raw Typst code to insert before the content.",
+            "type": "string"
+        },
+        "settings": {
+            "$ref": "#/definitions/TyXDocumentSettings",
+            "description": "The document's settings."
+        },
+        "version": {
+            "description": "The version of TyX in which the document was created.",
+            "type": "string"
+        }
+    },
+    "type": "object"
+}
+

@@ -14,7 +14,7 @@ import { TyXDocument, TyXSettings } from "../models"
 import { getSettings } from "../settings"
 import { showFailureMessage } from "../utilities"
 import { getLocalStorage, setLocalStorage } from "../utilities/hooks"
-import { Update } from "./base"
+import { serializeDocument, Update } from "./base"
 
 let version: string
 
@@ -101,7 +101,7 @@ export const onSaveAs = (filename: string) => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
-  save(filename, JSON.stringify(document))
+  save(filename, serializeDocument(document))
 
   if (!document.filename) {
     document.filename = filename
@@ -119,7 +119,7 @@ export const onSave = async () => {
   if (document.filename) {
     document.dirty = false
     setLocalStorage("Open Documents", openDocuments)
-    await save(document.filename, JSON.stringify(document))
+    await save(document.filename, serializeDocument(document))
   } else {
     saveAs()
   }
@@ -184,7 +184,14 @@ export const getSettingsFromFile = async (): Promise<
 export const saveSettingsToFile = async (): Promise<string> => {
   const settings = getSettings()
   return await invoke<string>("setsettings", {
-    settings: JSON.stringify(settings, null, 4),
+    settings: JSON.stringify(
+      {
+        $schema: "https://tyx-editor.com/schemas/tyx-settings.schema.json",
+        ...settings,
+      },
+      null,
+      4,
+    ),
   })
 }
 

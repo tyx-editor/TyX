@@ -11,7 +11,7 @@ import SaveAsModal from "../components/SaveAsModal"
 import { TyXDocument, TyXSettings } from "../models"
 import { showFailureMessage } from "../utilities"
 import { getLocalStorage, setLocalStorage } from "../utilities/hooks"
-import { Update } from "./base"
+import { serializeDocument, Update } from "./base"
 
 let compiler: TypstCompiler
 
@@ -77,7 +77,7 @@ export const onSaveAs = (filename: string) => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
-  save(filename, JSON.stringify(document))
+  save(filename, serializeDocument(document))
 
   if (!document.filename) {
     document.filename = filename
@@ -95,7 +95,7 @@ export const onSave = async () => {
   if (document.filename) {
     document.dirty = false
     setLocalStorage("Open Documents", openDocuments)
-    save(document.filename, JSON.stringify(document))
+    save(document.filename, serializeDocument(document))
   } else {
     saveAs()
   }

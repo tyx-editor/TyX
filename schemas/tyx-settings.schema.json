@@ -1,0 +1,64 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "properties": {
+        "autoStartServer": {
+            "description": "Whether to automatically start a server that updates the PDF when the document changes.",
+            "type": "boolean"
+        },
+        "format": {
+            "description": "Whether to format the output Typst documents.",
+            "type": "boolean"
+        },
+        "keyboardMap": {
+            "description": "The keyboard map for the app.",
+            "type": [
+                "null",
+                "string"
+            ]
+        },
+        "keyboardShortcuts": {
+            "description": "An array of pairs of [shortcut, command] of keyboard shortcuts.",
+            "items": {
+                "items": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": 2,
+                "minItems": 2,
+                "type": "array"
+            },
+            "type": "array"
+        },
+        "language": {
+            "description": "The UI Language for the app.",
+            "type": "string"
+        },
+        "mathInlineShortcuts": {
+            "description": "An array of pairs of [shortcut, command] of LaTeX inline math replacements.",
+            "items": {
+                "items": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    }
+                ],
+                "maxItems": 2,
+                "minItems": 2,
+                "type": "array"
+            },
+            "type": "array"
+        },
+        "serverDebounce": {
+            "description": "The amount in milliseconds to debounce before updating the PDF.",
+            "type": "number"
+        }
+    },
+    "type": "object"
+}
+
