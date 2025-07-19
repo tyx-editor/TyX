@@ -24,7 +24,7 @@ export const initializeBackend = () => {
   listen("new", onNew)
   listen("save", onSave)
   listen("close", onClose)
-  listen("preview", () => onPreview(false))
+  listen("preview", () => onPreview(true))
   listen<[string]>("insertImage", (e) => onInsertImage(...e.payload))
   listen<[string]>("saveas", (e) => onSaveAs(...e.payload))
 

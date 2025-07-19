@@ -179,12 +179,10 @@ const ManagementControls = () => {
   const [openDocuments] = useLocalStorage<TyXDocument[]>({
     key: "Open Documents",
     defaultValue: [],
-    silent: true,
   })
   const [currentDocument] = useLocalStorage<number>({
     key: "Current Document",
     defaultValue: 0,
-    silent: true,
   })
   const debounce = useMemo(
     () => getSettings().serverDebounce ?? DEFAULT_SERVER_DEBOUNCE_MILLISECONDS,

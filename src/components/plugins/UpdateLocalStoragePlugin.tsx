@@ -7,27 +7,19 @@ import {
 } from "lexical"
 import { useEffect } from "react"
 import { TyXDocument } from "../../models"
-import { useLocalStorage } from "../../utilities/hooks"
+import { getLocalStorage, setLocalStorage } from "../../utilities/hooks"
 import { UPDATE_LOCAL_STORAGE_COMMAND } from "./updateLocalStorage"
 
 const UpdateLocalStoragePlugin = () => {
   const [editor] = useLexicalComposerContext()
-  const [openDocuments, setOpenDocuments] = useLocalStorage<TyXDocument[]>({
-    key: "Open Documents",
-    defaultValue: [],
-    silent: true,
-  })
-  const [currentDocument] = useLocalStorage<number>({
-    key: "Current Document",
-    defaultValue: 0,
-    silent: true,
-  })
 
-  const doc = openDocuments[currentDocument]
   const update = (content: SerializedEditorState<SerializedLexicalNode>) => {
+    const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
+    const currentDocument = getLocalStorage<number>("Current Document", 0)
+    const doc = openDocuments[currentDocument]
     doc.content = content
     doc.dirty = true
-    setOpenDocuments(openDocuments)
+    setLocalStorage("Open Documents", openDocuments)
   }
 
   useEffect(() => {
