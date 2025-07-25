@@ -10,6 +10,7 @@ import {
   LexicalUpdateJSON,
   NodeKey,
   SerializedEditor,
+  SerializedEditorState,
   SerializedLexicalNode,
   Spread,
 } from "lexical"
@@ -41,10 +42,10 @@ export type SerializedFunctionCallNode = Spread<
 
 export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
   __name: string
-  __positionParameters?: TyXValue[]
-  __namedParameters?: Record<string, TyXValue>
-  __content?: LexicalEditor
+  __positionParameters: TyXValue[]
+  __namedParameters: Record<string, TyXValue>
   __inline: boolean
+  __editors: Record<number, LexicalEditor>
 
   static getType(): string {
     return "functioncall"
@@ -65,19 +66,58 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
     name: string = "",
     positionParameters?: TyXValue[],
     namedParameters?: Record<string, TyXValue>,
-    content?: LexicalEditor,
     inline?: boolean,
     key?: NodeKey,
   ) {
     super(key)
     this.__name = name
-    this.__positionParameters = positionParameters
-    this.__namedParameters = namedParameters
-    this.__content = content
-    if (FUNCTIONS[name]?.content) {
-      this.__content ??= createEditor()
-    }
+    this.__positionParameters =
+      positionParameters ??
+      FUNCTIONS[name]?.positional?.map((description) => ({
+        type: description.type,
+      })) ??
+      []
+    this.__namedParameters =
+      namedParameters ??
+      Object.fromEntries(
+        (FUNCTIONS[name]?.named ?? []).map((description) => [
+          description.name,
+          { type: description.type },
+        ]),
+      )
     this.__inline = inline ?? true
+    this.__editors = {}
+    this.__updateEditors()
+  }
+
+  __updateEditors() {
+    const positional = FUNCTIONS[this.__name]?.positional ?? []
+    for (let i = 0; i < positional.length; i++) {
+      if (positional[i]?.type === "content") {
+        const parameter: TyXValue | undefined = (this.__positionParameters ??
+          [])[i]
+        if (!this.__editors[i]) {
+          this.__editors[i] = createEditor()
+        }
+        if (parameter?.type === "content" && parameter?.value !== undefined) {
+          const state = this.__editors[i].parseEditorState({
+            root: parameter.value,
+          })
+          if (!state.isEmpty()) {
+            this.__editors[i].setEditorState(state)
+          }
+        }
+      }
+    }
+  }
+
+  setContentParameter(
+    index: number,
+    state: SerializedEditorState<SerializedLexicalNode>,
+  ) {
+    const self = this.getWritable()
+    self.__positionParameters[index] = { type: "content", value: state.root }
+    return self
   }
 
   static clone(node: FunctionCallNode): FunctionCallNode {
@@ -89,7 +129,6 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
       node.__namedParameters
         ? JSON.parse(JSON.stringify(node.__namedParameters))
         : undefined,
-      node.__content,
       node.__inline,
       node.__key,
     )
@@ -117,18 +156,8 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
     if (typeof serializedNode.namedParameters === "object") {
       this.__namedParameters = serializedNode.namedParameters
     }
-    if (serializedNode.name && FUNCTIONS[serializedNode.name]?.content) {
-      this.__content ??= createEditor()
-    }
-    const serializedEditor = serializedNode.content
-    if (serializedEditor && self.__content) {
-      const editorState = self.__content.parseEditorState(
-        serializedEditor.editorState,
-      )
-      if (!editorState.isEmpty()) {
-        self.__content.setEditorState(editorState)
-      }
-    }
+    this.__updateEditors()
+
     return self
   }
 
@@ -139,7 +168,6 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
       inline: this.__inline,
       positionParameters: this.__positionParameters,
       namedParameters: this.__namedParameters,
-      content: this.__content?.toJSON(),
     }
   }
 
@@ -166,13 +194,13 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
   }
 
   isKeyboardSelectable(): boolean {
-    return this.__content !== undefined
+    return Object.keys(this.__editors).length !== 0
   }
 
   decorate(): React.ReactNode {
     return React.createElement(FunctionCallEditor, {
       nodeKey: this.getKey(),
-      content: this.__content,
+      contents: this.__editors,
       name: this.__name,
       positionParameters: this.__positionParameters,
       namedParameters: this.__namedParameters,
@@ -187,13 +215,7 @@ export function $createFunctionCallNode(
   inline: boolean | undefined,
 ): FunctionCallNode {
   return $applyNodeReplacement(
-    new FunctionCallNode(
-      name,
-      positionParameters,
-      namedParameters,
-      undefined,
-      inline,
-    ),
+    new FunctionCallNode(name, positionParameters, namedParameters, inline),
   )
 }
 

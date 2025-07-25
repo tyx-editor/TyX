@@ -1,5 +1,7 @@
+import type { TyXValue } from "./models"
+
 export interface ParameterDescription {
-  type: string
+  type: TyXValue["type"]
   required?: boolean
   label?: string
   documentation?: string
@@ -8,14 +10,12 @@ export interface ParameterDescription {
 export const FUNCTIONS: Record<
   string,
   | {
-      content: boolean
       positional?: ParameterDescription[]
       named?: (ParameterDescription & { name: string })[]
     }
   | undefined
 > = {
   h: {
-    content: false,
     positional: [
       {
         type: "length",
@@ -35,7 +35,6 @@ export const FUNCTIONS: Record<
     ],
   },
   v: {
-    content: false,
     positional: [
       {
         type: "length",
@@ -54,5 +53,5 @@ export const FUNCTIONS: Record<
       },
     ],
   },
-  footnote: { content: true },
+  footnote: { positional: [{ type: "content", required: true }] },
 }

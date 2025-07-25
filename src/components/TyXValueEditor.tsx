@@ -84,7 +84,11 @@ const TyXValueEditor = ({
     )
   }
 
-  throw Error(`Unknown TyX value type ${type}`)
+  if (value?.type === "content") {
+    return null
+  }
+
+  throw Error(`Unknown TyX Value type: ${type}`)
 }
 
 export default TyXValueEditor

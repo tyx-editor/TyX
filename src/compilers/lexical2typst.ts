@@ -64,10 +64,10 @@ export const applyTextFormat = (
   format: number,
 ) => {
   if (format & TEXT_TYPE_TO_FORMAT["bold"]) {
-    result = `*${result}*`
+    result = `#strong[${result}]`
   }
   if (format & TEXT_TYPE_TO_FORMAT["italic"]) {
-    result = `_${result}_`
+    result = `#emph[${result}]`
   }
   if (format & TEXT_TYPE_TO_FORMAT["underline"]) {
     result = `#underline[${result}]`
@@ -108,10 +108,12 @@ export const stringifyFunction = (
   name: string,
   positionParameters: TyXValue[] | undefined,
   namedParameters: Record<string, TyXValue> | undefined,
+  includeContent = true,
 ) => {
   const parameters: string[] = []
   parameters.push(
     ...(positionParameters ?? [])
+      .filter((value) => includeContent || value.type !== "content")
       .map(tyxValue2typst)
       .filter((parameter) => parameter !== undefined),
   )
@@ -132,20 +134,33 @@ export const stringifyFunction = (
   return `${name}(${parameters.join(", ")})`
 }
 
+export const children2typst = (items: SerializedLexicalNode[]): string => {
+  let result = ""
+  const translated = items.map(lexical2typst)
+  for (let i = 0; i < translated.length; i++) {
+    result += translated[i]
+    // Add a paragraph break for any paragraph which isn't the final child.
+    if (items[i].type === "paragraph" && i !== translated.length - 1) {
+      result += "\n\n"
+    }
+  }
+  return result
+}
+
 export const converters: Record<string, (d: SerializedLexicalNode) => string> =
   {
     root: (d) => {
       const root = d as SerializedRootNode<SerializedLexicalNode>
-      let result = root.children.map(lexical2typst).join("")
+      let result = children2typst(root.children)
       result = applyDirection(result, root.direction)
       return result
     },
     paragraph: (d) => {
       const paragraph = d as SerializedParagraphNode
-      let result = paragraph.children.map(lexical2typst).join("")
+      let result = children2typst(paragraph.children)
       result = applyFormat(result, paragraph.format)
       result = applyDirection(result, paragraph.direction)
-      return result + "\n#parbreak()\n"
+      return result
     },
     text: (d) => {
       const text = d as SerializedTextNode
@@ -165,7 +180,7 @@ export const converters: Record<string, (d: SerializedLexicalNode) => string> =
     },
     listitem: (d) => {
       const item = d as SerializedListItemNode
-      return item.children.map(lexical2typst).join("")
+      return children2typst(item.children)
     },
     list: (d) => {
       const list = d as SerializedListNode
@@ -199,7 +214,7 @@ export const converters: Record<string, (d: SerializedLexicalNode) => string> =
     },
     quote: (d) => {
       const quote = d as SerializedQuoteNode
-      let result = `#quote(block: true)[${quote.children.map(lexical2typst).join("")}]`
+      let result = `#quote(block: true)[${children2typst(quote.children)}]`
       result = applyDirection(result, quote.direction) + "\n"
       return result
     },
@@ -220,7 +235,7 @@ export const converters: Record<string, (d: SerializedLexicalNode) => string> =
     },
     tablecell: (d) => {
       const tableCell = d as SerializedTableCellNode
-      let result = tableCell.children.map(lexical2typst).join("")
+      let result = children2typst(tableCell.children)
       result = applyDirection(result, tableCell.direction)
       return `[${result}]`
     },
@@ -237,11 +252,11 @@ export const converters: Record<string, (d: SerializedLexicalNode) => string> =
     },
     link: (d) => {
       const link = d as SerializedLinkNode
-      return `#link(${JSON.stringify(link.url)})[${link.children.map(lexical2typst).join("")}]`
+      return `#link(${JSON.stringify(link.url)})[${children2typst(link.children)}]`
     },
     heading: (d) => {
       const heading = d as SerializedHeadingNode
-      return `#heading(level: ${parseInt(heading.tag[1], 10)})[${heading.children.map(lexical2typst).join("")}]`
+      return `#heading(level: ${parseInt(heading.tag[1], 10)})[${children2typst(heading.children)}]`
     },
     functioncall: (d) => {
       const functioncall = d as SerializedFunctionCallNode

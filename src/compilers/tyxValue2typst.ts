@@ -1,4 +1,5 @@
 import { TyXValue } from "../models"
+import lexical2typst from "./lexical2typst"
 
 const tyxValue2typst = (value: TyXValue): string | undefined => {
   if (value.type === "length") {
@@ -11,6 +12,11 @@ const tyxValue2typst = (value: TyXValue): string | undefined => {
       : value.value
         ? "true"
         : "false"
+  }
+
+  if (value.type === "content") {
+    // Remove leading "#" used for entering code mode.
+    return value.value ? lexical2typst(value.value).substring(1) : undefined
   }
 
   // @ts-ignore

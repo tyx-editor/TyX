@@ -5,22 +5,15 @@ import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary"
 import { LexicalNestedComposer } from "@lexical/react/LexicalNestedComposer"
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin"
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
-import { useLexicalNodeSelection } from "@lexical/react/useLexicalNodeSelection"
-import { mergeRegister } from "@lexical/utils"
 import { Button, TextInput } from "@mantine/core"
 import { modals } from "@mantine/modals"
 import { IconDeviceFloppy, IconFunction } from "@tabler/icons-react"
 import {
   $createNodeSelection,
   $getNodeByKey,
-  $getRoot,
-  $getSelection,
   $insertNodes,
   $setSelection,
   COMMAND_PRIORITY_EDITOR,
-  COMMAND_PRIORITY_HIGH,
-  KEY_DOWN_COMMAND,
-  KEY_ENTER_COMMAND,
   LexicalEditor,
   NodeKey,
 } from "lexical"
@@ -148,7 +141,7 @@ export const FunctionCallEditModal = ({
 
 export const FunctionCallEditor = ({
   name,
-  content,
+  contents,
   positionParameters,
   namedParameters,
   nodeKey,
@@ -156,60 +149,10 @@ export const FunctionCallEditor = ({
   name: string
   positionParameters: TyXValue[] | undefined
   namedParameters: Record<string, TyXValue> | undefined
-  content: LexicalEditor | undefined
+  contents: Record<number, LexicalEditor>
   nodeKey: NodeKey
 }) => {
   const [editor] = useLexicalComposerContext()
-  const [isSelected] = useLexicalNodeSelection(nodeKey)
-
-  useEffect(() => {
-    return mergeRegister(
-      editor.registerCommand(
-        KEY_ENTER_COMMAND,
-        (e) => {
-          const node = $getNodeByKey(nodeKey)
-          const textSelection = content?.read(() => $getSelection())
-          if ($getSelection() === null && textSelection !== null && node) {
-            $setSelection(node.selectEnd())
-            e?.preventDefault()
-            return true
-          }
-          return false
-        },
-        COMMAND_PRIORITY_EDITOR,
-      ),
-      editor.registerCommand(
-        KEY_DOWN_COMMAND,
-        (e) => {
-          const node = $getNodeByKey(nodeKey)
-
-          if (
-            e.key === "Backspace" &&
-            $isFunctionCallNode(node) &&
-            content?.read(() => $getRoot().getTextContentSize()) === 0
-          ) {
-            node.remove()
-            e.preventDefault()
-            return true
-          }
-
-          return false
-        },
-        COMMAND_PRIORITY_HIGH,
-      ),
-    )
-  }, [editor])
-
-  useEffect(() => {
-    if (isSelected) {
-      editor.read(() => {
-        const selection = $getSelection()
-        if (selection?.getNodes().length === 1) {
-          content?.focus()
-        }
-      })
-    }
-  }, [isSelected])
 
   return (
     <>
@@ -217,7 +160,7 @@ export const FunctionCallEditor = ({
         style={{ cursor: "pointer" }}
         onClick={() =>
           modals.open({
-            title: `Edit ${stringifyFunction(name, positionParameters, namedParameters).replace("()", "")}`,
+            title: `Edit ${stringifyFunction(name, positionParameters, namedParameters, false).replace("()", "")}`,
             children: (
               <FunctionCallEditModal
                 editor={editor}
@@ -230,34 +173,60 @@ export const FunctionCallEditor = ({
           })
         }
       >
-        {stringifyFunction(name, positionParameters, namedParameters).replace(
-          "()",
-          "",
-        )}
+        {stringifyFunction(
+          name,
+          positionParameters,
+          namedParameters,
+          false,
+        ).replace("()", "")}
       </span>
-      {content && (
-        <LexicalNestedComposer initialEditor={content}>
-          <RichTextPlugin
-            contentEditable={
-              <ContentEditable placeholder={<></>} aria-placeholder="" />
-            }
-            ErrorBoundary={LexicalErrorBoundary}
-          />
-          <AutoFocusPlugin />
-          <OnChangePlugin
-            ignoreSelectionChange
-            onChange={() =>
-              editor.dispatchCommand(UPDATE_LOCAL_STORAGE_COMMAND, undefined)
-            }
-          />
+      {Object.keys(contents).length !== 0 &&
+        Object.keys(contents)
+          .sort((x, y) => parseInt(x, 10) - parseInt(y, 10))
+          .map((contentIndex) => (
+            <LexicalNestedComposer
+              initialEditor={contents[parseInt(contentIndex, 10)]}
+              key={contentIndex}
+            >
+              <RichTextPlugin
+                contentEditable={
+                  <ContentEditable placeholder={<></>} aria-placeholder="" />
+                }
+                ErrorBoundary={LexicalErrorBoundary}
+              />
+              <AutoFocusPlugin />
+              <OnChangePlugin
+                ignoreSelectionChange
+                onChange={(state) => {
+                  editor.update(
+                    () => {
+                      const node = $getNodeByKey(nodeKey)
+                      if ($isFunctionCallNode(node)) {
+                        node.setContentParameter(
+                          parseInt(contentIndex, 10),
+                          state.toJSON(),
+                        )
+                      }
+                    },
+                    {
+                      onUpdate: () => {
+                        editor.dispatchCommand(
+                          UPDATE_LOCAL_STORAGE_COMMAND,
+                          undefined,
+                        )
+                      },
+                    },
+                  )
+                }}
+              />
 
-          <MathPlugin />
-          <TypstCodePlugin />
-          <ImagePlugin />
-          <CurrentEditorPlugin />
-          <KeyboardMapPlugin />
-        </LexicalNestedComposer>
-      )}
+              <MathPlugin />
+              <TypstCodePlugin />
+              <ImagePlugin />
+              <CurrentEditorPlugin />
+              <KeyboardMapPlugin />
+            </LexicalNestedComposer>
+          ))}
     </>
   )
 }
@@ -271,7 +240,7 @@ const FunctionCallPlugin = () => {
       (payload) => {
         const node =
           typeof payload === "string"
-            ? $createFunctionCallNode(payload, [], {}, true)
+            ? $createFunctionCallNode(payload, undefined, undefined, true)
             : $createFunctionCallNode(...payload)
         $insertNodes([node])
 

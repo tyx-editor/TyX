@@ -2,11 +2,15 @@
  * @file TypeScript models used by TyX.
  */
 
-import { SerializedEditorState, SerializedLexicalNode } from "lexical"
+import {
+  SerializedEditorState,
+  SerializedLexicalNode,
+  SerializedRootNode,
+} from "lexical"
 import { z } from "zod/v4"
 
 /** An object representing any TyX value (which in turn, represents some Typst value) */
-export type TyXValue = TyXLengthValue | TyXBooleanValue
+export type TyXValue = TyXLengthValue | TyXBooleanValue | TyXContentValue
 
 export type TyXLengthValue = TyXLength & { type: "length" }
 
@@ -16,9 +20,16 @@ export interface TyXLength {
   value?: string
 }
 
+/** An object representing Typst `bool` type. */
 export interface TyXBooleanValue {
   type: "boolean"
   value?: boolean
+}
+
+/** An object representing Typst `content` type. */
+export interface TyXContentValue {
+  type: "content"
+  value?: SerializedRootNode<SerializedLexicalNode>
 }
 
 /** Compilation options passed to the Typst compiler. */
