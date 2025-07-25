@@ -1,20 +1,8 @@
-import type { TyXValue } from "./models"
+import { FunctionDefinition } from "./models"
+import { getSettings } from "./settings"
+import { getCurrentDocument } from "./utilities"
 
-export interface ParameterDescription {
-  type: TyXValue["type"]
-  required?: boolean
-  label?: string
-  documentation?: string
-}
-
-export const FUNCTIONS: Record<
-  string,
-  | {
-      positional?: ParameterDescription[]
-      named?: (ParameterDescription & { name: string })[]
-    }
-  | undefined
-> = {
+export const FUNCTIONS: Record<string, FunctionDefinition | undefined> = {
   h: {
     positional: [
       {
@@ -54,4 +42,12 @@ export const FUNCTIONS: Record<
     ],
   },
   footnote: { positional: [{ type: "content", required: true }] },
+}
+
+export const getFunctions = () => {
+  return {
+    ...FUNCTIONS,
+    ...getSettings().functions,
+    ...getCurrentDocument().settings?.functions,
+  }
 }

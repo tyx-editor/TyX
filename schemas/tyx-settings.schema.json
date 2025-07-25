@@ -1,60 +1,137 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "properties": {
-    "autoStartServer": {
-      "description": "Whether to automatically start a server that updates the PDF when the document changes.",
-      "type": "boolean"
-    },
-    "format": {
-      "description": "Whether to format the output Typst documents.",
-      "type": "boolean"
-    },
-    "keyboardMap": {
-      "description": "The keyboard map for the app.",
-      "type": ["null", "string"]
-    },
-    "keyboardShortcuts": {
-      "description": "An array of pairs of [shortcut, command] of keyboard shortcuts.",
-      "items": {
-        "items": [
-          {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+        "language": {
+            "description": "The UI Language for the app.",
             "type": "string"
-          },
-          {
-            "type": "string"
-          }
-        ],
-        "maxItems": 2,
-        "minItems": 2,
-        "type": "array"
-      },
-      "type": "array"
+        },
+        "keyboardShortcuts": {
+            "description": "An array of pairs of [shortcut, command] of keyboard shortcuts.",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "prefixItems": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "keyboardMap": {
+            "description": "The keyboard map for the app.",
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "mathInlineShortcuts": {
+            "description": "An array of pairs of [shortcut, command] of LaTeX inline math replacements.",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "prefixItems": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "format": {
+            "description": "Whether to format the output Typst documents.",
+            "type": "boolean"
+        },
+        "autoStartServer": {
+            "description": "Whether to automatically start a server that updates the PDF when the document changes.",
+            "type": "boolean"
+        },
+        "serverDebounce": {
+            "description": "The amount in milliseconds to debounce before updating the PDF.",
+            "type": "number"
+        },
+        "functions": {
+            "description": "Additional TyX function definitions.",
+            "type": "object",
+            "propertyNames": {
+                "type": "string"
+            },
+            "additionalProperties": {
+                "type": "object",
+                "properties": {
+                    "positional": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "description": "The TyX type of this parameter.",
+                                    "type": "string"
+                                },
+                                "required": {
+                                    "description": "Whether this parameter is required.",
+                                    "type": "boolean"
+                                },
+                                "label": {
+                                    "description": "Optional label (usually name) of this parameter.",
+                                    "type": "string"
+                                },
+                                "documentation": {
+                                    "description": "Optional documentation for this parameter to show on hover.",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "type"
+                            ],
+                            "additionalProperties": false
+                        }
+                    },
+                    "named": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "description": "The TyX type of this parameter.",
+                                    "type": "string"
+                                },
+                                "required": {
+                                    "description": "Whether this parameter is required.",
+                                    "type": "boolean"
+                                },
+                                "label": {
+                                    "description": "Optional label (usually name) of this parameter.",
+                                    "type": "string"
+                                },
+                                "documentation": {
+                                    "description": "Optional documentation for this parameter to show on hover.",
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "type",
+                                "name"
+                            ],
+                            "additionalProperties": false
+                        }
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
     },
-    "language": {
-      "description": "The UI Language for the app.",
-      "type": "string"
-    },
-    "mathInlineShortcuts": {
-      "description": "An array of pairs of [shortcut, command] of LaTeX inline math replacements.",
-      "items": {
-        "items": [
-          {
-            "type": "string"
-          },
-          {
-            "type": "string"
-          }
-        ],
-        "maxItems": 2,
-        "minItems": 2,
-        "type": "array"
-      },
-      "type": "array"
-    },
-    "serverDebounce": {
-      "description": "The amount in milliseconds to debounce before updating the PDF.",
-      "type": "number"
-    }
-  },
-  "type": "object"
+    "additionalProperties": false
 }

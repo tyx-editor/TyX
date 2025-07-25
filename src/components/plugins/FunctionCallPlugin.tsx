@@ -19,7 +19,7 @@ import {
 } from "lexical"
 import { useEffect, useState } from "react"
 import { stringifyFunction } from "../../compilers/lexical2typst"
-import { FUNCTIONS } from "../../functions"
+import { getFunctions } from "../../functions"
 import { TyXValue } from "../../models"
 import TyXValueEditor from "../TyXValueEditor"
 import CurrentEditorPlugin from "./CurrentEditorPlugin"
@@ -77,6 +77,8 @@ export const FunctionCallEditModal = ({
     modals.closeAll()
   }
 
+  const functions = getFunctions()
+
   return (
     <>
       <TextInput
@@ -87,7 +89,7 @@ export const FunctionCallEditModal = ({
         value={name}
         onChange={(e) => setName(e.currentTarget.value)}
       />
-      {FUNCTIONS[name]?.positional?.map(
+      {functions[name]?.positional?.map(
         (parameterDescription, positionIndex) => (
           <TyXValueEditor
             required={parameterDescription.required}
@@ -109,7 +111,7 @@ export const FunctionCallEditModal = ({
           />
         ),
       )}
-      {FUNCTIONS[name]?.named?.map((parameterDescription, positionIndex) => (
+      {functions[name]?.named?.map((parameterDescription, positionIndex) => (
         <TyXValueEditor
           required={parameterDescription.required}
           label={parameterDescription.label ?? parameterDescription.name}

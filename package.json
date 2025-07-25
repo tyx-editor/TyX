@@ -13,7 +13,7 @@
     "build-web": "echo 'export * from \"./web\"' > src/backend/index.ts && bun run build && echo 'export * from \"./tauri\"' > src/backend/index.ts",
     "deploy": "bun run build-web && netlify deploy -d dist --prod --site tyx-editor",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
-    "schema": "typescript-json-schema tsconfig.json TyXSettings > schemas/tyx-settings.schema.json && typescript-json-schema tsconfig.json TyXDocument > schemas/tyx-document.schema.json"
+    "schema": "bun scripts/create-json-schemas.ts"
   },
   "dependencies": {
     "@lexical/react": "^0.33.0",
@@ -54,7 +54,6 @@
     "prettier": "^3.5.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.36.0",
-    "typescript-json-schema": "^0.65.1",
     "vite": "^5.4.19",
     "vite-plugin-static-copy": "^3.0.0"
   },

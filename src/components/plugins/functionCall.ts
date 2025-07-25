@@ -15,7 +15,7 @@ import {
   Spread,
 } from "lexical"
 import React from "react"
-import { FUNCTIONS } from "../../functions"
+import { getFunctions } from "../../functions"
 import { TyXValue } from "../../models"
 import { FunctionCallEditor } from "./FunctionCallPlugin"
 
@@ -69,20 +69,24 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
     inline?: boolean,
     key?: NodeKey,
   ) {
+    const functions = getFunctions()
     super(key)
     this.__name = name
     this.__positionParameters =
       positionParameters ??
-      FUNCTIONS[name]?.positional?.map((description) => ({
-        type: description.type,
-      })) ??
+      functions[name]?.positional?.map(
+        (description) =>
+          ({
+            type: description.type,
+          }) as TyXValue,
+      ) ??
       []
     this.__namedParameters =
       namedParameters ??
       Object.fromEntries(
-        (FUNCTIONS[name]?.named ?? []).map((description) => [
+        (functions[name]?.named ?? []).map((description) => [
           description.name,
-          { type: description.type },
+          { type: description.type } as TyXValue,
         ]),
       )
     this.__inline = inline ?? true
@@ -91,7 +95,8 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
   }
 
   __updateEditors() {
-    const positional = FUNCTIONS[this.__name]?.positional ?? []
+    const functions = getFunctions()
+    const positional = functions[this.__name]?.positional ?? []
     for (let i = 0; i < positional.length; i++) {
       if (positional[i]?.type === "content") {
         const parameter: TyXValue | undefined = (this.__positionParameters ??
