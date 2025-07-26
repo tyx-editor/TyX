@@ -4,6 +4,7 @@ import { getCurrentDocument } from "./utilities"
 
 export const FUNCTIONS: Record<string, FunctionDefinition | undefined> = {
   h: {
+    inline: true,
     positional: [
       {
         type: "length",
@@ -23,6 +24,7 @@ export const FUNCTIONS: Record<string, FunctionDefinition | undefined> = {
     ],
   },
   v: {
+    inline: true,
     positional: [
       {
         type: "length",
@@ -41,7 +43,7 @@ export const FUNCTIONS: Record<string, FunctionDefinition | undefined> = {
       },
     ],
   },
-  footnote: { positional: [{ type: "content", required: true }] },
+  footnote: { inline: true, positional: [{ type: "content", required: true }] },
 }
 
 export const getFunctions = () => {

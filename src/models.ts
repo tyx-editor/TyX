@@ -25,6 +25,7 @@ export type ParameterDescription = z.infer<typeof ParameterDescription>
 export const FunctionDefinition = z.object({
   positional: z.array(ParameterDescription).optional(),
   named: z.array(ParameterDescription.extend({ name: z.string() })).optional(),
+  inline: z.boolean().optional(),
 })
 export type FunctionDefinition = z.infer<typeof FunctionDefinition>
 

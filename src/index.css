@@ -155,11 +155,29 @@ li:has(ul) {
 }
 
 .editor .function-call {
-  display: inline-block;
   border: 1px solid var(--tab-border-color);
   border-radius: 5px;
+}
+
+.editor .function-call.inline {
+  display: inline-block;
+
   padding-right: 5px;
   padding-left: 5px;
+}
+
+.editor .function-call.block {
+  display: flex;
+  flex-direction: column;
+}
+
+.editor .function-call.block > span {
+  text-align: center;
+  border-bottom: 1px solid var(--tab-border-color);
+}
+
+.editor .function-call.block .editor:not(:last-child) {
+  border-bottom: 1px solid var(--tab-border-color);
 }
 
 .editor .function-call > span {
@@ -167,7 +185,11 @@ li:has(ul) {
   font-weight: bold;
 }
 
-.editor .function-call > div {
+.editor .function-call.block > .editor {
+  padding-inline: 5px;
+}
+
+.editor .function-call.inline > .editor {
   display: inline-block;
   padding-inline-start: 5px;
   margin-inline-start: 5px;

@@ -21,12 +21,7 @@ import { FunctionCallEditor } from "./FunctionCallPlugin"
 
 export const INSERT_FUNCTION_CALL_COMMAND: LexicalCommand<
   | string
-  | [
-      string,
-      TyXValue[] | undefined,
-      Record<string, TyXValue> | undefined,
-      boolean | undefined,
-    ]
+  | [string, TyXValue[] | undefined, Record<string, TyXValue> | undefined]
 > = createCommand()
 
 export type SerializedFunctionCallNode = Spread<
@@ -55,10 +50,15 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
     const div = document.createElement("span")
     div.classList.add(config.theme.functionCall)
     div.classList.add(config.theme.functionCall + "-" + this.__name)
+    div.classList.add(this.__inline ? "inline" : "block")
     return div
   }
 
-  updateDOM(): false {
+  updateDOM(prevNode: FunctionCallNode, div: HTMLElement): false {
+    if (this.__inline !== prevNode.__inline) {
+      div.classList.remove(this.__inline ? "block" : "inline")
+      div.classList.add(this.__inline ? "inline" : "block")
+    }
     return false
   }
 
@@ -66,15 +66,15 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
     name: string = "",
     positionParameters?: TyXValue[],
     namedParameters?: Record<string, TyXValue>,
-    inline?: boolean,
     key?: NodeKey,
   ) {
     const functions = getFunctions()
+    const definition = functions[name]
     super(key)
     this.__name = name
     this.__positionParameters =
       positionParameters ??
-      functions[name]?.positional?.map(
+      definition?.positional?.map(
         (description) =>
           ({
             type: description.type,
@@ -84,12 +84,12 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
     this.__namedParameters =
       namedParameters ??
       Object.fromEntries(
-        (functions[name]?.named ?? []).map((description) => [
+        (definition?.named ?? []).map((description) => [
           description.name,
           { type: description.type } as TyXValue,
         ]),
       )
-    this.__inline = inline ?? true
+    this.__inline = definition?.inline ?? false
     this.__editors = {}
     this.__updateEditors()
   }
@@ -134,7 +134,6 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
       node.__namedParameters
         ? JSON.parse(JSON.stringify(node.__namedParameters))
         : undefined,
-      node.__inline,
       node.__key,
     )
   }
@@ -150,10 +149,10 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
   ): this {
     const self = super.updateFromJSON(serializedNode)
     if (typeof serializedNode.name === "string") {
-      this.__name = serializedNode.name
+      self.__name = serializedNode.name
     }
     if (typeof serializedNode.inline === "boolean") {
-      this.__inline = serializedNode.inline
+      self.__inline = serializedNode.inline
     }
     if (Array.isArray(serializedNode.positionParameters)) {
       this.__positionParameters = serializedNode.positionParameters
@@ -217,10 +216,9 @@ export function $createFunctionCallNode(
   name: string,
   positionParameters: TyXValue[] | undefined,
   namedParameters: Record<string, TyXValue> | undefined,
-  inline: boolean | undefined,
 ): FunctionCallNode {
   return $applyNodeReplacement(
-    new FunctionCallNode(name, positionParameters, namedParameters, inline),
+    new FunctionCallNode(name, positionParameters, namedParameters),
   )
 }
 

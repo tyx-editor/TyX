@@ -16,7 +16,11 @@ const tyxValue2typst = (value: TyXValue): string | undefined => {
 
   if (value.type === "content") {
     // Remove leading "#" used for entering code mode.
-    return value.value ? lexical2typst(value.value).substring(1) : undefined
+    const result = value.value
+      ? lexical2typst(value.value).substring(1)
+      : undefined
+    // Don't return empty string returned by lexical2typst
+    return result ? result : undefined
   }
 
   // @ts-ignore

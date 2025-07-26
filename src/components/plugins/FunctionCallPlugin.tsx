@@ -242,7 +242,7 @@ const FunctionCallPlugin = () => {
       (payload) => {
         const node =
           typeof payload === "string"
-            ? $createFunctionCallNode(payload, undefined, undefined, true)
+            ? $createFunctionCallNode(payload, undefined, undefined)
             : $createFunctionCallNode(...payload)
         $insertNodes([node])
 
