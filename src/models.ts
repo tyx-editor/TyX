@@ -23,9 +23,18 @@ export const ParameterDescription = z.object({
 export type ParameterDescription = z.infer<typeof ParameterDescription>
 
 export const FunctionDefinition = z.object({
-  positional: z.array(ParameterDescription).optional(),
-  named: z.array(ParameterDescription.extend({ name: z.string() })).optional(),
-  inline: z.boolean().optional(),
+  positional: z
+    .array(ParameterDescription)
+    .optional()
+    .describe("Positional arguments to the function."),
+  named: z
+    .array(ParameterDescription.extend({ name: z.string() }))
+    .optional()
+    .describe("Named arguments to the function."),
+  inline: z
+    .boolean()
+    .optional()
+    .describe("Whether TyX should display the function as inline."),
 })
 export type FunctionDefinition = z.infer<typeof FunctionDefinition>
 
@@ -36,8 +45,13 @@ export type TyXLengthValue = TyXLength & { type: "length" }
 
 /** An object representing Typst `relative` or `fraction` types. */
 export const TyXLength = z.object({
-  unit: z.string().optional(),
-  value: z.string().optional(),
+  unit: z
+    .string()
+    .optional()
+    .describe(
+      "The TyX length unit, one of 'pt', 'mm', 'cm', 'in', 'em', 'fr', '%'.",
+    ),
+  value: z.string().optional().describe("The length numeric value."),
 })
 export type TyXLength = z.infer<typeof TyXLength>
 
@@ -56,8 +70,14 @@ export interface TyXContentValue {
 
 /** Compilation options passed to the Typst compiler. */
 export const TyXCompilationOptions = z.object({
-  root: z.string().optional(),
-  fontPaths: z.array(z.string()).optional(),
+  root: z
+    .string()
+    .optional()
+    .describe("The root directory for the Typst compiler."),
+  fontPaths: z
+    .array(z.string())
+    .optional()
+    .describe("Additional font paths for the Typst compiler."),
 })
 export type TyXCompilationOptions = z.infer<typeof TyXCompilationOptions>
 

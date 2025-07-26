@@ -13,7 +13,7 @@
     "build-web": "echo 'export * from \"./web\"' > src/backend/index.ts && bun run build && echo 'export * from \"./tauri\"' > src/backend/index.ts",
     "deploy": "bun run build-web && netlify deploy -d dist --prod --site tyx-editor",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
-    "schema": "bun scripts/create-json-schemas.ts"
+    "schema": "bun scripts/create-json-schemas.ts && prettier -w schemas"
   },
   "dependencies": {
     "@lexical/react": "^0.33.0",
