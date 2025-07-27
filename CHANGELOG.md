@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.4] - 2025-07-27
+
+### Added
+
+- The JSON schemas are now more accurate and verified when opening a document.
+- Function definitions now also include whether the function is inline or not.
+- App settings and document settings can now be customized (outside TyX) to include more function definitions.
+- Function calls now support multiple content parameters.
+
+### Fixed
+
+- Preview now opens the generated PDF.
+- Document filename is now always persisted after saving.
+
 ## [0.2.3] - 2025-07-18
 
 ### Added
