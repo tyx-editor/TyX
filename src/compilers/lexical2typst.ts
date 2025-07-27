@@ -2,28 +2,9 @@
  * @file A compiler from TyX's Lexical content to Typst.
  */
 
-import { SerializedCodeNode } from "@lexical/code"
-import { SerializedLinkNode } from "@lexical/link"
-import { SerializedListItemNode, SerializedListNode } from "@lexical/list"
-import { SerializedHeadingNode, SerializedQuoteNode } from "@lexical/rich-text"
-import {
-  SerializedTableCellNode,
-  SerializedTableNode,
-  SerializedTableRowNode,
-} from "@lexical/table"
-import {
-  ElementFormatType,
-  SerializedLexicalNode,
-  SerializedParagraphNode,
-  SerializedRootNode,
-  SerializedTextNode,
-  TEXT_TYPE_TO_FORMAT,
-} from "lexical"
-import { SerializedFunctionCallNode } from "../components/plugins/functionCall"
-import { SerializedImageNode } from "../components/plugins/image"
-import { SerializedMathNode } from "../components/plugins/math"
-import { SerializedTypstCodeNode } from "../components/plugins/typstCode"
-import { TyXValue } from "../models"
+import { SerializedListItemNode } from "@lexical/list"
+import { ElementFormatType, TEXT_TYPE_TO_FORMAT } from "lexical"
+import { TyXNode, TyXValue } from "../models"
 import tyxValue2typst from "./tyxValue2typst"
 
 export const convertCSSColor = (color: string) => {
@@ -32,7 +13,7 @@ export const convertCSSColor = (color: string) => {
   return context.fillStyle
 }
 
-export const lexical2text = (node: SerializedLexicalNode) => {
+export const lexical2text = (node: TyXNode) => {
   const some = node as any
   if (typeof some?.text === "string") {
     return some.text
@@ -134,7 +115,7 @@ export const stringifyFunction = (
   return `${name}(${parameters.join(", ")})`
 }
 
-export const children2typst = (items: SerializedLexicalNode[]): string => {
+export const children2typst = (items: TyXNode[]): string => {
   let result = ""
   const translated = items.map(lexical2typst)
   for (let i = 0; i < translated.length; i++) {
@@ -147,128 +128,107 @@ export const children2typst = (items: SerializedLexicalNode[]): string => {
   return result
 }
 
-export const converters: Record<string, (d: SerializedLexicalNode) => string> =
-  {
-    root: (d) => {
-      const root = d as SerializedRootNode<SerializedLexicalNode>
-      let result = children2typst(root.children)
-      result = applyDirection(result, root.direction)
-      return result
-    },
-    paragraph: (d) => {
-      const paragraph = d as SerializedParagraphNode
-      let result = children2typst(paragraph.children)
-      result = applyFormat(result, paragraph.format)
-      result = applyDirection(result, paragraph.direction)
-      return result
-    },
-    text: (d) => {
-      const text = d as SerializedTextNode
-      let result = typstEscape(text.text)
-      result = applyTextFormat(result, text.text, text.format)
-      return result
-    },
-    math: (d) => {
-      const math = d as SerializedMathNode
-      let result = math.typst?.trim() ?? ""
-      if (math.inline) {
-        result = `$${result}$`
+export const converters: {
+  [K in TyXNode["type"]]: (d: TyXNode & { type: K }) => string
+} = {
+  root: (root) => {
+    let result = children2typst(root.children)
+    result = applyDirection(result, root.direction)
+    return result
+  },
+  paragraph: (paragraph) => {
+    let result = children2typst(paragraph.children)
+    result = applyFormat(result, paragraph.format)
+    result = applyDirection(result, paragraph.direction)
+    return result
+  },
+  text: (text) => {
+    let result = typstEscape(text.text)
+    result = applyTextFormat(result, text.text, text.format)
+    return result
+  },
+  math: (math) => {
+    let result = math.typst?.trim() ?? ""
+    if (math.inline) {
+      result = `$${result}$`
+    } else {
+      result = `$ ${result} $`
+    }
+    return result
+  },
+  listitem: (item) => {
+    return children2typst(item.children)
+  },
+  list: (list) => {
+    let result = ""
+
+    if (list.listType === "bullet") {
+      result = "\n#list("
+    } else if (list.listType === "number") {
+      result = `\n#enum(start: ${list.start},`
+    }
+
+    for (let i = 0; i < list.children.length - 1; i++) {
+      result += `[${lexical2typst(list.children[i])}]`
+      if (
+        list.children[i + 1].type === "listitem" &&
+        (list.children[i + 1] as SerializedListItemNode).children[0]?.type ===
+          "list"
+      ) {
+        result += " + "
       } else {
-        result = `$ ${result} $`
+        result += ", "
       }
-      return result
-    },
-    listitem: (d) => {
-      const item = d as SerializedListItemNode
-      return children2typst(item.children)
-    },
-    list: (d) => {
-      const list = d as SerializedListNode
-      let result = ""
+    }
+    if (list.children.length > 0) {
+      result += `[${lexical2typst(list.children[list.children.length - 1])}]`
+    }
+    result += ")\n"
 
-      if (list.listType === "bullet") {
-        result = "\n#list("
-      } else if (list.listType === "number") {
-        result = `\n#enum(start: ${list.start},`
-      }
-
-      for (let i = 0; i < list.children.length - 1; i++) {
-        result += `[${lexical2typst(list.children[i])}]`
-        if (
-          list.children[i + 1].type === "listitem" &&
-          (list.children[i + 1] as SerializedListItemNode).children[0]?.type ===
-            "list"
-        ) {
-          result += " + "
-        } else {
-          result += ", "
-        }
-      }
-      if (list.children.length > 0) {
-        result += `[${lexical2typst(list.children[list.children.length - 1])}]`
-      }
-      result += ")\n"
-
-      result = applyDirection(result, list.direction)
-      return result
-    },
-    quote: (d) => {
-      const quote = d as SerializedQuoteNode
-      let result = `#quote(block: true)[${children2typst(quote.children)}]`
-      result = applyDirection(result, quote.direction) + "\n"
-      return result
-    },
-    code: (d) => {
-      const code = d as SerializedCodeNode
-      return `#text(dir: ltr)[#raw(block: true, lang: ${JSON.stringify(code.language ?? "none")}, ${JSON.stringify(lexical2text(code))})]`
-    },
-    table: (d) => {
-      const table = d as SerializedTableNode
-      const columns = new Array(table.children.length).fill("1fr").join(", ")
-      let result = `#table(columns: (${columns}), ${table.children.map(lexical2typst).join(", ")})`
-      result = applyDirection(result, table.direction)
-      return result
-    },
-    tablerow: (d) => {
-      const tableRow = d as SerializedTableRowNode
-      return tableRow.children.map(lexical2typst).join(", ")
-    },
-    tablecell: (d) => {
-      const tableCell = d as SerializedTableCellNode
-      let result = children2typst(tableCell.children)
-      result = applyDirection(result, tableCell.direction)
-      return `[${result}]`
-    },
-    linebreak: () => "\\ \n",
-    horizontalrule: () => "#line(length: 100%)\n",
-    typstcode: (d) => {
-      const typstCode = d as SerializedTypstCodeNode
-      const root = typstCode.text?.editorState.root
-      return root ? lexical2text(root) : ""
-    },
-    image: (d) => {
-      const image = d as SerializedImageNode
-      return `#image(${JSON.stringify(image.src)})`
-    },
-    link: (d) => {
-      const link = d as SerializedLinkNode
-      return `#link(${JSON.stringify(link.url)})[${children2typst(link.children)}]`
-    },
-    heading: (d) => {
-      const heading = d as SerializedHeadingNode
-      return `#heading(level: ${parseInt(heading.tag[1], 10)})[${children2typst(heading.children)}]`
-    },
-    functioncall: (d) => {
-      const functioncall = d as SerializedFunctionCallNode
-
-      let result = `#${stringifyFunction(functioncall.name!, functioncall.positionParameters, functioncall.namedParameters)}`
-      if (functioncall.content) {
-        result += `[${lexical2typst(functioncall.content.editorState.root)}]`
-      }
-
-      return result
-    },
-  }
+    result = applyDirection(result, list.direction)
+    return result
+  },
+  quote: (quote) => {
+    let result = `#quote(block: true)[${children2typst(quote.children)}]`
+    result = applyDirection(result, quote.direction) + "\n"
+    return result
+  },
+  code: (code) => {
+    return `#text(dir: ltr)[#raw(block: true, lang: ${JSON.stringify(code.language ?? "none")}, ${JSON.stringify(lexical2text(code))})]`
+  },
+  table: (table) => {
+    const columns = new Array(table.children.length).fill("1fr").join(", ")
+    let result = `#table(columns: (${columns}), ${table.children.map(lexical2typst).join(", ")})`
+    result = applyDirection(result, table.direction)
+    return result
+  },
+  tablerow: (tableRow) => {
+    return tableRow.children.map(lexical2typst).join(", ")
+  },
+  tablecell: (tableCell) => {
+    let result = children2typst(tableCell.children)
+    result = applyDirection(result, tableCell.direction)
+    return `[${result}]`
+  },
+  linebreak: () => "\\ \n",
+  horizontalrule: () => "#line(length: 100%)\n",
+  typstcode: (typstCode) => {
+    const root = typstCode.text?.editorState.root
+    return root ? lexical2text(root) : ""
+  },
+  image: (image) => {
+    return `#image(${JSON.stringify(image.src)})`
+  },
+  link: (link) => {
+    return `#link(${JSON.stringify(link.url)})[${children2typst(link.children)}]`
+  },
+  heading: (heading) => {
+    return `#heading(level: ${parseInt(heading.tag[1], 10)})[${children2typst(heading.children)}]`
+  },
+  functioncall: (functioncall) => {
+    return `#${stringifyFunction(functioncall.name!, functioncall.positionParameters, functioncall.namedParameters)}`
+  },
+}
 
 export const typstEscape = (text: string) => {
   return text.replace(
@@ -277,12 +237,12 @@ export const typstEscape = (text: string) => {
   )
 }
 
-const lexical2typst = (d: SerializedLexicalNode): string => {
+const lexical2typst = (d: TyXNode): string => {
   if (!d.type) {
     throw Error("Invalid Lexical document, element does not contain type!")
   }
 
-  const converter = converters[d.type]
+  const converter = converters[d.type] as (d: TyXNode) => string
   if (!converter) {
     throw Error(`Unsupported Lexical type '${d.type}'`)
   }

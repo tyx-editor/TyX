@@ -1,5 +1,7 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "App-wide customization for TyX.",
+  "id": "TyXSettings",
   "type": "object",
   "properties": {
     "language": {
@@ -11,7 +13,7 @@
       "type": "array",
       "items": {
         "type": "array",
-        "prefixItems": [
+        "items": [
           {
             "type": "string"
           },
@@ -37,7 +39,7 @@
       "type": "array",
       "items": {
         "type": "array",
-        "prefixItems": [
+        "items": [
           {
             "type": "string"
           },
@@ -66,73 +68,85 @@
         "type": "string"
       },
       "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "positional": {
-            "description": "Positional arguments to the function.",
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "description": "The TyX type of this parameter.",
-                  "type": "string"
-                },
-                "required": {
-                  "description": "Whether this parameter is required.",
-                  "type": "boolean"
-                },
-                "label": {
-                  "description": "Optional label (usually name) of this parameter.",
-                  "type": "string"
-                },
-                "documentation": {
-                  "description": "Optional documentation for this parameter to show on hover.",
-                  "type": "string"
-                }
-              },
-              "required": ["type"],
-              "additionalProperties": false
-            }
-          },
-          "named": {
-            "description": "Named arguments to the function.",
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "description": "The TyX type of this parameter.",
-                  "type": "string"
-                },
-                "required": {
-                  "description": "Whether this parameter is required.",
-                  "type": "boolean"
-                },
-                "label": {
-                  "description": "Optional label (usually name) of this parameter.",
-                  "type": "string"
-                },
-                "documentation": {
-                  "description": "Optional documentation for this parameter to show on hover.",
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                }
-              },
-              "required": ["type", "name"],
-              "additionalProperties": false
-            }
-          },
-          "inline": {
-            "description": "Whether TyX should display the function as inline.",
-            "type": "boolean"
-          }
-        },
-        "additionalProperties": false
+        "$ref": "#/definitions/FunctionDefinition"
       }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "definitions": {
+    "FunctionDefinition": {
+      "description": "TyX specification for a Typst function.",
+      "id": "FunctionDefinition",
+      "type": "object",
+      "properties": {
+        "positional": {
+          "description": "Positional arguments to the function.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ParameterDescription"
+          }
+        },
+        "named": {
+          "description": "Named arguments to the function.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "description": "The TyX type of this parameter.",
+                "type": "string"
+              },
+              "required": {
+                "description": "Whether this parameter is required.",
+                "type": "boolean"
+              },
+              "label": {
+                "description": "Optional label (usually name) of this parameter.",
+                "type": "string"
+              },
+              "documentation": {
+                "description": "Optional documentation for this parameter to show on hover.",
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": ["type", "name"],
+            "additionalProperties": false
+          }
+        },
+        "inline": {
+          "description": "Whether TyX should display the function as inline.",
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ParameterDescription": {
+      "description": "TyX specification for a function parameter.",
+      "id": "ParameterDescription",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The TyX type of this parameter.",
+          "type": "string"
+        },
+        "required": {
+          "description": "Whether this parameter is required.",
+          "type": "boolean"
+        },
+        "label": {
+          "description": "Optional label (usually name) of this parameter.",
+          "type": "string"
+        },
+        "documentation": {
+          "description": "Optional documentation for this parameter to show on hover.",
+          "type": "string"
+        }
+      },
+      "required": ["type"],
+      "additionalProperties": false
+    }
+  }
 }

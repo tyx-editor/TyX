@@ -9,14 +9,13 @@ import {
   LexicalNode,
   LexicalUpdateJSON,
   NodeKey,
-  SerializedEditor,
   SerializedEditorState,
   SerializedLexicalNode,
   Spread,
 } from "lexical"
 import React from "react"
 import { getFunctions } from "../../functions"
-import { TyXValue } from "../../models"
+import { TyXRootNode, TyXValue } from "../../models"
 import { FunctionCallEditor } from "./FunctionCallPlugin"
 
 export const INSERT_FUNCTION_CALL_COMMAND: LexicalCommand<
@@ -30,7 +29,6 @@ export type SerializedFunctionCallNode = Spread<
     inline?: boolean
     positionParameters?: TyXValue[]
     namedParameters?: Record<string, TyXValue>
-    content?: SerializedEditor
   },
   SerializedLexicalNode
 >
@@ -107,7 +105,7 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
         if (parameter?.type === "content" && parameter?.value !== undefined) {
           const state = this.__editors[i].parseEditorState({
             root: parameter.value,
-          })
+          } as SerializedEditorState)
           if (!state.isEmpty()) {
             this.__editors[i].setEditorState(state)
           }
@@ -121,7 +119,10 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
     state: SerializedEditorState<SerializedLexicalNode>,
   ) {
     const self = this.getWritable()
-    self.__positionParameters[index] = { type: "content", value: state.root }
+    self.__positionParameters[index] = {
+      type: "content",
+      value: state.root as TyXRootNode,
+    }
     return self
   }
 

@@ -6,7 +6,7 @@ import {
   SerializedLexicalNode,
 } from "lexical"
 import { useEffect } from "react"
-import { TyXDocument } from "../../models"
+import { TyXDocument, TyXRootNode } from "../../models"
 import { getLocalStorage, setLocalStorage } from "../../utilities/hooks"
 import { UPDATE_LOCAL_STORAGE_COMMAND } from "./updateLocalStorage"
 
@@ -17,7 +17,7 @@ const UpdateLocalStoragePlugin = () => {
     const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
     const currentDocument = getLocalStorage<number>("Current Document", 0)
     const doc = openDocuments[currentDocument]
-    doc.content = content
+    doc.content = content as { root: TyXRootNode }
     doc.dirty = true
     setLocalStorage("Open Documents", openDocuments)
   }

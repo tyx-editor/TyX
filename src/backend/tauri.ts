@@ -8,6 +8,7 @@ import { invoke } from "@tauri-apps/api/core"
 import { listen } from "@tauri-apps/api/event"
 import { relaunch } from "@tauri-apps/plugin-process"
 import { check } from "@tauri-apps/plugin-updater"
+import { z } from "zod/v4"
 import { executeCommand } from "../commands"
 import tyx2typst from "../compilers/tyx2typst"
 import { TyXDocument, TyXSettings } from "../models"
@@ -130,8 +131,14 @@ export const onOpen = (filename?: string | undefined, content?: string) => {
     open()
     return
   }
-  const parsedContent = JSON.parse(content)
-  if (parsedContent?.version?.startsWith("0.1")) {
+  const document = z.safeParse(TyXDocument, JSON.parse(content))
+  if (document.error) {
+    showFailureMessage(`Failed to open document: ${document.error.message}`)
+    return
+  }
+
+  const parsedContent = document.data
+  if (parsedContent.version?.startsWith("0.1")) {
     showFailureMessage(
       `This TyX file is not compatible with this version of TyX!`,
     )
