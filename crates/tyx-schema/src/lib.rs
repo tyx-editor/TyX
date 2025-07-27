@@ -1,6 +1,8 @@
 //! The schema for TyX
 
+pub use document::*;
 use ecow::EcoString;
+mod document;
 use serde::{Deserialize, Serialize};
 
 /// Masks for text format.

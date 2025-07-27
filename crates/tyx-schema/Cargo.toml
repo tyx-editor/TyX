@@ -16,6 +16,8 @@ typst.workspace = true
 [build-dependencies]
 serde.workspace = true
 serde_json.workspace = true
+schemafy_lib = "0.6.0"
+rustfmt-wrapper = "0.2.1"
 
 [lints]
 workspace = true
