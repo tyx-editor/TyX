@@ -49,6 +49,8 @@ export const onNew = () => {
   onOpen(undefined, JSON.stringify(newDocument))
 }
 
+export const newFromTemplate = () => invoke("newfromtemplate")
+
 export const onClose = () => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
@@ -126,7 +128,11 @@ export const onSave = async () => {
   }
 }
 
-export const onOpen = (filename?: string | undefined, content?: string) => {
+export const onOpen = (
+  filename?: string | undefined,
+  content?: string,
+  includeFilename?: boolean,
+) => {
   if (!content) {
     open()
     return
@@ -149,6 +155,9 @@ export const onOpen = (filename?: string | undefined, content?: string) => {
   if (filename && !filename.endsWith(".tyx")) {
     const lastDot = filename?.lastIndexOf(".")
     filename = filename.slice(0, lastDot) + " (Imported).tyx"
+  }
+  if (!includeFilename) {
+    filename = undefined
   }
   openDocuments.push({ ...parsedContent, filename })
   setLocalStorage("Open Documents", openDocuments)

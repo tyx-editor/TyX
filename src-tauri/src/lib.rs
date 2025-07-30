@@ -54,7 +54,7 @@ fn saveas(handle: tauri::AppHandle) {
         });
 }
 
-fn openfile(handle: &tauri::AppHandle, path: &Path) {
+fn openfile(handle: &tauri::AppHandle, path: &Path, include_filename: bool) {
     let buffer = if path.extension().is_some_and(|ext| ext == "typ") {
         let Some(dir) = path.parent() else {
             eprintln!("failed to get the base directory of the file to open");
@@ -91,7 +91,7 @@ fn openfile(handle: &tauri::AppHandle, path: &Path) {
     };
 
     handle
-        .emit("open", (path.to_str().unwrap(), buffer))
+        .emit("open", (path.to_str().unwrap(), buffer, include_filename))
         .unwrap();
 }
 
@@ -99,7 +99,7 @@ fn openfile(handle: &tauri::AppHandle, path: &Path) {
 fn open(handle: tauri::AppHandle, filename: &str) {
     if !filename.is_empty() {
         let path = Path::new(filename);
-        openfile(&handle, path);
+        openfile(&handle, path, true);
         return;
     }
 
@@ -111,7 +111,29 @@ fn open(handle: tauri::AppHandle, filename: &str) {
         .pick_file(move |f| {
             if let Some(f) = f {
                 if let Some(path) = f.as_path() {
-                    openfile(&h, path);
+                    openfile(&h, path, true);
+                }
+            }
+        });
+}
+
+#[tauri::command]
+fn newfromtemplate(handle: tauri::AppHandle) {
+    let h = handle.clone();
+    let settings_path = handle.path().app_data_dir().unwrap().join("templates");
+    if !settings_path.is_dir() {
+        create_dir_all(&settings_path).unwrap();
+    }
+
+    handle
+        .dialog()
+        .file()
+        .add_filter("tyx", &["tyx"])
+        .set_directory(settings_path)
+        .pick_file(move |f| {
+            if let Some(f) = f {
+                if let Some(path) = f.as_path() {
+                    openfile(&h, path, false);
                 }
             }
         });
@@ -346,7 +368,8 @@ pub fn run() {
             insertimage,
             readimage,
             getsettings,
-            setsettings
+            setsettings,
+            newfromtemplate,
         ])
         .on_menu_event(|handle, event| handle.emit(event.id().0.as_str(), ()).unwrap())
         .setup(
@@ -394,7 +417,7 @@ pub fn run() {
                         .collect::<Vec<_>>();
 
                     for file in files {
-                        openfile(app, file.as_path());
+                        openfile(app, file.as_path(), true);
                     }
                 }
             },

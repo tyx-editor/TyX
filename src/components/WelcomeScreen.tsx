@@ -6,13 +6,14 @@ import { ActionIcon, Anchor, Button, Text } from "@mantine/core"
 import { modals } from "@mantine/modals"
 import {
   IconBrandGithub,
+  IconFileTextSpark,
   IconFolderOpen,
   IconPlus,
   IconSettings,
 } from "@tabler/icons-react"
 import { t } from "i18next"
 import { useEffect, useState } from "react"
-import { getVersion, isWeb, onNew, open } from "../backend"
+import { getVersion, isWeb, newFromTemplate, onNew, open } from "../backend"
 import SettingsModal from "./SettingsModal"
 import UpdateChecker from "./UpdateChecker"
 
@@ -50,6 +51,12 @@ const WelcomeScreen = () => {
       <Button.Group my="xs" orientation="vertical">
         <Button leftSection={<IconPlus />} onClick={onNew}>
           {t("newEmptyDocument")}
+        </Button>
+        <Button
+          leftSection={<IconFileTextSpark />}
+          onClick={() => newFromTemplate()}
+        >
+          {t("newFromTemplate")}
         </Button>
         <Button leftSection={<IconFolderOpen />} onClick={() => open()}>
           {t("openDocument")}

@@ -4,8 +4,17 @@ import { useEffect, useState } from "react"
 import { checkForUpdates, relaunch } from "../backend"
 import { Update } from "../backend/base"
 
+declare global {
+  interface Window {
+    checkedForUpdate?: boolean
+    currentUpdate?: Update | null
+  }
+}
+
 const UpdateChecker = () => {
-  const [update, setUpdate] = useState<Update | null>()
+  const [update, setUpdate] = useState<Update | null | undefined>(
+    window.currentUpdate,
+  )
   const [loading, setLoading] = useState(false)
   const [contentLength, setContentLength] = useState<number>()
   const [progress, setProgress] = useState(0)
@@ -16,6 +25,7 @@ const UpdateChecker = () => {
     const update = await checkForUpdates()
     setUpdate(update)
     setLoading(false)
+    window.checkedForUpdate = true
   }
 
   const startUpdate = async () => {
@@ -30,8 +40,14 @@ const UpdateChecker = () => {
   }
 
   useEffect(() => {
-    check()
+    if (!window.checkedForUpdate) {
+      check()
+    }
   }, [])
+
+  useEffect(() => {
+    window.currentUpdate = update
+  }, [update])
 
   if (!update) {
     return (

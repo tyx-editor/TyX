@@ -33,6 +33,10 @@ export const onNew = () => {
   onOpen(undefined, JSON.stringify(newDocument))
 }
 
+export const newFromTemplate = () => {
+  // TODO
+}
+
 export const onClose = () => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
