@@ -295,10 +295,9 @@ fn handle_file_associations(app: AppHandle, files: Vec<PathBuf>) {
         .collect::<Vec<_>>()
         .join(",");
 
-    tauri::WebviewWindowBuilder::new(&app, "main", Default::default())
+    let _ = tauri::WebviewWindowBuilder::new(&app, "main", Default::default())
         .initialization_script(format!("window.openedFiles = [{files}]"))
-        .build()
-        .unwrap();
+        .build();
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
