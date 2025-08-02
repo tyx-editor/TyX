@@ -206,7 +206,14 @@ fn preview(
     }
     let universe = CompileOnceArgs {
         root: Some(root_path.canonicalize().unwrap()),
-        input: Some(filename.into()),
+        input: Some(
+            PathBuf::from(filename)
+                .canonicalize()
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .into(),
+        ),
         font: CompileFontArgs {
             font_paths: font_paths
                 .iter()
