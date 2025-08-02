@@ -8,7 +8,7 @@ import "mousetrap-global-bind"
 // @ts-ignore
 import record from "mousetrap-record"
 
-import { executeCommand, parseCommandSequence } from "./commands"
+import { executeCommandSequence } from "./commands"
 import { getSettings } from "./settings"
 
 declare global {
@@ -57,9 +57,7 @@ export const applyKeyboardShortcutsFromSettings = () => {
     Mousetrap.bindGlobal(shortcut[0], (e) => {
       e.preventDefault()
 
-      for (const command of parseCommandSequence(shortcut[1])) {
-        executeCommand(command)
-      }
+      executeCommandSequence(shortcut[1])
     })
   }
 }

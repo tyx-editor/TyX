@@ -85,7 +85,7 @@ import React, {
   useState,
 } from "react"
 import { insertImage, isWeb, onPreview, onSave, save } from "../../backend"
-import { executeCommand, parseCommandSequence } from "../../commands"
+import { executeCommandSequence } from "../../commands"
 import tyx2typst from "../../compilers/tyx2typst"
 import { DEFAULT_SERVER_DEBOUNCE_MILLISECONDS, TyXDocument } from "../../models"
 import {
@@ -137,7 +137,7 @@ const ToolbarControl = React.forwardRef<
     ref,
   ) => {
     if (command) {
-      onClick ??= () => parseCommandSequence(command).forEach(executeCommand)
+      onClick ??= () => executeCommandSequence(command)
     }
 
     return (
@@ -535,7 +535,7 @@ const LinkControls = () => {
     window.currentEditor?.update(() => {
       $setSelection(selection?.clone() ?? null)
     })
-    executeCommand(["toggleLink", ref.current!.value])
+    executeCommandSequence(`toggleLink ${ref.current!.value}`)
     setOpened(false)
   }
 

@@ -9,7 +9,7 @@ import { listen } from "@tauri-apps/api/event"
 import { relaunch } from "@tauri-apps/plugin-process"
 import { check } from "@tauri-apps/plugin-updater"
 import { z } from "zod/v4"
-import { executeCommand } from "../commands"
+import { executeCommandSequence } from "../commands"
 import tyx2typst from "../compilers/tyx2typst"
 import { TyXDocument, TyXSettings } from "../models"
 import { getSettings } from "../settings"
@@ -181,7 +181,7 @@ export const insertImage = () => {
 }
 
 export const onInsertImage = (path: string) => {
-  executeCommand(["insertImage", path])
+  executeCommandSequence(`insertImage ${path}`)
 }
 
 export const readImage = async (filename: string, image: string) => {

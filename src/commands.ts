@@ -141,10 +141,14 @@ export const parseCommandSequence = (command: string) => {
     )
 }
 
+/** Executes the given command sequence. */
+export const executeCommandSequence = (command: string) => {
+  setLocalStorage("Current Command", command)
+  parseCommandSequence(command).forEach(executeCommand)
+}
+
 /** Executes the given command. */
 export const executeCommand = (command: TyXCommand) => {
-  setLocalStorage("Current Command", command.join(" "))
-
   if (window.currentEditor) {
     const lexicalCommand = COMMANDS[command[0]]
 

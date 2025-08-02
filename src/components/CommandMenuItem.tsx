@@ -1,6 +1,6 @@
 import { Menu, Tooltip } from "@mantine/core"
 import React from "react"
-import { executeCommand, parseCommandSequence } from "../commands"
+import { executeCommandSequence } from "../commands"
 
 const CommandMenuItem = ({
   command,
@@ -13,7 +13,7 @@ const CommandMenuItem = ({
     <Tooltip label={command} openDelay={1000}>
       <Menu.Item
         display="inline"
-        onClick={() => parseCommandSequence(command).forEach(executeCommand)}
+        onClick={() => executeCommandSequence(command)}
       >
         {children}
       </Menu.Item>
