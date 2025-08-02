@@ -205,7 +205,7 @@ fn preview(
         root_path.push(PathBuf::from(root));
     }
     let universe = CompileOnceArgs {
-        root: Some(root_path.canonicalize().unwrap()),
+        root: Some(dunce::canonicalize(&root_path).unwrap()),
         input: Some(filename.into()),
         font: CompileFontArgs {
             font_paths: font_paths
@@ -213,7 +213,7 @@ fn preview(
                 .map(|path| {
                     let mut p = PathBuf::from(dirname);
                     p.push(PathBuf::from(path));
-                    p.canonicalize().unwrap()
+                    dunce::canonicalize(&p).unwrap()
                 })
                 .collect::<Vec<PathBuf>>(),
             ..CompileFontArgs::default()

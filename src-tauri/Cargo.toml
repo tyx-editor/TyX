@@ -33,6 +33,7 @@ typstyle-core = "0.13.14"
 url = "2.5.4"
 open = "5"
 base64 = "0.22"
+dunce = "1.0.5"
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
 tauri-plugin-updater = "2"

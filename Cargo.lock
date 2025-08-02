@@ -6325,6 +6325,7 @@ name = "tyx"
 version = "0.1.0"
 dependencies = [
  "base64 0.22.1",
+ "dunce",
  "open",
  "serde",
  "serde_json",
