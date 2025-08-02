@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.6] - 2025-08-02
+
+### Fixed
+
+- A fatal error that would cause the app to crash upon rendering on Windows was patched.
+
 ## [0.2.5] - 2025-08-01
 
 ### Fixed
