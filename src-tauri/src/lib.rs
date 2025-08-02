@@ -251,7 +251,7 @@ fn preview(
     f.write_all(&pdf).unwrap();
 
     if open {
-        let _ = open::that(&pdf_file);
+        let _ = open::that(String::from("file://") + &pdf_file);
     }
 
     String::new()
