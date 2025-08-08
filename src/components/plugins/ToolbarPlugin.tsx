@@ -637,7 +637,7 @@ const TableControls = () => {
     <ToolbarControlGroup>
       <ToolbarControl
         label="Insert table"
-        command='insertTable {"rows": 3, "columns": 3}'
+        command='insertTable {"rows": 3, "columns": 3, "includeHeaders": false}'
       >
         <IconTablePlus />
       </ToolbarControl>
