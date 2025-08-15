@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.7] - 2025-08-15
+
+### Fixed
+
+- Command sequence execution now shows up in the status bar as the whole sequence
+- A table now appears without headers (i.e. the top row does not appear to be bold even though it isn't)
+- Previewing now opens the PDF on Windows.
+
 ## [0.2.6] - 2025-08-02
 
 ### Fixed
