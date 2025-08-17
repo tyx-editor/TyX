@@ -110,7 +110,10 @@ export const MathEditor = ({
 
         mf.addEventListener("input", (e) => {
           const target = e.target as MathfieldElement
-          updateValue(target.getValue(), tex2typst(target.getValue("latex")))
+          updateValue(
+            target.getValue(),
+            tex2typst(target.getValue("latex-without-placeholders")),
+          )
         })
 
         mf.addEventListener("move-out", (e) => {
