@@ -39,6 +39,7 @@
     "react-dom": "^18.3.1",
     "react-error-boundary": "^6.0.0",
     "react-i18next": "^15.5.2",
+    "tex2typst": "^0.3.15",
     "zod": "^3.25.56"
   },
   "devDependencies": {

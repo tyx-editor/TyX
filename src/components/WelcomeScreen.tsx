@@ -20,6 +20,7 @@ import UpdateChecker from "./UpdateChecker"
 const CREATED_WITH_LINKS = [
   { label: "typst", href: "https://github.com/typst/typst/" },
   { label: "typst.ts", href: "https://github.com/Myriad-Dreamin/typst.ts/" },
+  { label: "tyx2typst", href: "https://github.com/qwinsi/tex2typst/" },
   { label: "tinymist", href: "https://github.com/Myriad-Dreamin/tinymist/" },
   { label: "mathlive", href: "https://github.com/arnog/mathlive/" },
   { label: "lexical", href: "https://github.com/facebook/lexical/" },

@@ -15,6 +15,7 @@ import {
 } from "lexical"
 import { MathfieldElement } from "mathlive"
 import { useEffect, useRef, useState } from "react"
+import { tex2typst } from "tex2typst"
 import { DEFAULT_MATH_INLINE_SHORTCUTS, getSettings } from "../../settings"
 import {
   $createMathNode,
@@ -109,7 +110,7 @@ export const MathEditor = ({
 
         mf.addEventListener("input", (e) => {
           const target = e.target as MathfieldElement
-          updateValue(target.getValue(), target.getValue("typst"))
+          updateValue(target.getValue(), tex2typst(target.getValue("latex")))
         })
 
         mf.addEventListener("move-out", (e) => {
