@@ -11,7 +11,7 @@
     "tauri": "tauri",
     "prettier": "prettier",
     "build-web": "echo 'export * from \"./web\"' > src/backend/index.ts && bun run build && echo 'export * from \"./tauri\"' > src/backend/index.ts",
-    "deploy": "bun run build-web && netlify deploy -d dist --prod --site tyx-editor",
+    "deploy": "bun run build-web && netlify deploy -d dist --prod --no-build",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
     "schema": "bun scripts/create-json-schemas.ts && prettier -w schemas"
   },
