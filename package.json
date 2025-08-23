@@ -13,7 +13,8 @@
     "build-web": "echo 'export * from \"./web\"' > src/backend/index.ts && bun run build && echo 'export * from \"./tauri\"' > src/backend/index.ts",
     "deploy": "bun run build-web && netlify deploy -d dist --prod --no-build",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
-    "schema": "bun scripts/create-json-schemas.ts && prettier -w schemas"
+    "schema": "bun scripts/create-json-schemas.ts && prettier -w schemas",
+    "test": "wdio run wdio.conf.ts"
   },
   "dependencies": {
     "@lexical/react": "^0.33.0",
@@ -50,9 +51,14 @@
     "@types/react": "^18.3.21",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^4.4.1",
+    "@wdio/cli": "^9.19.1",
+    "@wdio/local-runner": "^9.19.1",
+    "@wdio/mocha-framework": "^9.19.1",
+    "@wdio/spec-reporter": "^9.19.1",
     "eslint": "^9.30.1",
     "eslint-plugin-react-refresh": "^0.4.20",
     "prettier": "^3.5.3",
+    "tsx": "^4.20.4",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.36.0",
     "vite": "^5.4.19",
