@@ -2,6 +2,7 @@
  * @file The welcome screen shown if no documents are open.
  */
 
+import { LexicalComposer } from "@lexical/react/LexicalComposer"
 import { ActionIcon, Anchor, Button, Text } from "@mantine/core"
 import { modals } from "@mantine/modals"
 import {
@@ -14,6 +15,9 @@ import {
 import { t } from "i18next"
 import { useEffect, useState } from "react"
 import { getVersion, isWeb, newFromTemplate, onNew, open } from "../backend"
+import { initialConfig } from "../config"
+import CurrentEditorPlugin from "./plugins/CurrentEditorPlugin"
+import TyXCommandsPlugin from "./plugins/TyXCommandsPlugin"
 import SettingsModal from "./SettingsModal"
 import UpdateChecker from "./UpdateChecker"
 
@@ -106,6 +110,11 @@ const WelcomeScreen = () => {
         ))}
       </Text>
       {!isWeb && <UpdateChecker />}
+      {/* Invisible stub editor for TyX's commands. */}
+      <LexicalComposer initialConfig={initialConfig}>
+        <TyXCommandsPlugin />
+        <CurrentEditorPlugin />
+      </LexicalComposer>
     </div>
   )
 }
