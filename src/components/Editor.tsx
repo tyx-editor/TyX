@@ -33,6 +33,7 @@ import RemoveDefaultShortcutsPlugin from "./plugins/RemoveDefaultShortcutsPlugin
 import TableCommandsPlugin from "./plugins/TableCommandsPlugin"
 import ToolbarPlugin from "./plugins/ToolbarPlugin"
 import TypstCodePlugin from "./plugins/TypstCodePlugin"
+import TyXCommandsPlugin from "./plugins/TyXCommandsPlugin"
 import UpdateLocalStoragePlugin from "./plugins/UpdateLocalStoragePlugin"
 
 declare global {
@@ -74,6 +75,7 @@ const Editor = () => {
       <MarkdownShortcutPlugin />
       <AutoFocusPlugin />
 
+      <TyXCommandsPlugin />
       <UpdateLocalStoragePlugin />
       <TableCommandsPlugin />
       <CodeHighlightPlugin />

@@ -348,7 +348,7 @@ pub fn run() {
             }
             let file_submenu = file_submenu.build()?;
 
-            let edit_submenu = SubmenuBuilder::new(handle, "App")
+            let edit_submenu = SubmenuBuilder::new(handle, "Edit")
                 .copy()
                 .paste()
                 .cut()
@@ -370,7 +370,8 @@ pub fn run() {
             setsettings,
             newfromtemplate,
         ])
-        .on_menu_event(|handle, event| handle.emit(event.id().0.as_str(), ()).unwrap())
+        // Blocked on https://github.com/tauri-apps/wry/issues/451
+        // .on_menu_event(|handle, event| handle.emit(event.id().0.as_str(), ()).unwrap())
         .setup(
             #[allow(unused_variables)]
             |app| {

@@ -237,7 +237,7 @@ const FunctionCallPlugin = () => {
   const [editor] = useLexicalComposerContext()
 
   useEffect(() => {
-    editor.registerCommand(
+    return editor.registerCommand(
       INSERT_FUNCTION_CALL_COMMAND,
       (payload) => {
         const node =

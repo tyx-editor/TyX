@@ -21,11 +21,7 @@ let version: string
 
 export const initializeBackend = () => {
   getVersion().then((v) => (version = v))
-  listen<[string, string]>("open", (e) => onOpen(...(e.payload ?? [])))
-  listen("new", onNew)
-  listen("save", onSave)
-  listen("close", onClose)
-  listen("preview", () => onPreview(true))
+  listen<[string, string]>("open", (e) => onOpen(...e.payload))
   listen<[string]>("insertImage", (e) => onInsertImage(...e.payload))
   listen<[string]>("saveas", (e) => onSaveAs(...e.payload))
 
@@ -100,7 +96,12 @@ export const onPreview = async (open = false) => {
   setLocalStorage("Open Documents", openDocuments)
 }
 
-export const onSaveAs = (filename: string) => {
+export const onSaveAs = (filename?: string) => {
+  if (!filename) {
+    invoke("saveas")
+    return
+  }
+
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
@@ -111,7 +112,7 @@ export const onSaveAs = (filename: string) => {
     document.dirty = false
     setLocalStorage("Open Documents", openDocuments)
   } else {
-    onOpen(filename, JSON.stringify(document))
+    onOpen(filename, JSON.stringify(document), true)
   }
 }
 

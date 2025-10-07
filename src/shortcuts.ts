@@ -27,6 +27,12 @@ declare global {
 
 // TODO: add more default shortcuts.
 export const DEFAULT_KEYBOARD_SHORTCUTS: [string, string][] = [
+  ["mod+o", "fileOpen"],
+  ["mod+n", "fileNew"],
+  ["mod+s", "fileSave"],
+  ["mod+shift+s", "fileSaveAs"],
+  ["mod+w", "fileClose"],
+  ["mod+shift+k", "filePreview"],
   ["mod+b", "formatText bold"],
   ["mod+i", "formatText italic"],
   ["mod+u", "formatText underline"],

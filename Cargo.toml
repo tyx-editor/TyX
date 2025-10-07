@@ -2,7 +2,7 @@
 description = "A Tauri App"
 authors = ["Noam Zaks", "Myriad-Dreamin", "TyX Developers"]
 version = "0.1.0"
-rust-version = "1.85.0"                                     # MSRV
+rust-version = "1.85.0"
 edition = "2024"
 readme = "README.md"
 license = "MIT"
@@ -15,9 +15,9 @@ resolver = "2"
 members = ["crates/*", "src-tauri"]
 
 [profile.release]
-codegen-units = 1 # Reduce number of codegen units to increase optimizations
+codegen-units = 1
 opt-level = 3
-panic = "abort"   # Abort on panic
+panic = "abort"
 
 [workspace.dependencies]
 

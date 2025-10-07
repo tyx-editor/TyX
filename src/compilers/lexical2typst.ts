@@ -4,7 +4,7 @@
 
 import { SerializedListItemNode } from "@lexical/list"
 import { ElementFormatType, TEXT_TYPE_TO_FORMAT } from "lexical"
-import { TyXNode, TyXValue } from "../models"
+import { TyXNode, TyXTableRowNode, TyXValue } from "../models"
 import tyxValue2typst from "./tyxValue2typst"
 
 export const convertCSSColor = (color: string) => {
@@ -197,7 +197,8 @@ export const converters: {
     return `#text(dir: ltr)[#raw(block: true, lang: ${JSON.stringify(code.language ?? "none")}, ${JSON.stringify(lexical2text(code))})]`
   },
   table: (table) => {
-    const columns = new Array(table.children.length).fill("1fr").join(", ")
+    const row = table.children[0] as TyXTableRowNode
+    const columns = new Array(row.children.length).fill("1fr").join(", ")
     let result = `#table(columns: (${columns}), ${table.children.map(lexical2typst).join(", ")})`
     result = applyDirection(result, table.direction)
     return result

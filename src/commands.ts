@@ -38,7 +38,15 @@ import {
   TABLE_REMOVE_ROW_COMMAND,
 } from "./components/plugins/tableCommands"
 import { INSERT_TYPST_CODE_COMMAND } from "./components/plugins/typstCode"
-import { OPEN_LINK_POPUP_COMMAND } from "./components/plugins/tyxCommands"
+import {
+  FILE_CLOSE_COMMAND,
+  FILE_NEW_COMMAND,
+  FILE_OPEN_COMMAND,
+  FILE_PREVIEW_COMMAND,
+  FILE_SAVE_AS_COMMAND,
+  FILE_SAVE_COMMAND,
+  OPEN_LINK_POPUP_COMMAND,
+} from "./components/plugins/tyxCommands"
 
 const COMMANDS: Record<string, LexicalCommand<any>> = {
   toggleKeyboardMap: TOGGLE_KEYBOARD_MAP_COMMAND,
@@ -65,6 +73,12 @@ const COMMANDS: Record<string, LexicalCommand<any>> = {
   tableRemoveColumn: TABLE_REMOVE_COLUMN_COMMAND,
   toggleLink: TOGGLE_LINK_COMMAND,
   openLinkPopup: OPEN_LINK_POPUP_COMMAND,
+  fileOpen: FILE_OPEN_COMMAND,
+  fileNew: FILE_NEW_COMMAND,
+  fileSave: FILE_SAVE_COMMAND,
+  fileSaveAs: FILE_SAVE_AS_COMMAND,
+  fileClose: FILE_CLOSE_COMMAND,
+  filePreview: FILE_PREVIEW_COMMAND,
 }
 
 /** Parse the given parameter into the corresponding JS object, to be passed to command functions. */
