@@ -25,6 +25,19 @@
     "theChangesWontBeSaved": "השינויים שבוצעו לא יישמרו",
     "confirm": "אישור",
     "cancel": "ביטול",
-    "untitled": "מסמך ללא שם"
+    "untitled": "מסמך ללא שם",
+    "documentSettings": "הגדרות מסמך",
+    "pageLayout": "סידור עמוד",
+    "textLayout": "מלל",
+    "paper": "דף",
+    "flipped": "הפוך",
+    "justified": "מיושר",
+    "indentation": "הזחה",
+    "columns": "עמודות",
+    "typstPreamble": "Typst Preamble",
+    "compilerOptions": "אפשרויות מהדר",
+    "root": "שורש",
+    "fontPaths": "ניתובי גופנים",
+    "saveAsDefault": "שמור כברירת המחדל"
   }
 }

@@ -26,7 +26,7 @@ const TyXLengthEditor = ({
         }
       />
       <Select
-        ml="xs"
+        style={{ marginInlineStart: 10 }}
         flex="min-content"
         display="inline-block"
         data={["pt", "mm", "cm", "in", "em", "fr", "%"]}

@@ -21,11 +21,13 @@ import {
   IconIndentIncrease,
   IconLanguage,
 } from "@tabler/icons-react"
+import { useTranslation } from "react-i18next"
 import { TyXDocument, TyXDocumentSettings } from "../models"
 import { setLocalStorage, useLocalStorage } from "../utilities/hooks"
 import TyXLengthEditor from "./TyXLengthEditor"
 
 const DocumentSettingsModal = () => {
+  const { t } = useTranslation()
   const [openDocuments, setOpenDocuments] = useLocalStorage<TyXDocument[]>({
     key: "Open Documents",
     defaultValue: [],
@@ -43,10 +45,10 @@ const DocumentSettingsModal = () => {
 
   return (
     <>
-      <Fieldset legend="Page Layout">
+      <Fieldset legend={t("pageLayout")}>
         <Select
           allowDeselect
-          label="Language"
+          label={t("language")}
           leftSection={<IconLanguage />}
           value={currentSettings.language ?? null}
           onChange={(v) =>
@@ -214,7 +216,7 @@ const DocumentSettingsModal = () => {
         <Select
           mt="xs"
           allowDeselect
-          label="Paper"
+          label={t("paper")}
           leftSection={<IconFileHorizontal />}
           value={currentSettings.paper ?? null}
           onChange={(v) =>
@@ -653,7 +655,7 @@ const DocumentSettingsModal = () => {
         />
         <Checkbox
           mt="xs"
-          label="Flipped"
+          label={t("flipped")}
           checked={currentSettings.flipped ?? false}
           onChange={(e) =>
             setSettings({
@@ -663,9 +665,9 @@ const DocumentSettingsModal = () => {
           }
         />
       </Fieldset>
-      <Fieldset legend="Text Layout" mt="xs">
+      <Fieldset legend={t("textLayout")} mt="xs">
         <Checkbox
-          label="Justified"
+          label={t("justified")}
           checked={currentSettings.justified ?? false}
           onChange={(e) =>
             setSettings({
@@ -677,7 +679,7 @@ const DocumentSettingsModal = () => {
         <TyXLengthEditor
           props={{
             mt: "xs",
-            label: "Indentation",
+            label: t("indentation"),
             leftSection: <IconIndentIncrease />,
           }}
           value={
@@ -694,7 +696,7 @@ const DocumentSettingsModal = () => {
         />
         <NumberInput
           mt="xs"
-          label="Columns"
+          label={t("columns")}
           leftSection={<IconColumns />}
           value={currentSettings.columns ?? ""}
           onChange={(v) => {
@@ -705,8 +707,10 @@ const DocumentSettingsModal = () => {
           }}
         />
       </Fieldset>
-      <Fieldset legend="Typst Preamble" mt="xs">
+      <Fieldset legend={t("typstPreamble")} mt="xs">
         <Textarea
+          dir="ltr"
+          styles={{ input: { textAlign: "left" } }}
           minRows={3}
           autosize
           value={openDocuments[currentDocument].preamble ?? ""}
@@ -717,9 +721,9 @@ const DocumentSettingsModal = () => {
           }}
         />
       </Fieldset>
-      <Fieldset legend="Compiler Options" mt="xs">
+      <Fieldset legend={t("compilerOptions")} mt="xs">
         <TextInput
-          label="Root"
+          label={t("root")}
           leftSection={<IconFolder />}
           value={openDocuments[currentDocument].settings?.root ?? ""}
           onChange={(e) =>
@@ -728,7 +732,7 @@ const DocumentSettingsModal = () => {
         />
         <TagsInput
           mt="xs"
-          label="Font Paths"
+          label={t("fontPaths")}
           leftSection={<IconIcons />}
           value={openDocuments[currentDocument].settings?.fontPaths ?? []}
           onChange={(fontPaths) =>
@@ -742,7 +746,7 @@ const DocumentSettingsModal = () => {
         leftSection={<IconDeviceFloppy />}
         onClick={() => setLocalStorage("Default Settings", currentSettings)}
       >
-        Save as default settings
+        {t("saveAsDefault")}
       </Button>
     </>
   )

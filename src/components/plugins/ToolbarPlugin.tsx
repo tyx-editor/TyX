@@ -261,10 +261,10 @@ const ManagementControls = () => {
         </ToolbarControl>
       )}
       <ToolbarControl
-        label="Document settings"
+        label={t("documentSettings")}
         onClick={() =>
           modals.open({
-            title: `Document Settings (${basename})`,
+            title: `${t("documentSettings")} (${basename})`,
             children: <DocumentSettingsModal />,
           })
         }

@@ -203,3 +203,51 @@ Open Link Popup
 Opens the link popup to choose a URL to toggle the currently selected text to link to.
 
 Example: ``openLinkPopup``
+
+
+File Open
+~~~~~~~~~
+
+Opens the file open dialog.
+
+Example: ``fileOpen``
+
+
+File New
+~~~~~~~~~
+
+Opens the new file dialog.
+
+Example: ``fileNew``
+
+
+File Save
+~~~~~~~~~
+
+Save the current file.
+
+Example: ``fileSave``
+
+
+File Save As
+~~~~~~~~~~~~
+
+Opens the file save as dialog.
+
+Example: ``fileSaveAs``
+
+
+File Close
+~~~~~~~~~~
+
+Closes the current file.
+
+Example: ``fileClose``
+
+
+File Preview
+~~~~~~~~~~~~
+
+Previews the current file as a PDF.
+
+Example: ``filePreview``

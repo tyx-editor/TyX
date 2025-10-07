@@ -25,6 +25,19 @@
     "theChangesWontBeSaved": "The changes will not be saved!",
     "confirm": "Confirm",
     "cancel": "Cancel",
-    "untitled": "Untitled"
+    "untitled": "Untitled",
+    "documentSettings": "Document Settings",
+    "pageLayout": "Page Layout",
+    "textLayout": "Text Layout",
+    "paper": "Paper",
+    "flipped": "Flipped",
+    "justified": "Justified",
+    "indentation": "Indentation",
+    "columns": "Columns",
+    "typstPreamble": "Typst Preamble",
+    "compilerOptions": "Compiler Options",
+    "root": "Root",
+    "fontPaths": "Font Paths",
+    "saveAsDefault": "Save as Default"
   }
 }
