@@ -18,6 +18,13 @@
     "output": "Output",
     "formatTypstWithTypstyle": "Format Typst with Typstyle",
     "autoStartServer": "Automatically Start Server",
-    "serverDebounceMs": "Server Debounce (Milliseconds)"
+    "serverDebounceMs": "Server Debounce (Milliseconds)",
+    "noUpdatesAvailable": "No updates available",
+    "checkForUpdates": "Check for updates",
+    "pleaseConfirmYourAction": "Please confirm your action",
+    "theChangesWontBeSaved": "The changes will not be saved!",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "untitled": "Untitled"
   }
 }

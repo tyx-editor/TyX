@@ -4,8 +4,8 @@
 
 import { ActionIcon, Button, Tabs } from "@mantine/core"
 import { IconFileText, IconPlus, IconX } from "@tabler/icons-react"
-import { t } from "i18next"
 import { ErrorBoundary } from "react-error-boundary"
+import { useTranslation } from "react-i18next"
 import { onNew } from "../backend"
 import { TyXDocument } from "../models"
 import { showConfirmModal } from "../utilities"
@@ -14,6 +14,7 @@ import Editor from "./Editor"
 import StatusBar from "./StatusBar"
 
 const DocumentTabs = () => {
+  const { t } = useTranslation()
   const [openDocuments, setOpenDocuments] = useLocalStorage<TyXDocument[]>({
     key: "Open Documents",
     defaultValue: [],
@@ -63,11 +64,10 @@ const DocumentTabs = () => {
                     closeDocument(docIndex)
                   } else {
                     showConfirmModal(
-                      `Are you sure you want to discard ${
-                        openDocuments[docIndex].filename
-                          ? `the changes to ${openDocuments[docIndex].filename}`
-                          : "the document"
-                      }?`,
+                      t("pleaseConfirmYourAction"),
+                      t("theChangesWontBeSaved") + "!",
+                      t("confirm"),
+                      t("cancel"),
                       () => closeDocument(docIndex),
                     )
                   }
@@ -77,7 +77,7 @@ const DocumentTabs = () => {
               </ActionIcon>
             }
           >
-            {doc.filename?.split("/").pop()?.split("\\").pop() ?? "Untitled"}
+            {doc.filename?.split("/").pop()?.split("\\").pop() ?? t("untitled")}
           </Tabs.Tab>
         ))}
         <Button

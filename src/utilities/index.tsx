@@ -52,12 +52,18 @@ export const showFailureMessage = (
 }
 
 /** Shows a modal to confirm a possibly dangerous action. */
-export const showConfirmModal = (message: string, onConfirm: () => void) => {
+export const showConfirmModal = (
+  title: string,
+  message: string,
+  confirm: string,
+  cancel: string,
+  onConfirm: () => void,
+) => {
   modals.openConfirmModal({
-    title: "Please confirm your action!",
+    title,
     children: message,
     onConfirm,
-    labels: { confirm: "Confirm", cancel: "Cancel" },
+    labels: { confirm, cancel },
   })
 }
 

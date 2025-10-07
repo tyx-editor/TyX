@@ -18,6 +18,13 @@
     "output": "פלט",
     "formatTypstWithTypstyle": "סידור Typst עם Typstyle",
     "autoStartServer": "התחלת שרת אוטומטית",
-    "serverDebounceMs": "זמן המתנה של שרת (מילישניות)"
+    "serverDebounceMs": "זמן המתנה של שרת (מילישניות)",
+    "noUpdatesAvailable": "אין עדכונים",
+    "checkForUpdates": "חפש עדכונים",
+    "pleaseConfirmYourAction": "אנא וודאו את פעולתכם",
+    "theChangesWontBeSaved": "השינויים שבוצעו לא יישמרו",
+    "confirm": "אישור",
+    "cancel": "ביטול",
+    "untitled": "מסמך ללא שם"
   }
 }

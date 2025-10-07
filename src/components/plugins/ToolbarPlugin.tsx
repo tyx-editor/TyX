@@ -84,6 +84,7 @@ import React, {
   useRef,
   useState,
 } from "react"
+import { useTranslation } from "react-i18next"
 import { insertImage, isWeb, onPreview, onSave, save } from "../../backend"
 import { executeCommandSequence } from "../../commands"
 import tyx2typst from "../../compilers/tyx2typst"
@@ -171,6 +172,7 @@ const ToolbarControlGroup = ({ children }: { children?: React.ReactNode }) => {
 }
 
 const ManagementControls = () => {
+  const { t } = useTranslation()
   const [editor] = useLexicalComposerContext()
   const [loadingPreview, setLoadingPreview] = useState(false)
   const [runningServer, setRunningServer] = useState(
@@ -190,7 +192,7 @@ const ManagementControls = () => {
   )
 
   const doc = openDocuments[currentDocument]
-  const basename = (doc.filename ?? "Untitled")
+  const basename = (doc.filename ?? t("untitled"))
     .split("/")
     .pop()!
     .split("\\")

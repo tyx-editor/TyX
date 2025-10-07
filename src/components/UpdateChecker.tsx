@@ -1,6 +1,7 @@
 import { Alert, Button, Progress } from "@mantine/core"
 import { IconDownload, IconNews, IconRefresh } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { checkForUpdates, relaunch } from "../backend"
 import { Update } from "../backend/base"
 
@@ -12,6 +13,7 @@ declare global {
 }
 
 const UpdateChecker = () => {
+  const { t } = useTranslation()
   const [update, setUpdate] = useState<Update | null | undefined>(
     window.currentUpdate,
   )
@@ -53,7 +55,7 @@ const UpdateChecker = () => {
     return (
       <>
         {update === null && (
-          <span style={{ fontSize: 12 }}>No updates available.</span>
+          <span style={{ fontSize: 12 }}>{t("noUpdatesAvailable")}.</span>
         )}
         <Button
           mt={5}
@@ -63,7 +65,7 @@ const UpdateChecker = () => {
           variant="subtle"
           onClick={check}
         >
-          Check for updates
+          {t("checkForUpdates")}
         </Button>
       </>
     )
