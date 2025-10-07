@@ -63,12 +63,8 @@ const DocumentTabs = () => {
                   if (!openDocuments[currentDocument].dirty) {
                     closeDocument(docIndex)
                   } else {
-                    showConfirmModal(
-                      t("pleaseConfirmYourAction"),
-                      t("theChangesWontBeSaved") + "!",
-                      t("confirm"),
-                      t("cancel"),
-                      () => closeDocument(docIndex),
+                    showConfirmModal(t("theChangesWontBeSaved") + "!", () =>
+                      closeDocument(docIndex),
                     )
                   }
                 }}

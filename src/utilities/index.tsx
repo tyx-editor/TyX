@@ -5,6 +5,7 @@
 import { modals } from "@mantine/modals"
 import { notifications } from "@mantine/notifications"
 import { IconCheck, IconExclamationMark } from "@tabler/icons-react"
+import i18n from "i18next"
 import { TyXDocument } from "../models"
 import { getLocalStorage } from "./hooks"
 
@@ -19,7 +20,7 @@ export const showSuccessMessage = (
   options?: MessageOptions,
 ) => {
   notifications.show({
-    title: options?.title ?? "Success!",
+    title: options?.title ?? i18n.t("success") + "!",
     color: "green",
     icon: <IconCheck />,
     message: options?.raw ? (
@@ -38,7 +39,7 @@ export const showFailureMessage = (
   options?: MessageOptions,
 ) => {
   notifications.show({
-    title: options?.title ?? "Failed!",
+    title: options?.title ?? i18n.t("failed") + "!",
     color: "red",
     icon: <IconExclamationMark />,
     message: options?.raw ? (
@@ -52,18 +53,12 @@ export const showFailureMessage = (
 }
 
 /** Shows a modal to confirm a possibly dangerous action. */
-export const showConfirmModal = (
-  title: string,
-  message: string,
-  confirm: string,
-  cancel: string,
-  onConfirm: () => void,
-) => {
+export const showConfirmModal = (message: string, onConfirm: () => void) => {
   modals.openConfirmModal({
-    title,
+    title: i18n.t("pleaseConfirmYourAction"),
     children: message,
     onConfirm,
-    labels: { confirm, cancel },
+    labels: { confirm: i18n.t("confirm"), cancel: i18n.t("cancel") },
   })
 }
 

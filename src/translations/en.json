@@ -38,6 +38,8 @@
     "compilerOptions": "Compiler Options",
     "root": "Root",
     "fontPaths": "Font Paths",
-    "saveAsDefault": "Save as Default"
+    "saveAsDefault": "Save as Default",
+    "save": "Save",
+    "success": "Success"
   }
 }

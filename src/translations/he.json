@@ -38,6 +38,8 @@
     "compilerOptions": "אפשרויות מהדר",
     "root": "שורש",
     "fontPaths": "ניתובי גופנים",
-    "saveAsDefault": "שמור כברירת המחדל"
+    "saveAsDefault": "שמירה כברירת המחדל",
+    "save": "שמירה",
+    "success": "הצלחה"
   }
 }

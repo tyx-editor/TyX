@@ -220,7 +220,7 @@ const SettingsModal = () => {
             )
           }
         >
-          Save to Filesystem
+          {t("save")}
         </Button>
       )}
     </>

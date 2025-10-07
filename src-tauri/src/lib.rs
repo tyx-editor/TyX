@@ -183,6 +183,7 @@ fn readimage(filename: &str, image: &str) -> String {
 
 #[tauri::command]
 fn preview(
+    handle: tauri::AppHandle,
     filename: &str,
     content: &str,
     root: &str,
@@ -199,23 +200,29 @@ fn preview(
         .to_str()
         .unwrap();
     let pdf_file = basename.clone() + ".pdf";
+    let tyx_fonts_path = handle.path().app_data_dir().unwrap().join("fonts");
+    if !tyx_fonts_path.is_dir() {
+        create_dir_all(&tyx_fonts_path).unwrap();
+    }
 
     let mut root_path = PathBuf::from(dirname);
     if !root.is_empty() {
         root_path.push(PathBuf::from(root));
     }
+    let mut font_paths = font_paths
+        .iter()
+        .map(|path| {
+            let mut p = PathBuf::from(dirname);
+            p.push(PathBuf::from(path));
+            dunce::canonicalize(&p).unwrap()
+        })
+        .collect::<Vec<PathBuf>>();
+    font_paths.insert(0, tyx_fonts_path);
     let universe = CompileOnceArgs {
         root: Some(dunce::canonicalize(&root_path).unwrap()),
         input: Some(filename.into()),
         font: CompileFontArgs {
-            font_paths: font_paths
-                .iter()
-                .map(|path| {
-                    let mut p = PathBuf::from(dirname);
-                    p.push(PathBuf::from(path));
-                    dunce::canonicalize(&p).unwrap()
-                })
-                .collect::<Vec<PathBuf>>(),
+            font_paths,
             ..CompileFontArgs::default()
         },
         ..CompileOnceArgs::default()
