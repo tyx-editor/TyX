@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.9] - 2025-10-08
+
+### Added
+
+- Additional translations.
+- You can now put fonts in a `fonts` folder in the TyX data directory, and they will be picked up when compiling.
+
+### Fixed
+
+- Table column count is now correct.
+- Keyboard shortcuts now work on Windows (see https://github.com/tauri-apps/wry/issues/451).
+
 ## [0.2.8] - 2025-10-05
 
 ### Changed
