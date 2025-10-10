@@ -32,6 +32,7 @@ import {
   IconDeviceFloppy,
   IconEye,
   IconFileCode,
+  IconFunction,
   IconH1,
   IconH2,
   IconH3,
@@ -65,7 +66,6 @@ import {
   $isElementNode,
   $isNodeSelection,
   $isRangeSelection,
-  $setSelection,
   BaseSelection,
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
@@ -97,7 +97,11 @@ import {
   getSelectedNode,
 } from "../../resources/playground"
 import { getSettings } from "../../settings"
-import { showSuccessMessage } from "../../utilities"
+import {
+  getEditorSelection,
+  setEditorSelection,
+  showSuccessMessage,
+} from "../../utilities"
 import { useLocalStorage } from "../../utilities/hooks"
 import CommandActionIcon from "../CommandActionIcon"
 import { OPEN_LINK_POPUP_COMMAND } from "./tyxCommands"
@@ -139,6 +143,7 @@ const ToolbarControl = React.forwardRef<
     if (command) {
       return (
         <CommandActionIcon
+          label={label}
           className="toolbar-control"
           size={30}
           variant={active ? undefined : "default"}
@@ -350,6 +355,9 @@ const InsertControls = () => {
       <ToolbarControl label="Insert image" onClick={insertImage}>
         <IconPhoto />
       </ToolbarControl>
+      <ToolbarControl label="Insert function" command="insertFunctionCall">
+        <IconFunction />
+      </ToolbarControl>
       <ToolbarControl label="Insert Typst code" command="insertTypstCode">
         <IconCodeAsterisk />
       </ToolbarControl>
@@ -535,20 +543,16 @@ const LinkControls = () => {
   const ref = useRef<HTMLInputElement>(null)
 
   const save = () => {
-    window.currentEditor?.update(() => {
-      $setSelection(selection?.clone() ?? null)
-    })
+    setEditorSelection(selection)
     executeCommandSequence(`toggleLink ${ref.current!.value}`)
     setOpened(false)
   }
 
   const changeOpened = (opened: boolean) => {
     if (!opened) {
-      window.currentEditor?.update(() => {
-        $setSelection(selection?.clone() ?? null)
-      })
+      setEditorSelection(selection)
     } else {
-      setSelection(window.currentEditor?.read(() => $getSelection()) ?? null)
+      setSelection(getEditorSelection())
     }
     setOpened(opened)
   }

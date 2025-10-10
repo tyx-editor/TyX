@@ -10,6 +10,7 @@ The default keyboard shortcuts have changed, it is recommended to reset to the d
 
 ### Added
 
+- A new command and button for inserting function calls easier.
 - More TyX commands for working with TyX itself: `fileNewFromTemplate`, `fileClose`, `openSettings` and `openDocumentSettings`.
 - A hint for the command which will be executed when clicking some command button is now shown in the status bar.
 
@@ -20,6 +21,7 @@ The default keyboard shortcuts have changed, it is recommended to reset to the d
 ### Fixed
 
 - Various issues regarding closing a file.
+- Commands continue to work when switching between the main editor and nested editors.
 
 ## [0.2.9] - 2025-10-08
 

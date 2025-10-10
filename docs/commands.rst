@@ -108,9 +108,13 @@ Insert Function Call
 
 Insert a function call node with the given function (and optionally initial parameter values or inline customization).
 
+If no parameters are passed, a modal is used to pick the function.
+
 Example: ``insertFunctionCall footnote``
 
 Example: ``insertFunctionCall ["h", [{"type": "length", "value": "10", "unit": "pt"}]]``
+
+Example: ``insertFunctionCall``
 
 
 Toggle Math Inline
@@ -262,12 +266,14 @@ Previews the current file as a PDF.
 
 Example: ``filePreview``
 
+
 Open Settings
 ~~~~~~~~~~~~~
 
 Opens the app settings modal.
 
 Example: ``openSettings``
+
 
 Open Document Settings
 ~~~~~~~~~~~~~~~~~~~~~~

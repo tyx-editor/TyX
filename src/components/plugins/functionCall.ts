@@ -19,6 +19,7 @@ import { TyXRootNode, TyXValue } from "../../models"
 import { FunctionCallEditor } from "./FunctionCallPlugin"
 
 export const INSERT_FUNCTION_CALL_COMMAND: LexicalCommand<
+  | undefined
   | string
   | [string, TyXValue[] | undefined, Record<string, TyXValue> | undefined]
 > = createCommand()

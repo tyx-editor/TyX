@@ -6,6 +6,7 @@ import { modals } from "@mantine/modals"
 import { notifications } from "@mantine/notifications"
 import { IconCheck, IconExclamationMark } from "@tabler/icons-react"
 import i18n from "i18next"
+import { $getSelection, $setSelection, BaseSelection } from "lexical"
 import { TyXDocument } from "../models"
 import { getLocalStorage } from "./hooks"
 
@@ -66,4 +67,24 @@ export const getCurrentDocument = () => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   return openDocuments[currentDocument]
+}
+
+export const setEditorSelection = (selection: BaseSelection | null) => {
+  window.currentEditor?.update(() => {
+    $setSelection(selection?.clone() ?? null)
+  })
+}
+
+export const getEditorSelection = () => {
+  return window.currentEditor?.read(() => $getSelection()) ?? null
+}
+
+let savedEditorSelection: BaseSelection | null
+
+export const backupEditorSelection = () => {
+  savedEditorSelection = getEditorSelection()
+}
+
+export const restoreEditorSelection = () => {
+  setEditorSelection(savedEditorSelection)
 }

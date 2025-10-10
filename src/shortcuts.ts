@@ -47,6 +47,7 @@ export const DEFAULT_KEYBOARD_SHORTCUTS: [string, string][] = [
   ["mod+l", "insertTypstCode"],
   ["mod+m", "insertMath true"],
   ["mod+shift+m", "toggleMathInline"],
+  ["mod+shift+f", "insertFunctionCall"],
   ["mod+k", "openLinkPopup"],
   ["mod+;", "openSettings"],
   ["mod+shift+;", "openDocumentSettings"],

@@ -15,3 +15,5 @@ export const FILE_PREVIEW_COMMAND: LexicalCommand<void> = createCommand()
 export const OPEN_SETTINGS_COMMAND: LexicalCommand<void> = createCommand()
 export const OPEN_DOCUMENT_SETTINGS_COMMAND: LexicalCommand<void> =
   createCommand()
+
+export const INSERT_FUNCTION: LexicalCommand<void> = createCommand()

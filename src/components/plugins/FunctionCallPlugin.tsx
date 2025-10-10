@@ -5,9 +5,9 @@ import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary"
 import { LexicalNestedComposer } from "@lexical/react/LexicalNestedComposer"
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin"
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
-import { Button, TextInput } from "@mantine/core"
+import { Autocomplete, Button } from "@mantine/core"
 import { modals } from "@mantine/modals"
-import { IconDeviceFloppy, IconFunction } from "@tabler/icons-react"
+import { IconDeviceFloppy, IconFunction, IconPlus } from "@tabler/icons-react"
 import {
   $createNodeSelection,
   $getNodeByKey,
@@ -17,10 +17,12 @@ import {
   LexicalEditor,
   NodeKey,
 } from "lexical"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { executeCommandSequence } from "../../commands"
 import { stringifyFunction } from "../../compilers/lexical2typst"
 import { getFunctions } from "../../functions"
 import { TyXValue } from "../../models"
+import { backupEditorSelection, restoreEditorSelection } from "../../utilities"
 import TyXValueEditor from "../TyXValueEditor"
 import CurrentEditorPlugin from "./CurrentEditorPlugin"
 import {
@@ -77,17 +79,18 @@ export const FunctionCallEditModal = ({
     modals.closeAll()
   }
 
-  const functions = getFunctions()
+  const functions = useMemo(() => getFunctions(), [])
 
   return (
     <>
-      <TextInput
+      <Autocomplete
         autoCapitalize="off"
         autoCorrect="off"
         label="Function"
         leftSection={<IconFunction />}
         value={name}
-        onChange={(e) => setName(e.currentTarget.value)}
+        onChange={setName}
+        data={Object.keys(functions).sort()}
       />
       {functions[name]?.positional?.map(
         (parameterDescription, positionIndex) => (
@@ -233,6 +236,42 @@ export const FunctionCallEditor = ({
   )
 }
 
+export const InsertFunctionCallModal = () => {
+  const [name, setName] = useState("")
+
+  const functions = useMemo(() => getFunctions(), [])
+
+  const insert = () => {
+    restoreEditorSelection()
+    executeCommandSequence(`insertFunctionCall ${name}`)
+    modals.closeAll()
+  }
+
+  return (
+    <>
+      <Autocomplete
+        data-autofocus
+        autoCapitalize="off"
+        autoCorrect="off"
+        label="Function"
+        leftSection={<IconFunction />}
+        value={name}
+        onChange={setName}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault()
+            insert()
+          }
+        }}
+        data={Object.keys(functions).sort()}
+      />
+      <Button mt="xs" fullWidth leftSection={<IconPlus />} onClick={insert}>
+        Insert
+      </Button>
+    </>
+  )
+}
+
 const FunctionCallPlugin = () => {
   const [editor] = useLexicalComposerContext()
 
@@ -240,6 +279,15 @@ const FunctionCallPlugin = () => {
     return editor.registerCommand(
       INSERT_FUNCTION_CALL_COMMAND,
       (payload) => {
+        if (payload === undefined) {
+          backupEditorSelection()
+          modals.open({
+            title: "Insert Function Call",
+            children: <InsertFunctionCallModal />,
+          })
+          return true
+        }
+
         const node =
           typeof payload === "string"
             ? $createFunctionCallNode(payload, undefined, undefined)
