@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+The default keyboard shortcuts have changed, it is recommended to reset to the defaults after updating!
+
+### Added
+
+- More TyX commands for working with TyX itself: `fileNewFromTemplate`, `fileClose`, `openSettings` and `openDocumentSettings`.
+
+### Changed
+
+- The status bar is now visible in the welcome screen as well.
+
+### Fixed
+
+- Various issues regarding closing a file.
+
 ## [0.2.9] - 2025-10-08
 
 ### Added

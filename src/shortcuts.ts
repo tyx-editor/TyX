@@ -29,6 +29,7 @@ declare global {
 export const DEFAULT_KEYBOARD_SHORTCUTS: [string, string][] = [
   ["mod+o", "fileOpen"],
   ["mod+n", "fileNew"],
+  ["mod+shift+n", "fileNewFromTemplate"],
   ["mod+s", "fileSave"],
   ["mod+shift+s", "fileSaveAs"],
   ["mod+w", "fileClose"],
@@ -47,6 +48,8 @@ export const DEFAULT_KEYBOARD_SHORTCUTS: [string, string][] = [
   ["mod+m", "insertMath true"],
   ["mod+shift+m", "toggleMathInline"],
   ["mod+k", "openLinkPopup"],
+  ["mod+;", "openSettings"],
+  ["mod+shift+;", "openDocumentSettings"],
 ]
 
 /** Bind the shortcuts from the user's settings to their commands. */

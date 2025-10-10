@@ -41,11 +41,14 @@ import { INSERT_TYPST_CODE_COMMAND } from "./components/plugins/typstCode"
 import {
   FILE_CLOSE_COMMAND,
   FILE_NEW_COMMAND,
+  FILE_NEW_FROM_TEMPLATE_COMMAND,
   FILE_OPEN_COMMAND,
   FILE_PREVIEW_COMMAND,
   FILE_SAVE_AS_COMMAND,
   FILE_SAVE_COMMAND,
+  OPEN_DOCUMENT_SETTINGS_COMMAND,
   OPEN_LINK_POPUP_COMMAND,
+  OPEN_SETTINGS_COMMAND,
 } from "./components/plugins/tyxCommands"
 
 const COMMANDS: Record<string, LexicalCommand<any>> = {
@@ -75,10 +78,13 @@ const COMMANDS: Record<string, LexicalCommand<any>> = {
   openLinkPopup: OPEN_LINK_POPUP_COMMAND,
   fileOpen: FILE_OPEN_COMMAND,
   fileNew: FILE_NEW_COMMAND,
+  fileNewFromTemplate: FILE_NEW_FROM_TEMPLATE_COMMAND,
   fileSave: FILE_SAVE_COMMAND,
   fileSaveAs: FILE_SAVE_AS_COMMAND,
   fileClose: FILE_CLOSE_COMMAND,
   filePreview: FILE_PREVIEW_COMMAND,
+  openSettings: OPEN_SETTINGS_COMMAND,
+  openDocumentSettings: OPEN_DOCUMENT_SETTINGS_COMMAND,
 }
 
 /** Parse the given parameter into the corresponding JS object, to be passed to command functions. */
@@ -174,7 +180,11 @@ export const executeCommand = (command: TyXCommand) => {
       try {
         window.currentEditor.dispatchCommand(
           lexicalCommand,
-          command.length === 2 ? command[1] : command.slice(1),
+          command.length === 2
+            ? command[1]
+            : command.length === 1
+              ? undefined
+              : command.slice(1),
         )
       } catch (e) {
         showFailureMessage(`Command '${command}' threw an exception: ${e}`)

@@ -10,6 +10,7 @@ import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { open } from "./backend"
 import DocumentTabs from "./components/DocumentTabs"
+import StatusBar from "./components/StatusBar"
 import WelcomeScreen from "./components/WelcomeScreen"
 import { TyXDocument, TyXSettings } from "./models"
 import { RTL_LANGUAGES } from "./translations"
@@ -74,7 +75,24 @@ const App = () => {
     >
       <ModalsProvider modalProps={{ centered: true }}>
         <Notifications />
-        {openDocuments.length > 0 ? <DocumentTabs /> : <WelcomeScreen />}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          <div
+            style={{
+              overflowY: "auto",
+              flex: 1,
+            }}
+          >
+            {openDocuments.length > 0 ? <DocumentTabs /> : <WelcomeScreen />}
+          </div>
+          <StatusBar />
+        </div>
       </ModalsProvider>
     </MantineProvider>
   )

@@ -6,16 +6,14 @@ import { ActionIcon, Button, Tabs } from "@mantine/core"
 import { IconFileText, IconPlus, IconX } from "@tabler/icons-react"
 import { ErrorBoundary } from "react-error-boundary"
 import { useTranslation } from "react-i18next"
-import { onNew } from "../backend"
+import { executeCommandSequence } from "../commands"
 import { TyXDocument } from "../models"
-import { showConfirmModal } from "../utilities"
-import { getLocalStorage, useLocalStorage } from "../utilities/hooks"
+import { useLocalStorage } from "../utilities/hooks"
 import Editor from "./Editor"
-import StatusBar from "./StatusBar"
 
 const DocumentTabs = () => {
   const { t } = useTranslation()
-  const [openDocuments, setOpenDocuments] = useLocalStorage<TyXDocument[]>({
+  const [openDocuments] = useLocalStorage<TyXDocument[]>({
     key: "Open Documents",
     defaultValue: [],
   })
@@ -23,15 +21,6 @@ const DocumentTabs = () => {
     key: "Current Document",
     defaultValue: 0,
   })
-
-  const closeDocument = (index: number) => {
-    const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents")
-    openDocuments.splice(index, 1)
-    setOpenDocuments([...openDocuments])
-    if (index <= currentDocument) {
-      setCurrentDocument(currentDocument - 1)
-    }
-  }
 
   return (
     <Tabs
@@ -59,14 +48,10 @@ const DocumentTabs = () => {
                 size="xs"
                 variant="transparent"
                 color="red"
-                onClick={() => {
-                  if (!openDocuments[currentDocument].dirty) {
-                    closeDocument(docIndex)
-                  } else {
-                    showConfirmModal(t("theChangesWontBeSaved") + "!", () =>
-                      closeDocument(docIndex),
-                    )
-                  }
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  executeCommandSequence(`fileClose ${docIndex}`)
                 }}
               >
                 <IconX />
@@ -81,7 +66,7 @@ const DocumentTabs = () => {
           mt={1.25}
           ml={5}
           leftSection={<IconPlus />}
-          onClick={onNew}
+          onClick={() => executeCommandSequence("fileNew")}
         >
           {t("new")}
         </Button>
@@ -98,28 +83,18 @@ const DocumentTabs = () => {
             flex: 1,
           }}
         >
-          <div
-            style={{
-              overflowY: "auto",
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-            }}
+          <ErrorBoundary
+            fallbackRender={({ error }) => (
+              <>
+                <p>This document appears to be corrupted!</p>
+                <pre>
+                  <code>{error.message}</code>
+                </pre>
+              </>
+            )}
           >
-            <ErrorBoundary
-              fallbackRender={({ error }) => (
-                <>
-                  <p>This document appears to be corrupted!</p>
-                  <pre>
-                    <code>{error.message}</code>
-                  </pre>
-                </>
-              )}
-            >
-              <Editor />
-            </ErrorBoundary>
-          </div>
-          <StatusBar />
+            <Editor />
+          </ErrorBoundary>
         </Tabs.Panel>
       )}
     </Tabs>

@@ -221,6 +221,14 @@ Opens the new file dialog.
 Example: ``fileNew``
 
 
+File New From Template
+~~~~~~~~~~~~~~~~~~~~~~
+
+Opens the templates dialog to create a new file.
+
+Example: ``fileNewFromTemplate``
+
+
 File Save
 ~~~~~~~~~
 
@@ -240,9 +248,11 @@ Example: ``fileSaveAs``
 File Close
 ~~~~~~~~~~
 
-Closes the current file.
+Closes the current file or the file at the specified index.
 
 Example: ``fileClose``
+
+Example: ``fileClose 0``
 
 
 File Preview
@@ -251,3 +261,17 @@ File Preview
 Previews the current file as a PDF.
 
 Example: ``filePreview``
+
+Open Settings
+~~~~~~~~~~~~~
+
+Opens the app settings modal.
+
+Example: ``openSettings``
+
+Open Document Settings
+~~~~~~~~~~~~~~~~~~~~~~
+
+Opens the document settings modal.
+
+Example: ``openDocumentSettings``

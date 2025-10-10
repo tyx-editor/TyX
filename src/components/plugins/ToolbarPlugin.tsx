@@ -12,7 +12,6 @@ import {
   Tooltip,
 } from "@mantine/core"
 import { useDebouncedCallback } from "@mantine/hooks"
-import { modals } from "@mantine/modals"
 import {
   IconAlignCenter,
   IconAlignJustified,
@@ -85,7 +84,7 @@ import React, {
   useState,
 } from "react"
 import { useTranslation } from "react-i18next"
-import { insertImage, isWeb, onPreview, onSave, save } from "../../backend"
+import { insertImage, isWeb, onPreview, save } from "../../backend"
 import { executeCommandSequence } from "../../commands"
 import tyx2typst from "../../compilers/tyx2typst"
 import { DEFAULT_SERVER_DEBOUNCE_MILLISECONDS, TyXDocument } from "../../models"
@@ -100,7 +99,6 @@ import {
 import { getSettings } from "../../settings"
 import { showSuccessMessage } from "../../utilities"
 import { useLocalStorage } from "../../utilities/hooks"
-import DocumentSettingsModal from "../DocumentSettingsModal"
 import { OPEN_LINK_POPUP_COMMAND } from "./tyxCommands"
 
 interface ToolbarState {
@@ -192,11 +190,6 @@ const ManagementControls = () => {
   )
 
   const doc = openDocuments[currentDocument]
-  const basename = (doc.filename ?? t("untitled"))
-    .split("/")
-    .pop()!
-    .split("\\")
-    .pop()
 
   const preview = (open = true) => {
     setLoadingPreview(true)
@@ -224,7 +217,10 @@ const ManagementControls = () => {
 
   return (
     <ToolbarControlGroup>
-      <ToolbarControl label="Save" onClick={onSave}>
+      <ToolbarControl
+        label="Save"
+        onClick={() => executeCommandSequence("fileSave")}
+      >
         <IconDeviceFloppy />
       </ToolbarControl>
       <ToolbarControl
@@ -262,12 +258,7 @@ const ManagementControls = () => {
       )}
       <ToolbarControl
         label={t("documentSettings")}
-        onClick={() =>
-          modals.open({
-            title: `${t("documentSettings")} (${basename})`,
-            children: <DocumentSettingsModal />,
-          })
-        }
+        onClick={() => executeCommandSequence("openDocumentSettings")}
       >
         <IconSettings />
       </ToolbarControl>

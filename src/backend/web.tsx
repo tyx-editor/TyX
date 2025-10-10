@@ -37,14 +37,6 @@ export const newFromTemplate = () => {
   // TODO
 }
 
-export const onClose = () => {
-  const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
-  const currentDocument = getLocalStorage<number>("Current Document")
-  openDocuments.splice(currentDocument, 1)
-  setLocalStorage("Open Documents", openDocuments)
-  setLocalStorage("Current Document", currentDocument - 1)
-}
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const onPreview = async (_open = false) => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])

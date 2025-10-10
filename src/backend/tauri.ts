@@ -47,14 +47,6 @@ export const onNew = () => {
 
 export const newFromTemplate = () => invoke("newfromtemplate")
 
-export const onClose = () => {
-  const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
-  const currentDocument = getLocalStorage<number>("Current Document")
-  openDocuments.splice(currentDocument, 1)
-  setLocalStorage("Open Documents", openDocuments)
-  setLocalStorage("Current Document", currentDocument - 1)
-}
-
 export const onPreview = async (open = false) => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")

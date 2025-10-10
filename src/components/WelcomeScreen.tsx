@@ -4,7 +4,6 @@
 
 import { LexicalComposer } from "@lexical/react/LexicalComposer"
 import { ActionIcon, Anchor, Button, Text } from "@mantine/core"
-import { modals } from "@mantine/modals"
 import {
   IconBrandGithub,
   IconFileTextSpark,
@@ -14,11 +13,11 @@ import {
 } from "@tabler/icons-react"
 import { t } from "i18next"
 import { useEffect, useState } from "react"
-import { getVersion, isWeb, newFromTemplate, onNew, open } from "../backend"
+import { getVersion, isWeb } from "../backend"
+import { executeCommandSequence } from "../commands"
 import { initialConfig } from "../config"
 import CurrentEditorPlugin from "./plugins/CurrentEditorPlugin"
 import TyXCommandsPlugin from "./plugins/TyXCommandsPlugin"
-import SettingsModal from "./SettingsModal"
 import UpdateChecker from "./UpdateChecker"
 
 const CREATED_WITH_LINKS = [
@@ -54,26 +53,27 @@ const WelcomeScreen = () => {
     >
       <h2>{t("welcome")}</h2>
       <Button.Group my="xs" orientation="vertical">
-        <Button leftSection={<IconPlus />} onClick={onNew}>
+        <Button
+          leftSection={<IconPlus />}
+          onClick={() => executeCommandSequence("fileNew")}
+        >
           {t("newEmptyDocument")}
         </Button>
         <Button
           leftSection={<IconFileTextSpark />}
-          onClick={() => newFromTemplate()}
+          onClick={() => executeCommandSequence("fileNewFromTemplate")}
         >
           {t("newFromTemplate")}
         </Button>
-        <Button leftSection={<IconFolderOpen />} onClick={() => open()}>
+        <Button
+          leftSection={<IconFolderOpen />}
+          onClick={() => executeCommandSequence("fileOpen")}
+        >
           {t("openDocument")}
         </Button>
         <Button
           leftSection={<IconSettings />}
-          onClick={() =>
-            modals.open({
-              title: t("settings"),
-              children: <SettingsModal />,
-            })
-          }
+          onClick={() => executeCommandSequence("openSettings")}
         >
           {t("settings")}
         </Button>

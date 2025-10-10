@@ -40,6 +40,7 @@
     "fontPaths": "Font Paths",
     "saveAsDefault": "Save as Default",
     "save": "Save",
-    "success": "Success"
+    "success": "Success",
+    "failed": "Failed"
   }
 }

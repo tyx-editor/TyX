@@ -7,6 +7,7 @@ import {
 } from "@tabler/icons-react"
 import React, { CSSProperties, useEffect } from "react"
 import { useTranslation } from "react-i18next"
+import { TyXDocument } from "../models"
 import { useLocalStorage } from "../utilities/hooks"
 
 const CURRENT_COMMAND_DELAY_MILLISECONDS = 3000
@@ -44,10 +45,14 @@ const KeyboardMapStatusBarItem = () => {
     key: "Keyboard Map",
     defaultValue: null,
   })
+  const [openDocuments] = useLocalStorage<TyXDocument[]>({
+    key: "Open Documents",
+    defaultValue: [],
+  })
 
   const { t } = useTranslation()
 
-  if (!keyboardMap) {
+  if (!keyboardMap || openDocuments.length === 0) {
     return null
   }
 
