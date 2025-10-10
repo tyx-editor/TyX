@@ -11,6 +11,7 @@ The default keyboard shortcuts have changed, it is recommended to reset to the d
 ### Added
 
 - More TyX commands for working with TyX itself: `fileNewFromTemplate`, `fileClose`, `openSettings` and `openDocumentSettings`.
+- A hint for the command which will be executed when clicking some command button is now shown in the status bar.
 
 ### Changed
 

@@ -99,6 +99,7 @@ import {
 import { getSettings } from "../../settings"
 import { showSuccessMessage } from "../../utilities"
 import { useLocalStorage } from "../../utilities/hooks"
+import CommandActionIcon from "../CommandActionIcon"
 import { OPEN_LINK_POPUP_COMMAND } from "./tyxCommands"
 
 interface ToolbarState {
@@ -136,7 +137,19 @@ const ToolbarControl = React.forwardRef<
     ref,
   ) => {
     if (command) {
-      onClick ??= () => executeCommandSequence(command)
+      return (
+        <CommandActionIcon
+          className="toolbar-control"
+          size={30}
+          variant={active ? undefined : "default"}
+          disabled={!enabled && (disabled || loading)}
+          // @ts-ignore
+          onMouseDown={(e) => e.preventDefault()}
+          command={command}
+        >
+          {loading ? <Loader size="xs" /> : children}
+        </CommandActionIcon>
+      )
     }
 
     return (
@@ -217,10 +230,7 @@ const ManagementControls = () => {
 
   return (
     <ToolbarControlGroup>
-      <ToolbarControl
-        label="Save"
-        onClick={() => executeCommandSequence("fileSave")}
-      >
+      <ToolbarControl label="Save" command="fileSave">
         <IconDeviceFloppy />
       </ToolbarControl>
       <ToolbarControl
@@ -258,7 +268,7 @@ const ManagementControls = () => {
       )}
       <ToolbarControl
         label={t("documentSettings")}
-        onClick={() => executeCommandSequence("openDocumentSettings")}
+        command="openDocumentSettings"
       >
         <IconSettings />
       </ToolbarControl>

@@ -2,13 +2,14 @@
  * @file A component showing the open document tabs as well as the current document.
  */
 
-import { ActionIcon, Button, Tabs } from "@mantine/core"
+import { Tabs } from "@mantine/core"
 import { IconFileText, IconPlus, IconX } from "@tabler/icons-react"
 import { ErrorBoundary } from "react-error-boundary"
 import { useTranslation } from "react-i18next"
-import { executeCommandSequence } from "../commands"
 import { TyXDocument } from "../models"
 import { useLocalStorage } from "../utilities/hooks"
+import CommandActionIcon from "./CommandActionIcon"
+import CommandButton from "./CommandButton"
 import Editor from "./Editor"
 
 const DocumentTabs = () => {
@@ -43,33 +44,29 @@ const DocumentTabs = () => {
             value={docIndex.toString()}
             leftSection={<IconFileText />}
             rightSection={
-              <ActionIcon
+              <CommandActionIcon
                 component="span"
                 size="xs"
                 variant="transparent"
                 color="red"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  executeCommandSequence(`fileClose ${docIndex}`)
-                }}
+                command={`fileClose ${docIndex}`}
               >
                 <IconX />
-              </ActionIcon>
+              </CommandActionIcon>
             }
           >
             {doc.filename?.split("/").pop()?.split("\\").pop() ?? t("untitled")}
           </Tabs.Tab>
         ))}
-        <Button
+        <CommandButton
           variant="subtle"
           mt={1.25}
           ml={5}
           leftSection={<IconPlus />}
-          onClick={() => executeCommandSequence("fileNew")}
+          command="fileNew"
         >
           {t("new")}
-        </Button>
+        </CommandButton>
       </Tabs.List>
 
       {openDocuments[currentDocument] !== undefined && (

@@ -2,6 +2,7 @@ import { Tooltip } from "@mantine/core"
 import { useTimeout } from "@mantine/hooks"
 import {
   IconAlertCircle,
+  IconInfoCircle,
   IconKeyboard,
   IconTerminal,
 } from "@tabler/icons-react"
@@ -64,9 +65,17 @@ const KeyboardMapStatusBarItem = () => {
   )
 }
 
-const CurrentCommandStatusBarItem = () => {
+const CurrentCommandStatusBarItem = ({
+  localStorageKey,
+  color,
+  icon,
+}: {
+  localStorageKey: string
+  color?: string
+  icon: React.ReactNode
+}) => {
   const [currentCommand, setCurrentCommand] = useLocalStorage<string | null>({
-    key: "Current Command",
+    key: localStorageKey,
     defaultValue: null,
   })
   const timeout = useTimeout(
@@ -90,10 +99,11 @@ const CurrentCommandStatusBarItem = () => {
       style={{
         fontFamily: "'Courier New', Courier, monospace",
         cursor: "pointer",
+        color,
       }}
       onClick={() => navigator.clipboard.writeText(currentCommand)}
     >
-      <IconTerminal style={{ marginInlineEnd: 5 }} />
+      {icon}
       {currentCommand}
     </StatusBarItem>
   )
@@ -150,7 +160,15 @@ const StatusBar = () => {
         paddingRight: 10,
       }}
     >
-      <CurrentCommandStatusBarItem />
+      <CurrentCommandStatusBarItem
+        localStorageKey="Hover Command"
+        color="cyan"
+        icon={<IconInfoCircle style={{ marginInlineEnd: 5 }} />}
+      />
+      <CurrentCommandStatusBarItem
+        localStorageKey="Current Command"
+        icon={<IconTerminal style={{ marginInlineEnd: 5 }} />}
+      />
       <CurrentWarningStatusBarItem />
       <span style={{ flexGrow: 1 }} />
       <KeyboardMapStatusBarItem />

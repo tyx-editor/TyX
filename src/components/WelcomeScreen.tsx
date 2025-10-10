@@ -14,8 +14,8 @@ import {
 import { t } from "i18next"
 import { useEffect, useState } from "react"
 import { getVersion, isWeb } from "../backend"
-import { executeCommandSequence } from "../commands"
 import { initialConfig } from "../config"
+import CommandButton from "./CommandButton"
 import CurrentEditorPlugin from "./plugins/CurrentEditorPlugin"
 import TyXCommandsPlugin from "./plugins/TyXCommandsPlugin"
 import UpdateChecker from "./UpdateChecker"
@@ -53,30 +53,21 @@ const WelcomeScreen = () => {
     >
       <h2>{t("welcome")}</h2>
       <Button.Group my="xs" orientation="vertical">
-        <Button
-          leftSection={<IconPlus />}
-          onClick={() => executeCommandSequence("fileNew")}
-        >
+        <CommandButton leftSection={<IconPlus />} command="fileNew">
           {t("newEmptyDocument")}
-        </Button>
-        <Button
+        </CommandButton>
+        <CommandButton
           leftSection={<IconFileTextSpark />}
-          onClick={() => executeCommandSequence("fileNewFromTemplate")}
+          command="fileNewFromTemplate"
         >
           {t("newFromTemplate")}
-        </Button>
-        <Button
-          leftSection={<IconFolderOpen />}
-          onClick={() => executeCommandSequence("fileOpen")}
-        >
+        </CommandButton>
+        <CommandButton leftSection={<IconFolderOpen />} command="fileOpen">
           {t("openDocument")}
-        </Button>
-        <Button
-          leftSection={<IconSettings />}
-          onClick={() => executeCommandSequence("openSettings")}
-        >
+        </CommandButton>
+        <CommandButton leftSection={<IconSettings />} command="openSettings">
           {t("settings")}
-        </Button>
+        </CommandButton>
       </Button.Group>
       <Text c="grey">v{version}</Text>
       <Text
