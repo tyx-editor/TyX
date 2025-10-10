@@ -12,7 +12,8 @@ import {
 import React from "react"
 import { ImageEditor } from "./ImagePlugin"
 
-export const INSERT_IMAGE_COMMAND: LexicalCommand<string> = createCommand()
+export const INSERT_IMAGE_COMMAND: LexicalCommand<string | undefined> =
+  createCommand()
 
 export type SerializedImageNode = Spread<
   {

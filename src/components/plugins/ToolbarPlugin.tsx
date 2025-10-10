@@ -1,6 +1,5 @@
 import { $isCodeNode } from "@lexical/code"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
-import { $isHeadingNode } from "@lexical/rich-text"
 import { $findTableNode } from "@lexical/table"
 import { mergeRegister } from "@lexical/utils"
 import {
@@ -84,25 +83,16 @@ import React, {
   useState,
 } from "react"
 import { useTranslation } from "react-i18next"
-import { insertImage, isWeb, onPreview, save } from "../../backend"
+import { isWeb, onPreview } from "../../backend"
 import { executeCommandSequence } from "../../commands"
-import tyx2typst from "../../compilers/tyx2typst"
-import { DEFAULT_SERVER_DEBOUNCE_MILLISECONDS, TyXDocument } from "../../models"
+import { DEFAULT_SERVER_DEBOUNCE_MILLISECONDS } from "../../models"
 import {
   $findTopLevelElement,
-  clearFormatting,
-  formatCode,
-  formatHeading,
-  formatQuote,
+  $getToolbarState,
   getSelectedNode,
 } from "../../resources/playground"
 import { getSettings } from "../../settings"
-import {
-  getEditorSelection,
-  setEditorSelection,
-  showSuccessMessage,
-} from "../../utilities"
-import { useLocalStorage } from "../../utilities/hooks"
+import { getEditorSelection, setEditorSelection } from "../../utilities"
 import CommandActionIcon from "../CommandActionIcon"
 import { OPEN_LINK_POPUP_COMMAND } from "./tyxCommands"
 
@@ -118,8 +108,6 @@ interface ToolbarState {
   codeLanguage?: string
   elementKey?: NodeKey
 }
-type ToolbarStateKey = keyof ToolbarState
-type ToolbarStateValue<Key extends keyof ToolbarState> = ToolbarState[Key]
 const ToolbarContext = React.createContext<ToolbarState>({})
 const useToolbarState = () => useContext(ToolbarContext)
 
@@ -143,6 +131,7 @@ const ToolbarControl = React.forwardRef<
     if (command) {
       return (
         <CommandActionIcon
+          ref={ref}
           label={label}
           className="toolbar-control"
           size={30}
@@ -194,20 +183,10 @@ const ManagementControls = () => {
   const [runningServer, setRunningServer] = useState(
     getSettings().autoStartServer ?? false,
   )
-  const [openDocuments] = useLocalStorage<TyXDocument[]>({
-    key: "Open Documents",
-    defaultValue: [],
-  })
-  const [currentDocument] = useLocalStorage<number>({
-    key: "Current Document",
-    defaultValue: 0,
-  })
   const debounce = useMemo(
     () => getSettings().serverDebounce ?? DEFAULT_SERVER_DEBOUNCE_MILLISECONDS,
     [],
   )
-
-  const doc = openDocuments[currentDocument]
 
   const preview = (open = true) => {
     setLoadingPreview(true)
@@ -238,24 +217,13 @@ const ManagementControls = () => {
       <ToolbarControl label="Save" command="fileSave">
         <IconDeviceFloppy />
       </ToolbarControl>
-      <ToolbarControl
-        label="Export to Typst"
-        onClick={() => {
-          const filename = (doc.filename ?? "Untitled.tyx").replace(
-            ".tyx",
-            ".typ",
-          )
-          save(filename, tyx2typst(doc)).then(() =>
-            showSuccessMessage(`Document exported to ${filename}.`),
-          )
-        }}
-      >
+      <ToolbarControl label="Export to Typst" command="fileExport typst">
         <IconFileCode />
       </ToolbarControl>
       <ToolbarControl
         label="Preview PDF"
         loading={loadingPreview}
-        onClick={() => preview()}
+        command="filePreview"
       >
         <IconEye />
       </ToolbarControl>
@@ -282,7 +250,6 @@ const ManagementControls = () => {
 }
 
 const FormatControls = () => {
-  const [editor] = useLexicalComposerContext()
   const toolbarState = useToolbarState()
 
   return (
@@ -336,10 +303,7 @@ const FormatControls = () => {
       >
         <IconCode />
       </ToolbarControl>
-      <ToolbarControl
-        label="Clear formatting"
-        onClick={() => clearFormatting(editor)}
-      >
+      <ToolbarControl label="Clear formatting" command="clearFormatting">
         <IconClearFormatting />
       </ToolbarControl>
     </ToolbarControlGroup>
@@ -347,12 +311,9 @@ const FormatControls = () => {
 }
 
 const InsertControls = () => {
-  const [editor] = useLexicalComposerContext()
-  const toolbarState = useToolbarState()
-
   return (
     <ToolbarControlGroup>
-      <ToolbarControl label="Insert image" onClick={insertImage}>
+      <ToolbarControl label="Insert image" command="insertImage">
         <IconPhoto />
       </ToolbarControl>
       <ToolbarControl label="Insert function" command="insertFunctionCall">
@@ -364,10 +325,7 @@ const InsertControls = () => {
       <ToolbarControl label="Insert math" command="insertMath true">
         <IconSum />
       </ToolbarControl>
-      <ToolbarControl
-        label="Insert quote"
-        onClick={() => formatQuote(editor, toolbarState.blockType ?? "")}
-      >
+      <ToolbarControl label="Insert quote" command="insertQuote">
         <IconBlockquote />
       </ToolbarControl>
       <ToolbarControl
@@ -385,10 +343,7 @@ const InsertControls = () => {
       <ToolbarControl label="Insert ordered list" command="insertOrderedList">
         <IconListNumbers />
       </ToolbarControl>
-      <ToolbarControl
-        label="Insert code block"
-        onClick={() => formatCode(editor, toolbarState.blockType ?? "")}
-      >
+      <ToolbarControl label="Insert code block" command="insertCodeBlock">
         <IconCode />
       </ToolbarControl>
       <ToolbarControl
@@ -414,7 +369,6 @@ const InsertControls = () => {
 }
 
 const HeadingControls = () => {
-  const [editor] = useLexicalComposerContext()
   const toolbarState = useToolbarState()
 
   return (
@@ -422,36 +376,28 @@ const HeadingControls = () => {
       <ToolbarControl
         active={toolbarState.blockType === "h1"}
         label="Insert heading"
-        onClick={() =>
-          formatHeading(editor, toolbarState.blockType ?? "", "h1")
-        }
+        command="insertHeading 1"
       >
         <IconH1 />
       </ToolbarControl>
       <ToolbarControl
         active={toolbarState.blockType === "h2"}
         label="Insert subheading"
-        onClick={() =>
-          formatHeading(editor, toolbarState.blockType ?? "", "h2")
-        }
+        command="insertHeading 2"
       >
         <IconH2 />
       </ToolbarControl>
       <ToolbarControl
         active={toolbarState.blockType === "h3"}
         label="Insert subsubheading"
-        onClick={() =>
-          formatHeading(editor, toolbarState.blockType ?? "", "h3")
-        }
+        command="insertHeading 3"
       >
         <IconH3 />
       </ToolbarControl>
       <ToolbarControl
         active={toolbarState.blockType === "h4"}
         label="Insert subsubsubheading"
-        onClick={() =>
-          formatHeading(editor, toolbarState.blockType ?? "", "h4")
-        }
+        command="insertHeading 4"
       >
         <IconH4 />
       </ToolbarControl>
@@ -544,7 +490,7 @@ const LinkControls = () => {
 
   const save = () => {
     setEditorSelection(selection)
-    executeCommandSequence(`toggleLink ${ref.current!.value}`)
+    executeCommandSequence(`setLink ${ref.current!.value}`)
     setOpened(false)
   }
 
@@ -572,12 +518,7 @@ const LinkControls = () => {
     <ToolbarControlGroup>
       <Popover opened={opened} onChange={changeOpened}>
         <Popover.Target>
-          <ToolbarControl
-            label="Link"
-            onClick={() => {
-              changeOpened(true)
-            }}
-          >
+          <ToolbarControl label="Link" command="openLinkPopup">
             <IconLink />
           </ToolbarControl>
         </Popover.Target>
@@ -600,7 +541,7 @@ const LinkControls = () => {
           />
         </Popover.Dropdown>
       </Popover>
-      <ToolbarControl label="Unlink" command="toggleLink null">
+      <ToolbarControl label="Unlink" command="setLink null">
         <IconUnlink />
       </ToolbarControl>
     </ToolbarControlGroup>
@@ -855,39 +796,10 @@ const ToolbarPlugin = () => {
   const [editor] = useLexicalComposerContext()
   const [toolbarState, setToolbarState] = useState<ToolbarState>({})
 
-  const updateToolbarState = useCallback(
-    <Key extends ToolbarStateKey>(key: Key, value: ToolbarStateValue<Key>) => {
-      setToolbarState((state) => ({ ...state, [key]: value }))
-    },
-    [],
-  )
-
-  const $updateToolbar = useCallback(() => {
-    const selection = $getSelection()
-    if ($isRangeSelection(selection)) {
-      const anchorNode = selection.anchor.getNode()
-      const element = $findTopLevelElement(anchorNode)
-      updateToolbarState("isBold", selection.hasFormat("bold"))
-      updateToolbarState("isItalic", selection.hasFormat("italic"))
-      updateToolbarState("isUnderline", selection.hasFormat("underline"))
-      updateToolbarState(
-        "isStrikethrough",
-        selection.hasFormat("strikethrough"),
-      )
-      updateToolbarState("isSubscript", selection.hasFormat("subscript"))
-      updateToolbarState("isSuperscript", selection.hasFormat("superscript"))
-      updateToolbarState("isCode", selection.hasFormat("code"))
-      updateToolbarState(
-        "blockType",
-        $isHeadingNode(element) ? element.getTag() : element.getType(),
-      )
-      updateToolbarState(
-        "codeLanguage",
-        $isCodeNode(element) ? (element.getLanguage() ?? undefined) : undefined,
-      )
-      updateToolbarState("elementKey", element.getKey())
-    }
-  }, [])
+  const $updateToolbar = () => {
+    const newState = $getToolbarState()
+    setToolbarState((state) => ({ ...state, ...newState }))
+  }
 
   useEffect(() => {
     return editor.registerCommand(

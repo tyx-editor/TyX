@@ -1,9 +1,15 @@
 import { createCommand, LexicalCommand } from "lexical"
 
+export const CLEAR_FORMATTING_COMMAND: LexicalCommand<void> = createCommand()
+export const INSERT_QUOTE_COMMAND: LexicalCommand<void> = createCommand()
+export const INSERT_CODE_BLOCK_COMMAND: LexicalCommand<void> = createCommand()
+export const INSERT_HEADING_COMMAND: LexicalCommand<number> = createCommand()
 export const OPEN_LINK_POPUP_COMMAND: LexicalCommand<void> = createCommand()
+export const INSERT_FUNCTION: LexicalCommand<void> = createCommand()
 
 export const FILE_OPEN_COMMAND: LexicalCommand<void> = createCommand()
 export const FILE_NEW_COMMAND: LexicalCommand<void> = createCommand()
+export const FILE_EXPORT_COMMAND: LexicalCommand<string> = createCommand()
 export const FILE_NEW_FROM_TEMPLATE_COMMAND: LexicalCommand<void> =
   createCommand()
 export const FILE_SAVE_COMMAND: LexicalCommand<void> = createCommand()
@@ -15,5 +21,3 @@ export const FILE_PREVIEW_COMMAND: LexicalCommand<void> = createCommand()
 export const OPEN_SETTINGS_COMMAND: LexicalCommand<void> = createCommand()
 export const OPEN_DOCUMENT_SETTINGS_COMMAND: LexicalCommand<void> =
   createCommand()
-
-export const INSERT_FUNCTION: LexicalCommand<void> = createCommand()

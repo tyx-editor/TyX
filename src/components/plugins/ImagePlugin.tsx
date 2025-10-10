@@ -1,7 +1,7 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { $insertNodes, COMMAND_PRIORITY_EDITOR } from "lexical"
 import { useEffect, useState } from "react"
-import { readImage } from "../../backend"
+import { insertImage, readImage } from "../../backend"
 import { getCurrentDocument } from "../../utilities"
 import { $createImageNode, INSERT_IMAGE_COMMAND } from "./image"
 
@@ -24,6 +24,11 @@ const ImagePlugin = () => {
     return editor.registerCommand(
       INSERT_IMAGE_COMMAND,
       (src) => {
+        if (src === undefined) {
+          insertImage()
+          return true
+        }
+
         $insertNodes([$createImageNode(src)])
         return true
       },

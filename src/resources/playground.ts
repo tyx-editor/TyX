@@ -1,5 +1,5 @@
 // Utilities from Lexical Playground.
-import { $createCodeNode } from "@lexical/code"
+import { $createCodeNode, $isCodeNode } from "@lexical/code"
 import {
   $createHeadingNode,
   $createQuoteNode,
@@ -196,4 +196,28 @@ export function matchModifier(
   prop: keyof ModifierMask,
 ) {
   return (mask[prop] || false) == event[prop]
+}
+
+export const $getToolbarState = () => {
+  const selection = $getSelection()
+  if ($isRangeSelection(selection)) {
+    const anchorNode = selection.anchor.getNode()
+    const element = $findTopLevelElement(anchorNode)
+    return {
+      isBold: selection.hasFormat("bold"),
+      isItalic: selection.hasFormat("italic"),
+      isUnderline: selection.hasFormat("underline"),
+      isStrikethrough: selection.hasFormat("strikethrough"),
+      isSubscript: selection.hasFormat("subscript"),
+      isSuperscript: selection.hasFormat("superscript"),
+      isCode: selection.hasFormat("code"),
+      blockType: $isHeadingNode(element) ? element.getTag() : element.getType(),
+      codeLanguage: $isCodeNode(element)
+        ? (element.getLanguage() ?? undefined)
+        : undefined,
+      elementKey: element.getKey(),
+    }
+  }
+
+  return {}
 }

@@ -31,6 +31,14 @@ Toggle the format of the current selected text in one of  'bold', 'underline', '
 Example: ``formatText bold``
 
 
+Clear Formatting
+^^^^^^^^^^^^^^^^
+
+Clear all formatting of the selected text.
+
+Example: ``clearFormatting``
+
+
 Undo
 ^^^^
 
@@ -87,6 +95,32 @@ Insert a horizontal line.
 Example: ``insertHorizontalLine``
 
 
+Insert Quote
+^^^^^^^^^^^^
+
+Insert a quote node.
+
+Example: ``insertQuote``
+
+
+Insert Code Block
+^^^^^^^^^^^^^^^^^
+
+Insert a code block node.
+
+Example: ``insertCodeBlock``
+
+
+Insert Heading
+^^^^^^^^^^^^^^
+
+Insert a heading node of the specified level.
+
+Example: ``insertHeading 1``
+
+Example: ``insertHeading 6``
+
+
 Insert Typst Code
 ^^^^^^^^^^^^^^^^^
 
@@ -98,9 +132,13 @@ Example: ``insertTypstCode``
 Insert Image
 ^^^^^^^^^^^^
 
-Insert an image node with the given source URL.
+Insert an image node with the given source URL. If no argument is given, open a dialog to pick an image.
+
+Note: images are not supported on the web version due to local storage limit concerns.
 
 Example: ``insertImage ./example.png``
+
+Example: ``insertImage``
 
 
 Insert Function Call
@@ -193,12 +231,12 @@ Removes the current column in the current table.
 Example: ``tableRemoveColumn``
 
 
-Toggle Link
-^^^^^^^^^^^
+Set Link
+^^^^^^^^
 
-Toggles the link of the currently selected text to equal the given URL.
+Sets the link of the currently selected text to equal the given URL.
 
-Example: ``toggleLink https://tyx-editor.com``
+Example: ``setLink https://tyx-editor.com``
 
 
 Open Link Popup
@@ -247,6 +285,14 @@ File Save As
 Opens the file save as dialog.
 
 Example: ``fileSaveAs``
+
+
+File Export
+~~~~~~~~~~~
+
+Exports the file to the given format. Currently only ``typst`` is supported.
+
+Example: ``fileExport typst``
 
 
 File Close
