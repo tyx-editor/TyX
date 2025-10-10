@@ -162,7 +162,11 @@ export const FunctionCallEditor = ({
   return (
     <>
       <span
-        style={{ cursor: "pointer" }}
+        style={{
+          cursor: "pointer",
+          userSelect: "none",
+          WebkitUserSelect: "none",
+        }}
         onClick={() =>
           modals.open({
             title: `Edit ${stringifyFunction(name, positionParameters, namedParameters, false).replace("()", "")}`,

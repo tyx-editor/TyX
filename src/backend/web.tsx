@@ -49,6 +49,7 @@ export const onPreview = async (_open = false) => {
     diagnostics: "none",
   })
   if (result.result) {
+    // @ts-ignore
     const blob = new Blob([result.result], {
       type: "application/pdf",
     })

@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.2.10] - 2025-10-10
 
 The default keyboard shortcuts have changed, it is recommended to reset to the defaults after updating!
 
@@ -13,6 +13,7 @@ The default keyboard shortcuts have changed, it is recommended to reset to the d
 - A new command and button for inserting function calls easier.
 - More TyX commands for working with TyX itself: `fileNewFromTemplate`, `fileClose`, `openSettings` and `openDocumentSettings`.
 - A hint for the command which will be executed when clicking some command button is now shown in the status bar.
+- More commands for doing actions in the toolbar are now available.
 
 ### Changed
 
