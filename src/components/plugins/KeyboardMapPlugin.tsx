@@ -19,7 +19,11 @@ import {
 } from "../../utilities/hooks"
 import { KEYBOARD_MAPS, TOGGLE_KEYBOARD_MAP_COMMAND } from "./keyboardMap"
 
-const KeyboardMapPlugin = () => {
+const KeyboardMapPlugin = ({
+  skipInitialization,
+}: {
+  skipInitialization?: boolean
+}) => {
   const [editor] = useLexicalComposerContext()
   const [settings] = useLocalStorage<TyXSettings>({
     key: "Settings",
@@ -117,7 +121,9 @@ const KeyboardMapPlugin = () => {
   }, [editor])
 
   useEffect(() => {
-    setLocalStorage("Keyboard Map", settings.keyboardMap ?? null)
+    if (!skipInitialization) {
+      setLocalStorage("Keyboard Map", settings.keyboardMap ?? null)
+    }
   }, [settings])
 
   return null

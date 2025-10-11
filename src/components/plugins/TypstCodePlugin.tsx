@@ -65,7 +65,7 @@ export const TypstCodeEditor = ({
             $isTypstCodeNode(node) &&
             text.read(() => $getRoot().getTextContentSize()) === 0
           ) {
-            node.remove()
+            node.remove(true)
             e.preventDefault()
             return true
           }

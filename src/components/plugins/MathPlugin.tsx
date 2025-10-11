@@ -3,6 +3,7 @@ import { useLexicalNodeSelection } from "@lexical/react/useLexicalNodeSelection"
 import { mergeRegister } from "@lexical/utils"
 import {
   $createNodeSelection,
+  $createParagraphNode,
   $getNodeByKey,
   $getSelection,
   $insertNodes,
@@ -171,7 +172,17 @@ export const MathEditor = ({
             e.stopImmediatePropagation()
             editor.update(() => {
               const node = $getNodeByKey(nodeKey)
-              node?.remove()
+              if (node === null) {
+                return
+              }
+
+              if (!node.isInline()) {
+                const p = $createParagraphNode()
+                node.replace(p)
+                p.select()
+              } else {
+                node.remove(true)
+              }
             })
           }
         })

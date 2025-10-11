@@ -7,9 +7,11 @@ import {
   $getRoot,
   $getSelection,
   $isRangeSelection,
+  COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_HIGH,
   KEY_ARROW_LEFT_COMMAND,
   KEY_ARROW_RIGHT_COMMAND,
+  KEY_DOWN_COMMAND,
   LexicalEditor,
   NodeKey,
 } from "lexical"
@@ -82,6 +84,31 @@ const NestedEditorPlugin = ({
         KEY_ARROW_RIGHT_COMMAND,
         () => callback(true),
         COMMAND_PRIORITY_HIGH,
+      ),
+      editor.registerCommand(
+        KEY_DOWN_COMMAND,
+        (e) => {
+          if (e.key === "Backspace" && $getRoot().getTextContentSize() === 0) {
+            originalEditor.update(() => {
+              const node = $getNodeByKey(nodeKey)
+              if (node === null) {
+                return
+              }
+
+              if (!node.isInline()) {
+                const p = $createParagraphNode()
+                node.replace(p)
+                p.select()
+              } else {
+                node.remove(true)
+              }
+            })
+            e.preventDefault()
+            return true
+          }
+          return false
+        },
+        COMMAND_PRIORITY_CRITICAL,
       ),
     )
   }, [editor, originalEditor, nodeKey])

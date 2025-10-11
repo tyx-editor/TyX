@@ -254,7 +254,7 @@ export const FunctionCallEditor = ({
               <TypstCodePlugin />
               <ImagePlugin />
               <CurrentEditorPlugin />
-              <KeyboardMapPlugin />
+              <KeyboardMapPlugin skipInitialization />
               <NestedEditorPlugin
                 editor={editor}
                 nodeKey={nodeKey}
@@ -276,9 +276,12 @@ export const InsertFunctionCallModal = () => {
   const functions = useMemo(() => getFunctions(), [])
 
   const insert = () => {
-    restoreEditorSelection()
-    executeCommandSequence(`insertFunctionCall ${name}`)
     modals.closeAll()
+    // TODO: why is this hack needed?
+    setTimeout(() => {
+      restoreEditorSelection()
+      executeCommandSequence(`insertFunctionCall ${name}`)
+    }, 100)
   }
 
   return (
