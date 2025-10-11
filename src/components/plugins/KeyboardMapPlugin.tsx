@@ -47,7 +47,24 @@ const KeyboardMapPlugin = ({
       editor.registerCommand(
         KEY_DOWN_COMMAND,
         (e) => {
-          if ($getSelection() === null) {
+          const selection = $getSelection()
+          if (selection === null) {
+            return false
+          }
+
+          // Keyboard map is disabled inside these nodes.
+          if (
+            selection
+              .getNodes()
+              .some(
+                (node) =>
+                  node
+                    .getParents()
+                    .some((parent) => parent.getType() === "code") ||
+                  node.getType() === "typstcode" ||
+                  node.getType() === "code",
+              )
+          ) {
             return false
           }
 
