@@ -11,11 +11,14 @@ import { IconDeviceFloppy, IconFunction, IconPlus } from "@tabler/icons-react"
 import {
   $createNodeSelection,
   $getNodeByKey,
+  $getSelection,
   $insertNodes,
   $setSelection,
   COMMAND_PRIORITY_EDITOR,
+  COMMAND_PRIORITY_HIGH,
   LexicalEditor,
   NodeKey,
+  SELECTION_CHANGE_COMMAND,
 } from "lexical"
 import { useEffect, useMemo, useState } from "react"
 import { executeCommandSequence } from "../../commands"
@@ -33,6 +36,7 @@ import {
 import ImagePlugin from "./ImagePlugin"
 import KeyboardMapPlugin from "./KeyboardMapPlugin"
 import MathPlugin from "./MathPlugin"
+import NestedEditorPlugin from "./NestedEditorPlugin"
 import TypstCodePlugin from "./TypstCodePlugin"
 import { UPDATE_LOCAL_STORAGE_COMMAND } from "./updateLocalStorage"
 
@@ -159,6 +163,23 @@ export const FunctionCallEditor = ({
 }) => {
   const [editor] = useLexicalComposerContext()
 
+  useEffect(() => {
+    return editor.registerCommand(
+      SELECTION_CHANGE_COMMAND,
+      () => {
+        const selection = $getSelection()
+        const nodes = selection?.getNodes() ?? []
+        if (nodes.length === 1 && nodes[0].getKey() === nodeKey) {
+          if (contents[0] !== undefined) {
+            contents[0].focus(undefined, { defaultSelection: "rootStart" })
+          }
+        }
+        return false
+      },
+      COMMAND_PRIORITY_HIGH,
+    )
+  }, [editor])
+
   return (
     <>
       <span
@@ -234,6 +255,15 @@ export const FunctionCallEditor = ({
               <ImagePlugin />
               <CurrentEditorPlugin />
               <KeyboardMapPlugin />
+              <NestedEditorPlugin
+                editor={editor}
+                nodeKey={nodeKey}
+                first={parseInt(contentIndex, 10) === 0}
+                last={
+                  parseInt(contentIndex, 10) ===
+                  Object.keys(contents).length - 1
+                }
+              />
             </LexicalNestedComposer>
           ))}
     </>
@@ -262,7 +292,7 @@ export const InsertFunctionCallModal = () => {
         value={name}
         onChange={setName}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
+          if (e.key === "Enter" && functions[name] !== undefined) {
             e.preventDefault()
             insert()
           }

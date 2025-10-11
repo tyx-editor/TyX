@@ -25,7 +25,7 @@
         "react-dom": "^18.3.1",
         "react-error-boundary": "^6.0.0",
         "react-i18next": "^15.7.4",
-        "tex2typst": "^0.3.25",
+        "tex2typst": "^0.3.26",
         "zod": "^3.25.76",
       },
       "devDependencies": {
@@ -1218,7 +1218,7 @@
 
     "tar-stream": ["tar-stream@3.1.7", "", { "dependencies": { "b4a": "^1.6.4", "fast-fifo": "^1.2.0", "streamx": "^2.15.0" } }, "sha512-qJj60CXt7IU1Ffyc3NJMjh6EkuCFej46zUqJ4J7pqYlThyd9bO0XBTmcOIhSzZJVWfsLks0+nle/j538YAW9RQ=="],
 
-    "tex2typst": ["tex2typst@0.3.25", "", {}, "sha512-5lhTQ5SQgnuh0Keq7WYYXHVS0Ar/WgG+WS9w4rC0bzjPa0dmyQHjqNjw0LMuL3r7eZqwfnyaNWQAjnuP3txYrA=="],
+    "tex2typst": ["tex2typst@0.3.26", "", {}, "sha512-RCu13wTYGRlb8GPczJYeE6XC/k04cVpwHlEM34ETK8FaMF8WOvL6kDpd+6mmGkG02kl1cppfSeZiyBPphMjV1A=="],
 
     "text-decoder": ["text-decoder@1.2.3", "", { "dependencies": { "b4a": "^1.6.4" } }, "sha512-3/o9z3X0X0fTupwsYvR03pJ/DjWuqqrfwBgTQzdWDiQSm9KitAyz/9WqsT2JQW7KV2m+bC2ol/zqpW37NHxLaA=="],
 
