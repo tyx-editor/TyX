@@ -112,7 +112,9 @@ export const MathEditor = ({
           const target = e.target as MathfieldElement
           updateValue(
             target.getValue(),
-            tex2typst(target.getValue("latex-without-placeholders")),
+            tex2typst(target.getValue("latex-without-placeholders"), {
+              customTexMacros: { "\\differentialD": "\\text{d}" },
+            }),
           )
         })
 
@@ -160,7 +162,11 @@ export const MathEditor = ({
 
         mf.addEventListener("beforeinput", (e: InputEvent) => {
           const target = e.target as MathfieldElement
-          if (!target.value && e.inputType === "deleteContentBackward") {
+          if (
+            !target.value &&
+            e.inputType === "deleteContentBackward" &&
+            !target.shadowRoot?.querySelector(".ML__raw-latex")
+          ) {
             e.preventDefault()
             e.stopImmediatePropagation()
             editor.update(() => {
