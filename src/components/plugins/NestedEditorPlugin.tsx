@@ -9,13 +9,16 @@ import {
   $isRangeSelection,
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_HIGH,
+  KEY_ARROW_DOWN_COMMAND,
   KEY_ARROW_LEFT_COMMAND,
   KEY_ARROW_RIGHT_COMMAND,
+  KEY_ARROW_UP_COMMAND,
   KEY_DOWN_COMMAND,
   LexicalEditor,
   NodeKey,
 } from "lexical"
 import { useEffect } from "react"
+import { $isRTL } from "./utilities"
 
 const NestedEditorPlugin = ({
   editor: originalEditor,
@@ -31,15 +34,19 @@ const NestedEditorPlugin = ({
   const [editor] = useLexicalComposerContext()
 
   useEffect(() => {
-    const callback = (isFirst: boolean) => {
+    const callback = (backward: boolean, ignoreRTL?: boolean) => {
+      if ($isRTL() && !ignoreRTL) {
+        backward = !backward
+      }
+
       const selection = $getSelection()
       const root = $getRoot()
-      const firstOrLastNode = isFirst
+      const firstOrLastNode = backward
         ? root.getFirstDescendant()
         : root.getLastDescendant()
 
       // Only add a paragraph before/after if the nested editor is the first/last one.
-      if (!(isFirst ? first : last)) {
+      if (!(backward ? first : last)) {
         return false
       }
 
@@ -47,7 +54,7 @@ const NestedEditorPlugin = ({
         firstOrLastNode === null ||
         ($isRangeSelection(selection) &&
           firstOrLastNode.getKey() === selection.focus.key &&
-          (isFirst
+          (backward
             ? selection.focus.offset === 0
             : $isAtNodeEnd(selection.focus)))
       ) {
@@ -56,12 +63,12 @@ const NestedEditorPlugin = ({
           if (
             node !== null &&
             node ===
-              (isFirst
+              (backward
                 ? $getRoot().getFirstDescendant()
                 : $getRoot().getLastDescendant())
           ) {
             const p = $createParagraphNode()
-            if (isFirst) {
+            if (backward) {
               node.insertBefore(p)
             } else {
               node.insertAfter(p)
@@ -77,12 +84,22 @@ const NestedEditorPlugin = ({
     return mergeRegister(
       editor.registerCommand(
         KEY_ARROW_LEFT_COMMAND,
-        () => callback(false),
+        () => callback(true),
+        COMMAND_PRIORITY_HIGH,
+      ),
+      editor.registerCommand(
+        KEY_ARROW_UP_COMMAND,
+        () => callback(true, true),
         COMMAND_PRIORITY_HIGH,
       ),
       editor.registerCommand(
         KEY_ARROW_RIGHT_COMMAND,
-        () => callback(true),
+        () => callback(false),
+        COMMAND_PRIORITY_HIGH,
+      ),
+      editor.registerCommand(
+        KEY_ARROW_DOWN_COMMAND,
+        () => callback(false, true),
         COMMAND_PRIORITY_HIGH,
       ),
       editor.registerCommand(

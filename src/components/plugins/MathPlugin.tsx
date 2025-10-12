@@ -147,6 +147,19 @@ export const MathEditor = ({
         mf.addEventListener("keydown", (e) => {
           if (e.key === " ") {
             e.preventDefault()
+
+            const popover = document.querySelector(
+              "#mathlive-suggestion-popover",
+            )
+            const current = popover?.querySelector(".ML__popover__current") as
+              | HTMLLIElement
+              | undefined
+            // If popover is visible, should complete the popover instead of moving after parent
+            if (popover !== null) {
+              current?.click()
+              mf.executeCommand("commit")
+              return
+            }
             const position = mf.position
             mf.executeCommand("moveAfterParent")
             if (mf.position === position) {

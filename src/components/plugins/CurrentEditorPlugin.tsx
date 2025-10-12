@@ -1,8 +1,16 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
-import { COMMAND_PRIORITY_HIGH, FOCUS_COMMAND } from "lexical"
+import {
+  COMMAND_PRIORITY_NORMAL,
+  CommandListenerPriority,
+  FOCUS_COMMAND,
+} from "lexical"
 import { useEffect } from "react"
 
-const CurrentEditorPlugin = () => {
+const CurrentEditorPlugin = ({
+  priority,
+}: {
+  priority?: CommandListenerPriority
+}) => {
   const [editor] = useLexicalComposerContext()
 
   useEffect(() => {
@@ -21,9 +29,9 @@ const CurrentEditorPlugin = () => {
       () => {
         window.currentEditor = editor
 
-        return false
+        return true
       },
-      COMMAND_PRIORITY_HIGH,
+      priority ?? COMMAND_PRIORITY_NORMAL,
     )
   }, [editor])
 

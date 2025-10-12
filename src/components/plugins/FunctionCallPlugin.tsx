@@ -253,7 +253,7 @@ export const FunctionCallEditor = ({
               <MathPlugin />
               <TypstCodePlugin />
               <ImagePlugin />
-              <CurrentEditorPlugin />
+              <CurrentEditorPlugin priority={COMMAND_PRIORITY_HIGH} />
               <KeyboardMapPlugin skipInitialization />
               <NestedEditorPlugin
                 editor={editor}
