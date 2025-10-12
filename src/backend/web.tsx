@@ -70,7 +70,11 @@ export const onPreview = async (_open = false) => {
   setLocalStorage("Open Documents", openDocuments)
 }
 
-export const onSaveAs = (filename: string) => {
+export const onSaveAs = (filename?: string) => {
+  if (!filename) {
+    return
+  }
+
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
@@ -98,7 +102,11 @@ export const onSave = async () => {
   }
 }
 
-export const onOpen = (filename: string | undefined, content: string) => {
+export const onOpen = (filename?: string | undefined, content?: string) => {
+  if (!content) {
+    return
+  }
+
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const parsedContent = JSON.parse(content)
   if (parsedContent?.version?.startsWith("0.1")) {
