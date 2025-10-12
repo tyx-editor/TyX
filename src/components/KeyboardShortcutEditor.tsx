@@ -3,20 +3,23 @@
  */
 
 import { ActionIcon, Kbd, Loader, TextInput } from "@mantine/core"
+import { useOs, UseOSReturnValue } from "@mantine/hooks"
 import { IconCode, IconTrash } from "@tabler/icons-react"
 import { useState } from "react"
 
-const prettifyShortcut = (shortcut: string) => {
+const prettifyShortcut = (os: UseOSReturnValue, shortcut: string) => {
   if (shortcut === "") {
     return " "
   }
+
+  const apple = os === "ios" || os === "macos"
 
   return shortcut
     .replaceAll("+", "")
     .replaceAll("ctrl", "^")
     .replaceAll("alt", "⌥")
-    .replaceAll("mod", "⌘")
-    .replaceAll("meta", "⌘")
+    .replaceAll("mod", apple ? "⌘" : "^")
+    .replaceAll("meta", apple ? "⌘" : "⊞")
     .replaceAll("shift", "⇧")
     .replaceAll("enter", "⏎")
     .replaceAll("esc", "␛")
@@ -38,6 +41,7 @@ const KeyboardShortcutEditor = ({
   remove: () => void
 }) => {
   const [recording, setRecording] = useState(false)
+  const os = useOs()
 
   const record = () => {
     setRecording(true)
@@ -62,6 +66,7 @@ const KeyboardShortcutEditor = ({
         style={{
           cursor: "pointer",
           letterSpacing: 5,
+          fontFamily: "inherit",
         }}
         pr={0}
         onClick={record}
@@ -69,7 +74,7 @@ const KeyboardShortcutEditor = ({
         {recording ? (
           <Loader size="xs" color="white" />
         ) : (
-          prettifyShortcut(shortcut)
+          prettifyShortcut(os, shortcut)
         )}
       </Kbd>
       <span style={{ flexGrow: 1 }} />
