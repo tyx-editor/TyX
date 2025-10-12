@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.11] - 2025-10-12
+
+### Changed
+
+- The keyboard map is now ignored inside the typst code and code block nodes.
+
+### Fixed
+
+- The `textcolor`, `intop` and `differentialD` commands are now supported in tex2typst - thanks @qwinsi!
+- Commands inside nested editors (in function calls) now work as expected (when entering/leaving).
+- Caret movements around nested editors (in function calls) now work when the nested editor is at the start/end, and when it's selected.
+- Pressing the space key inside math now doesn't exit when inserting a raw command.
+- Deleting a non-inline function call or math node now creates an empty paragraph instead of the deleted node.
+
 ## [0.2.10] - 2025-10-10
 
 The default keyboard shortcuts have changed, it is recommended to reset to the defaults after updating!
