@@ -15,12 +15,17 @@ const tyxValue2typst = (value: TyXValue): string | undefined => {
   }
 
   if (value.type === "content") {
-    // Remove leading "#" used for entering code mode.
-    const result = value.value
-      ? lexical2typst(value.value).substring(1)
-      : undefined
+    if (!value.value) {
+      return
+    }
+    const converted = lexical2typst(value.value)
     // Don't return empty string returned by lexical2typst
-    return result ? result : undefined
+    if (!converted) {
+      return
+    }
+
+    // Enter markup mode
+    return "[" + converted + "]"
   }
 
   // @ts-ignore
