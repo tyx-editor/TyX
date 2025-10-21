@@ -190,10 +190,21 @@ fn preview(
     font_paths: Vec<String>,
     open: bool,
 ) -> String {
+    let filename = if filename.is_empty() {
+        let temp_dir = handle.path().temp_dir().unwrap();
+        if !temp_dir.is_dir() {
+            create_dir_all(&temp_dir).unwrap();
+        }
+
+        temp_dir.join("Untitled.tyx").to_str().unwrap().to_string()
+    } else {
+        filename.to_string()
+    };
     let basename = filename
         .strip_suffix(".tyx")
-        .unwrap_or(filename)
+        .unwrap_or(&filename)
         .to_string();
+
     let dirname = Path::new(basename.as_str())
         .parent()
         .unwrap()
@@ -218,9 +229,14 @@ fn preview(
         })
         .collect::<Vec<PathBuf>>();
     font_paths.insert(0, tyx_fonts_path);
+    let filename_path = PathBuf::from(&filename);
+    if !filename_path.is_file() {
+        File::create(&filename_path).unwrap();
+    }
+    let filename_path = dunce::canonicalize(filename_path).unwrap();
     let universe = CompileOnceArgs {
         root: Some(dunce::canonicalize(&root_path).unwrap()),
-        input: Some(filename.into()),
+        input: Some(filename_path.to_str().unwrap().to_string()),
         font: CompileFontArgs {
             font_paths,
             ..CompileFontArgs::default()
@@ -229,11 +245,14 @@ fn preview(
     }
     .resolve()
     .unwrap();
-    let Ok(entry) = universe
+    let entry = match universe
         .entry_state()
-        .try_select_path_in_workspace(Path::new(filename))
-    else {
-        return String::from("Invalid root directory, couldn't select the file itself!");
+        .try_select_path_in_workspace(&filename_path)
+    {
+        Ok(entry) => entry,
+        Err(_e) => {
+            return String::from("Invalid root directory, couldn't select the file itself!");
+        }
     };
     let mut world = universe.snapshot_with(Some(TaskInputs {
         entry,

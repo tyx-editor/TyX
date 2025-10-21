@@ -33,9 +33,13 @@ const RemoveDefaultShortcutsPlugin = () => {
 
         if (
           (event.altKey || event.ctrlKey || event.metaKey) &&
-          !["ArrowUp", "ArrowLeft", "ArrowDown", "ArrowRight"].includes(
-            event.key,
-          )
+          ![
+            "ArrowUp",
+            "ArrowLeft",
+            "ArrowDown",
+            "ArrowRight",
+            "Backspace",
+          ].includes(event.key)
         ) {
           event.preventDefault()
           return true

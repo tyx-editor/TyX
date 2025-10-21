@@ -56,12 +56,6 @@ export const onPreview = async (open = false) => {
     showFailureMessage("No open document to preview!")
     return
   }
-  if (!document.filename) {
-    showFailureMessage(
-      "Current document must be saved before it can be previewed!",
-    )
-    return
-  }
 
   let content = ""
   try {
@@ -71,7 +65,7 @@ export const onPreview = async (open = false) => {
     return
   }
   const result: string = await invoke("preview", {
-    filename: document.filename,
+    filename: document.filename ?? "",
     content,
     root: document.settings?.root ?? "",
     fontPaths: document.settings?.fontPaths ?? [],
