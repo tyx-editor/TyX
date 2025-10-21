@@ -80,6 +80,16 @@ const KeyboardMapPlugin = ({
 
           const replacement = KEYBOARD_MAPS[keyboardMap][key.toLowerCase()]
           if (replacement) {
+            // @ts-ignore
+            Mousetrap.handleKey(e.key, [], {
+              ...e,
+              type: "keypress",
+              preventDefault: () => e.preventDefault(),
+            })
+            if (e.defaultPrevented) {
+              return true
+            }
+
             e.preventDefault()
             editor.update(
               () => {
