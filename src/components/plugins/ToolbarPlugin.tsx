@@ -23,14 +23,17 @@ import {
   IconArrowsVertical,
   IconBlockquote,
   IconBold,
+  IconBraces,
   IconClearFormatting,
   IconCode,
   IconCodeAsterisk,
   IconColumnInsertRight,
   IconColumnRemove,
+  IconDecimal,
   IconDeviceFloppy,
   IconEye,
   IconFileCode,
+  IconFloatCenter,
   IconFunction,
   IconH1,
   IconH2,
@@ -51,6 +54,7 @@ import {
   IconRowInsertBottom,
   IconRowRemove,
   IconSettings,
+  IconSquareRoot,
   IconStrikethrough,
   IconSubscript,
   IconSum,
@@ -631,6 +635,33 @@ const MathControls = () => {
 
   return (
     <ToolbarControlGroup>
+      <ToolbarControl label="Toggle math inline" command="toggleMathInline">
+        <IconFloatCenter />
+      </ToolbarControl>
+      <ToolbarControl label="Insert subscript" command="math insert _#0">
+        <IconSubscript />
+      </ToolbarControl>
+      <ToolbarControl label="Insert superscript" command="math insert ^#0">
+        <IconSuperscript />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Insert root"
+        command='math insert "\\sqrt[#1]{#0}"'
+      >
+        <IconSquareRoot />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Insert fraction"
+        command='math insert "\\frac{#0}{#1}"'
+      >
+        <IconDecimal />
+      </ToolbarControl>
+      <ToolbarControl
+        label="Insert cases"
+        command='math insert "\\begin{cases} #0 & #? \\\\ #? & #? \\end{cases}"'
+      >
+        <IconBraces />
+      </ToolbarControl>
       <ToolbarControl
         label="Insert matrix"
         command='math insert "\\begin{pmatrix} #0 & #? \\\\ #? & #? \\end{pmatrix}"'
