@@ -31,6 +31,16 @@ const RemoveDefaultShortcutsPlugin = () => {
           return true
         }
 
+        if (
+          (event.altKey || event.ctrlKey || event.metaKey) &&
+          !["ArrowUp", "ArrowLeft", "ArrowDown", "ArrowRight"].includes(
+            event.key,
+          )
+        ) {
+          event.preventDefault()
+          return true
+        }
+
         return false
       },
       COMMAND_PRIORITY_CRITICAL,
