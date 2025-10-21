@@ -71,15 +71,35 @@ export const applyKeyboardShortcutsFromSettings = () => {
   }
 }
 
+export const reverseKeyboardShortcuts: Record<string, string> = {}
+
+/** Updates the reverse mapping from a TyX command sequence string to a keyboard shortcut. */
+export const updateReverseKeyboardShortcuts = () => {
+  for (const key in reverseKeyboardShortcuts) {
+    delete reverseKeyboardShortcuts[key]
+  }
+  const shortcuts =
+    getSettings().keyboardShortcuts ?? DEFAULT_KEYBOARD_SHORTCUTS
+  for (const shortcut of shortcuts) {
+    if (!shortcut[0] || !shortcut[1]) {
+      continue
+    }
+
+    reverseKeyboardShortcuts[shortcut[1]] = shortcut[0]
+  }
+}
+
 /** Performs initialization routines for using keyboard shortcuts, setting up Mousetrap and applying the shortcuts from settings. */
 export const initializeKeyboardShortcuts = () => {
   record(Mousetrap)
 
   applyKeyboardShortcutsFromSettings()
+  updateReverseKeyboardShortcuts()
 }
 
 /** Unbinds the currently bound keyboard shortcuts and re-binds everything from user settings. */
 export const refreshKeyboardShortcuts = () => {
   Mousetrap.reset()
   applyKeyboardShortcutsFromSettings()
+  updateReverseKeyboardShortcuts()
 }

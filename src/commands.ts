@@ -173,7 +173,6 @@ export const parseCommandSequence = (command: string) => {
 
 /** Executes the given command sequence. */
 export const executeCommandSequence = (command: string) => {
-  setLocalStorage("Hover Command", null)
   setLocalStorage("Current Command", command)
   parseCommandSequence(command).forEach(executeCommand)
 }

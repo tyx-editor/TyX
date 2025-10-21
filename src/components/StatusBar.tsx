@@ -9,6 +9,7 @@ import {
 import React, { CSSProperties, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { TyXDocument } from "../models"
+import { reverseKeyboardShortcuts } from "../shortcuts"
 import { useLocalStorage } from "../utilities/hooks"
 
 const CURRENT_COMMAND_DELAY_MILLISECONDS = 3000
@@ -66,16 +67,22 @@ const KeyboardMapStatusBarItem = () => {
 }
 
 const CurrentCommandStatusBarItem = ({
+  conditionStorageKey,
   localStorageKey,
   color,
   icon,
 }: {
+  conditionStorageKey?: string
   localStorageKey: string
   color?: string
   icon: React.ReactNode
 }) => {
   const [currentCommand, setCurrentCommand] = useLocalStorage<string | null>({
     key: localStorageKey,
+    defaultValue: null,
+  })
+  const [conditionCommand] = useLocalStorage<string | null>({
+    key: conditionStorageKey ?? localStorageKey,
     defaultValue: null,
   })
   const timeout = useTimeout(
@@ -89,9 +96,13 @@ const CurrentCommandStatusBarItem = ({
     return timeout.clear
   })
 
-  if (!currentCommand) {
+  if (!currentCommand || (conditionStorageKey && conditionCommand !== null)) {
     return null
   }
+
+  const commandKeyboardShortcut = reverseKeyboardShortcuts[currentCommand]
+    ? ` (${reverseKeyboardShortcuts[currentCommand]})`
+    : ""
 
   return (
     <StatusBarItem
@@ -105,6 +116,7 @@ const CurrentCommandStatusBarItem = ({
     >
       {icon}
       {currentCommand}
+      {commandKeyboardShortcut}
     </StatusBarItem>
   )
 }
@@ -161,6 +173,7 @@ const StatusBar = () => {
       }}
     >
       <CurrentCommandStatusBarItem
+        conditionStorageKey="Current Command"
         localStorageKey="Hover Command"
         color="cyan"
         icon={<IconInfoCircle style={{ marginInlineEnd: 5 }} />}
