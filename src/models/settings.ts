@@ -14,6 +14,10 @@ export const TyXSettings = z
       .describe(
         "An array of pairs of [shortcut, command] of keyboard shortcuts.",
       ),
+    unbindKeyboardShortcuts: z
+      .array(z.string())
+      .optional()
+      .describe('An array of default shortcuts to unbind, e.g. "mod+b"'),
     keyboardMap: z
       .string()
       .nullable()

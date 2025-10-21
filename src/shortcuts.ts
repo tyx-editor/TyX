@@ -53,10 +53,18 @@ export const DEFAULT_KEYBOARD_SHORTCUTS: [string, string][] = [
   ["mod+shift+;", "openDocumentSettings"],
 ]
 
+export const getKeyboardShortcuts = () => {
+  const settings = getSettings()
+  return (settings.keyboardShortcuts ?? []).concat(
+    DEFAULT_KEYBOARD_SHORTCUTS.filter(
+      (shortcut) => !settings.unbindKeyboardShortcuts?.includes(shortcut[0]),
+    ),
+  )
+}
+
 /** Bind the shortcuts from the user's settings to their commands. */
 export const applyKeyboardShortcutsFromSettings = () => {
-  const shortcuts =
-    getSettings().keyboardShortcuts ?? DEFAULT_KEYBOARD_SHORTCUTS
+  const shortcuts = getKeyboardShortcuts()
 
   for (const shortcut of shortcuts) {
     if (!shortcut[0] || !shortcut[1]) {
@@ -78,8 +86,7 @@ export const updateReverseKeyboardShortcuts = () => {
   for (const key in reverseKeyboardShortcuts) {
     delete reverseKeyboardShortcuts[key]
   }
-  const shortcuts =
-    getSettings().keyboardShortcuts ?? DEFAULT_KEYBOARD_SHORTCUTS
+  const shortcuts = getKeyboardShortcuts()
   for (const shortcut of shortcuts) {
     if (!shortcut[0] || !shortcut[1]) {
       continue

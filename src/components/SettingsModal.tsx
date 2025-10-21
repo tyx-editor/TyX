@@ -15,10 +15,7 @@ import { useTranslation } from "react-i18next"
 import { isWeb, saveSettingsToFile } from "../backend"
 import { DEFAULT_SERVER_DEBOUNCE_MILLISECONDS, TyXSettings } from "../models"
 import { DEFAULT_MATH_INLINE_SHORTCUTS } from "../settings"
-import {
-  DEFAULT_KEYBOARD_SHORTCUTS,
-  refreshKeyboardShortcuts,
-} from "../shortcuts"
+import { refreshKeyboardShortcuts } from "../shortcuts"
 import { TRANSLATIONS } from "../translations"
 import { showSuccessMessage } from "../utilities"
 import { useLocalStorage } from "../utilities/hooks"
@@ -33,9 +30,7 @@ const SettingsModal = () => {
     defaultValue: {},
   })
 
-  settings.keyboardShortcuts = settings.keyboardShortcuts ?? [
-    ...DEFAULT_KEYBOARD_SHORTCUTS,
-  ]
+  settings.keyboardShortcuts = settings.keyboardShortcuts ?? []
   settings.mathInlineShortcuts = settings.mathInlineShortcuts ?? [
     ...DEFAULT_MATH_INLINE_SHORTCUTS,
   ]
