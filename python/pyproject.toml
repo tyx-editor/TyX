@@ -1,0 +1,19 @@
+[project]
+name = "tyx_schema"
+version = "0.2.11"
+description = "Safe Pydantic schema for interacting with TyX configurations"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pydantic>=2.12.3",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.9.0",
+    "datamodel-code-generator>=0.35.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"

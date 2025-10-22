@@ -53,6 +53,7 @@ export type TyXDocumentSettings = z.infer<typeof TyXDocumentSettings>
 
 export const TyXDocument = z
   .object({
+    $schema: z.string().optional(),
     version: z
       .string()
       .describe("The version of TyX in which the document was created."),

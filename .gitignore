@@ -32,3 +32,4 @@ src-tauri/bin
 .netlify
 
 docs/_build
+__pycache__

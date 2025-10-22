@@ -4,6 +4,9 @@
   "id": "TyXSettings",
   "type": "object",
   "properties": {
+    "$schema": {
+      "type": "string"
+    },
     "language": {
       "description": "The UI Language for the app.",
       "type": "string"
@@ -21,6 +24,13 @@
             "type": "string"
           }
         ]
+      }
+    },
+    "unbindKeyboardShortcuts": {
+      "description": "An array of default shortcuts to unbind, e.g. \"mod+b\"",
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     },
     "keyboardMap": {

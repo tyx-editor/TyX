@@ -4,6 +4,9 @@
   "id": "TyXDocument",
   "type": "object",
   "properties": {
+    "$schema": {
+      "type": "string"
+    },
     "version": {
       "description": "The version of TyX in which the document was created.",
       "type": "string"

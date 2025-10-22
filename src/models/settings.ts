@@ -7,6 +7,7 @@ import { FunctionDefinition } from "./functions"
 
 export const TyXSettings = z
   .object({
+    $schema: z.string().optional(),
     language: z.string().optional().describe("The UI Language for the app."),
     keyboardShortcuts: z
       .array(z.tuple([z.string(), z.string()]))
