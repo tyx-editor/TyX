@@ -100,9 +100,14 @@ const CurrentCommandStatusBarItem = ({
     return null
   }
 
-  const commandKeyboardShortcut = reverseKeyboardShortcuts[currentCommand]
-    ? ` (${reverseKeyboardShortcuts[currentCommand]})`
-    : ""
+  const commandKeyboardShortcut = reverseKeyboardShortcuts[currentCommand] ? (
+    <>
+      <IconKeyboard style={{ marginInlineStart: 15, marginInlineEnd: 5 }} />{" "}
+      {reverseKeyboardShortcuts[currentCommand]}
+    </>
+  ) : (
+    ""
+  )
 
   return (
     <StatusBarItem
