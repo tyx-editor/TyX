@@ -65,8 +65,15 @@ export const MathEditor = ({
     const mf = mathfieldRef.current
     if (mf && mf.hasFocus() && window.currentMathEditor !== mf) {
       window.currentMathEditor = mf
-    } else if (mf && !mf.hasFocus() && window.currentMathEditor === mf) {
+      window.dispatchEvent(new Event("mathEditorChanged"))
+    } else if (
+      (mf && !mf.hasFocus() && window.currentMathEditor === mf) ||
+      (!mf &&
+        window.currentMathEditor !== undefined &&
+        window.currentMathEditor.parentElement === null)
+    ) {
       delete window.currentMathEditor
+      window.dispatchEvent(new Event("mathEditorChanged"))
     }
   }
 
@@ -224,6 +231,7 @@ export const MathEditor = ({
 
       if (shouldFocus) {
         mathfieldRef.current?.focus()
+        updateCurrentMathEditor()
       }
     }
 

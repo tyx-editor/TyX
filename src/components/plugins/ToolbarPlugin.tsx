@@ -620,14 +620,15 @@ const TableControls = () => {
 }
 
 const MathControls = () => {
-  const [editor] = useLexicalComposerContext()
   const [isMath, setIsMath] = useState(false)
 
   useEffect(() => {
-    return editor.registerUpdateListener(() => {
+    const callback = () => {
       setIsMath(window.currentMathEditor !== undefined)
-    })
-  }, [editor])
+    }
+    window.addEventListener("mathEditorChanged", callback)
+    return () => window.removeEventListener("mathEditorChanged", callback)
+  }, [])
 
   if (!isMath) {
     return null
