@@ -30,9 +30,9 @@ export const lexical2text = (node: TyXNode) => {
 
 export const applyDirection = (
   result: string,
-  direction: "ltr" | "rtl" | null,
+  direction: "ltr" | "rtl" | undefined,
 ) => {
-  if (direction === null) {
+  if (!direction) {
     return result
   }
 

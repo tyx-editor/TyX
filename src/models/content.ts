@@ -5,11 +5,9 @@
 import { z } from "zod/v4"
 import { TyXValue } from "./values"
 
-export const TyXDirection = z.union([
-  z.literal("ltr"),
-  z.literal("rtl"),
-  z.null(),
-])
+export const TyXDirection = z
+  .union([z.literal("ltr"), z.literal("rtl")])
+  .optional()
 export type TyXDirection = z.infer<typeof TyXDirection>
 
 export const TyXEditorState = z.looseObject({
@@ -234,8 +232,8 @@ export const TyXFunctionCallNode = z
   .looseObject({
     type: z.literal("functioncall"),
     name: z.string().optional(),
-    positionParameters: z.array(TyXValue),
-    namedParameters: z.record(z.string(), TyXValue),
+    positionParameters: z.array(TyXValue).optional(),
+    namedParameters: z.record(z.string(), TyXValue).optional(),
   })
   .describe("A function call node.")
   .meta({ id: "TyXFunctionCallNode" })

@@ -70,14 +70,11 @@
             {
               "type": "string",
               "const": "rtl"
-            },
-            {
-              "type": "null"
             }
           ]
         }
       },
-      "required": ["type", "children", "direction"],
+      "required": ["type", "children"],
       "additionalProperties": {}
     },
     "TyXNode": {
@@ -196,14 +193,11 @@
             {
               "type": "string",
               "const": "rtl"
-            },
-            {
-              "type": "null"
             }
           ]
         }
       },
-      "required": ["type", "children", "format", "direction"],
+      "required": ["type", "children", "format"],
       "additionalProperties": {}
     },
     "TyXTextNode": {
@@ -306,14 +300,11 @@
             {
               "type": "string",
               "const": "rtl"
-            },
-            {
-              "type": "null"
             }
           ]
         }
       },
-      "required": ["type", "children", "listType", "start", "direction"],
+      "required": ["type", "children", "listType", "start"],
       "additionalProperties": {}
     },
     "TyXCodeNode": {
@@ -362,14 +353,11 @@
             {
               "type": "string",
               "const": "rtl"
-            },
-            {
-              "type": "null"
             }
           ]
         }
       },
-      "required": ["type", "children", "direction"],
+      "required": ["type", "children"],
       "additionalProperties": {}
     },
     "TyXTableNode": {
@@ -396,14 +384,11 @@
             {
               "type": "string",
               "const": "rtl"
-            },
-            {
-              "type": "null"
             }
           ]
         }
       },
-      "required": ["type", "children", "direction"],
+      "required": ["type", "children"],
       "additionalProperties": {}
     },
     "TyXTableRowNode": {
@@ -449,14 +434,11 @@
             {
               "type": "string",
               "const": "rtl"
-            },
-            {
-              "type": "null"
             }
           ]
         }
       },
-      "required": ["type", "children", "direction"],
+      "required": ["type", "children"],
       "additionalProperties": {}
     },
     "TyXLineBreakNode": {
@@ -678,7 +660,7 @@
           }
         }
       },
-      "required": ["type", "positionParameters", "namedParameters"],
+      "required": ["type"],
       "additionalProperties": {}
     },
     "TyXLengthValue": {
