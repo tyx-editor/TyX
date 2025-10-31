@@ -2,6 +2,7 @@ import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { ContentEditable } from "@lexical/react/LexicalContentEditable"
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary"
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin"
 import { LexicalNestedComposer } from "@lexical/react/LexicalNestedComposer"
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin"
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
@@ -25,6 +26,7 @@ import { executeCommandSequence } from "../../commands"
 import { stringifyFunction } from "../../compilers/lexical2typst"
 import { getFunctions } from "../../functions"
 import { TyXValue } from "../../models"
+import { useSharedHistoryContext } from "../../resources/playground"
 import { backupEditorSelection, restoreEditorSelection } from "../../utilities"
 import TyXValueEditor from "../TyXValueEditor"
 import CurrentEditorPlugin from "./CurrentEditorPlugin"
@@ -162,6 +164,7 @@ export const FunctionCallEditor = ({
   nodeKey: NodeKey
 }) => {
   const [editor] = useLexicalComposerContext()
+  const { historyState } = useSharedHistoryContext()
 
   useEffect(() => {
     return editor.registerCommand(
@@ -249,6 +252,7 @@ export const FunctionCallEditor = ({
                   )
                 }}
               />
+              <HistoryPlugin externalHistoryState={historyState} />
 
               <MathPlugin />
               <TypstCodePlugin />

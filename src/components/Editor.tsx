@@ -22,6 +22,7 @@ import { LexicalEditor } from "lexical"
 import { useMemo } from "react"
 import { initialConfig } from "../config"
 import { TyXDocument } from "../models"
+import { useSharedHistoryContext } from "../resources/playground"
 import { getLocalStorage } from "../utilities/hooks"
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin"
 import CurrentEditorPlugin from "./plugins/CurrentEditorPlugin"
@@ -52,6 +53,7 @@ const Editor = () => {
       editorState: doc.content ? JSON.stringify(doc.content) : undefined,
     }
   }, [])
+  const { historyState } = useSharedHistoryContext()
 
   return (
     <LexicalComposer initialConfig={config}>
@@ -65,7 +67,7 @@ const Editor = () => {
           ErrorBoundary={LexicalErrorBoundary}
         />
       </div>
-      <HistoryPlugin />
+      <HistoryPlugin externalHistoryState={historyState} />
       <HorizontalRulePlugin />
       <ListPlugin hasStrictIndent />
       <TablePlugin />

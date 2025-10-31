@@ -1,5 +1,6 @@
 // Utilities from Lexical Playground.
 import { $createCodeNode, $isCodeNode } from "@lexical/code"
+import { HistoryState } from "@lexical/react/LexicalHistoryPlugin"
 import {
   $createHeadingNode,
   $createQuoteNode,
@@ -26,6 +27,7 @@ import {
   RangeSelection,
   TextNode,
 } from "lexical"
+import { createContext, useContext } from "react"
 
 export const clearFormatting = (editor: LexicalEditor) => {
   editor.update(() => {
@@ -220,4 +222,14 @@ export const $getToolbarState = () => {
   }
 
   return {}
+}
+
+type ContextShape = {
+  historyState?: HistoryState
+}
+
+export const HistoryContext: React.Context<ContextShape> = createContext({})
+
+export const useSharedHistoryContext = (): ContextShape => {
+  return useContext(HistoryContext)
 }
