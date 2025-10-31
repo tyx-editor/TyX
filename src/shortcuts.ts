@@ -8,8 +8,10 @@ import "mousetrap-global-bind"
 // @ts-ignore
 import record from "mousetrap-record"
 
+import { ExtendedKeyboardEvent } from "mousetrap"
 import { executeCommandSequence } from "./commands"
 import { getSettings } from "./settings"
+import { setLocalStorage } from "./utilities/hooks"
 
 declare global {
   namespace Mousetrap {
@@ -99,6 +101,65 @@ export const updateReverseKeyboardShortcuts = () => {
 /** Performs initialization routines for using keyboard shortcuts, setting up Mousetrap and applying the shortcuts from settings. */
 export const initializeKeyboardShortcuts = () => {
   record(Mousetrap)
+
+  const allSequences = new Set<string>()
+
+  let pressed: string[] = []
+
+  const split = (s: string) => s.split(/\s+/).filter(Boolean)
+
+  const getNextKeys = function () {
+    const next = new Set<string>()
+    for (const sequence of allSequences) {
+      const parts = split(sequence)
+      if (pressed.length > 0) {
+        for (let i = 0; i < pressed.length; ++i) {
+          const currentParts = pressed.slice(i)
+          const N = currentParts.length
+          if (
+            N > 0 &&
+            parts.length > N &&
+            parts.slice(0, N).join(" ") === currentParts.join(" ")
+          ) {
+            next.add(parts[N])
+            break
+          }
+        }
+      }
+    }
+    return [...next].sort()
+  }
+
+  const origBind = Mousetrap.prototype.bind
+  Mousetrap.prototype.bind = function (
+    keys: string | string[],
+    ...rest: any[]
+  ) {
+    for (const k of Array.isArray(keys) ? keys : [keys]) {
+      allSequences.add(k.trim())
+    }
+    return origBind.call(this, keys, ...rest)
+  }
+
+  const origHandleKey = Mousetrap.prototype.handleKey
+  Mousetrap.prototype.handleKey = function (
+    character: string,
+    modifiers: string[],
+    e: ExtendedKeyboardEvent,
+  ) {
+    const combo = [...modifiers, character].join("+")
+    const res = origHandleKey.call(this, character, modifiers, e)
+    if (e?.type !== "keydown") {
+      return res
+    }
+
+    pressed.push(combo)
+    setLocalStorage("Next Keys", getNextKeys())
+    setTimeout(() => {
+      pressed = []
+    }, 1000)
+    return res
+  }
 
   applyKeyboardShortcutsFromSettings()
   updateReverseKeyboardShortcuts()

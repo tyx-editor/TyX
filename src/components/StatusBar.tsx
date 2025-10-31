@@ -27,7 +27,11 @@ const StatusBarItem = ({
 }) => {
   if (!label) {
     return (
-      <span style={style} className="status-bar-item" onClick={onClick}>
+      <span
+        style={{ marginInlineEnd: 5, ...style }}
+        className="status-bar-item"
+        onClick={onClick}
+      >
         {children}
       </span>
     )
@@ -35,7 +39,11 @@ const StatusBarItem = ({
 
   return (
     <Tooltip label={label}>
-      <span style={style} className="status-bar-item" onClick={onClick}>
+      <span
+        style={{ marginInlineEnd: 5, ...style }}
+        className="status-bar-item"
+        onClick={onClick}
+      >
         {children}
       </span>
     </Tooltip>
@@ -91,10 +99,12 @@ const CurrentCommandStatusBarItem = ({
   )
 
   useEffect(() => {
-    timeout.start()
+    if (currentCommand) {
+      timeout.start()
 
-    return timeout.clear
-  })
+      return timeout.clear
+    }
+  }, [currentCommand])
 
   if (!currentCommand || (conditionStorageKey && conditionCommand !== null)) {
     return null
@@ -126,6 +136,28 @@ const CurrentCommandStatusBarItem = ({
   )
 }
 
+const NextKeysStatusBarItem = () => {
+  const [nextKeys, setNextKeys] = useLocalStorage<string[]>({
+    key: "Next Keys",
+    defaultValue: [],
+  })
+  const timeout = useTimeout(() => setNextKeys([]), 1000)
+
+  useEffect(() => {
+    if (nextKeys.length !== 0) {
+      timeout.start()
+
+      return timeout.clear
+    }
+  }, [nextKeys])
+
+  return (
+    <StatusBarItem style={{ fontFamily: "'Courier New', Courier, monospace" }}>
+      {nextKeys.join(" ")}
+    </StatusBarItem>
+  )
+}
+
 const CurrentWarningStatusBarItem = () => {
   const [currentWarning, setCurrentWarning] = useLocalStorage<string | null>({
     key: "Current Warning",
@@ -137,10 +169,12 @@ const CurrentWarningStatusBarItem = () => {
   )
 
   useEffect(() => {
-    timeout.start()
+    if (currentWarning) {
+      timeout.start()
 
-    return timeout.clear
-  })
+      return timeout.clear
+    }
+  }, [currentWarning])
 
   if (!currentWarning) {
     return null
@@ -188,6 +222,7 @@ const StatusBar = () => {
         icon={<IconTerminal style={{ marginInlineEnd: 5 }} />}
       />
       <CurrentWarningStatusBarItem />
+      <NextKeysStatusBarItem />
       <span style={{ flexGrow: 1 }} />
       <KeyboardMapStatusBarItem />
     </div>

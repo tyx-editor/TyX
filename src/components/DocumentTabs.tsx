@@ -2,15 +2,19 @@
  * @file A component showing the open document tabs as well as the current document.
  */
 
+import { LexicalComposer } from "@lexical/react/LexicalComposer"
 import { Tabs } from "@mantine/core"
 import { IconFileText, IconPlus, IconX } from "@tabler/icons-react"
 import { ErrorBoundary } from "react-error-boundary"
 import { useTranslation } from "react-i18next"
+import { initialConfig } from "../config"
 import { TyXDocument } from "../models"
 import { useLocalStorage } from "../utilities/hooks"
 import CommandActionIcon from "./CommandActionIcon"
 import CommandButton from "./CommandButton"
 import Editor from "./Editor"
+import CurrentEditorPlugin from "./plugins/CurrentEditorPlugin"
+import TyXCommandsPlugin from "./plugins/TyXCommandsPlugin"
 
 const DocumentTabs = () => {
   const { t } = useTranslation()
@@ -87,6 +91,11 @@ const DocumentTabs = () => {
                 <pre>
                   <code>{error.message}</code>
                 </pre>
+                {/* Invisible stub editor for TyX's commands. */}
+                <LexicalComposer initialConfig={initialConfig}>
+                  <TyXCommandsPlugin />
+                  <CurrentEditorPlugin />
+                </LexicalComposer>
               </>
             )}
           >
