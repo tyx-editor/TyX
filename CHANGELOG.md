@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.12] - 2025-10-31
+
+### Added
+
+- There's a new setFunctionCall command to set the current function, or insert a new call.
+- The app settings now have a button to open the settings directory.
+- Additional math toolbar items are now available.
+- The status bar now shows possible completions for keyboard shortcuts as well as hints to a set keyboard shortcut when hovering over a button or running a command.
+- Preview of unsaved documents now works locally.
+- A new `tyx_schema` python package is available to work with TyX documents and settings in Python.
+
+### Changed
+
+- The default keyboard shortcuts are now included by default, unless unbound in the app settings file.
+
+### Fixed
+
+- The nested editors now share histroy with the main editor, fixing undo/redo scenarios.
+- The editor no longer gets stuck when an editor throws an error - the basic commands still work.
+- The schema no longer has nullable fields, making it easier to work with in other languages like Python (which don't distinguish between null/undefined).
+
 ## [0.2.11] - 2025-10-12
 
 ### Changed
