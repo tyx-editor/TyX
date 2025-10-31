@@ -41,6 +41,7 @@
     "saveAsDefault": "Save as Default",
     "save": "Save",
     "success": "Success",
-    "failed": "Failed"
+    "failed": "Failed",
+    "openSettingsDirectory": "Open Settings Directory"
   }
 }

@@ -41,6 +41,7 @@
     "saveAsDefault": "שמירה כברירת המחדל",
     "save": "שמירה",
     "success": "הצלחה",
-    "failed": "כישלון"
+    "failed": "כישלון",
+    "openSettingsDirectory": "פתיחת תיקיית הגדרות"
   }
 }

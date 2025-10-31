@@ -178,6 +178,8 @@ export const saveSettingsToFile = async (): Promise<string> => {
   return ""
 }
 
+export const openSettingsDirectory = () => {}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const readImage = async (_filename: string, _image: string) => ""
 

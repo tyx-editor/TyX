@@ -5,6 +5,7 @@
 import { Button, Fieldset, NumberInput, Select, Switch } from "@mantine/core"
 import {
   IconDeviceFloppy,
+  IconFolderOpen,
   IconKeyboard,
   IconLanguage,
   IconPlus,
@@ -12,7 +13,7 @@ import {
 } from "@tabler/icons-react"
 import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
-import { isWeb, saveSettingsToFile } from "../backend"
+import { isWeb, openSettingsDirectory, saveSettingsToFile } from "../backend"
 import { DEFAULT_SERVER_DEBOUNCE_MILLISECONDS, TyXSettings } from "../models"
 import { DEFAULT_MATH_INLINE_SHORTCUTS } from "../settings"
 import { refreshKeyboardShortcuts } from "../shortcuts"
@@ -205,18 +206,28 @@ const SettingsModal = () => {
         )}
       </Fieldset>
       {!isWeb && (
-        <Button
-          mt="xs"
-          fullWidth
-          leftSection={<IconDeviceFloppy />}
-          onClick={() =>
-            saveSettingsToFile().then((f) =>
-              showSuccessMessage(`Settings saved to ${f}`),
-            )
-          }
-        >
-          {t("save")}
-        </Button>
+        <>
+          <Button
+            mt="xs"
+            fullWidth
+            leftSection={<IconDeviceFloppy />}
+            onClick={() =>
+              saveSettingsToFile().then((f) =>
+                showSuccessMessage(`Settings saved to ${f}`),
+              )
+            }
+          >
+            {t("save")}
+          </Button>
+          <Button
+            mt="xs"
+            fullWidth
+            leftSection={<IconFolderOpen />}
+            onClick={openSettingsDirectory}
+          >
+            {t("openSettingsDirectory")}
+          </Button>
+        </>
       )}
     </>
   )

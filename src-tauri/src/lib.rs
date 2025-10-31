@@ -147,6 +147,11 @@ fn getsettings(handle: tauri::AppHandle) -> String {
 }
 
 #[tauri::command]
+fn opensettingsdirectory(handle: tauri::AppHandle) {
+    open::that(handle.path().app_data_dir().unwrap()).unwrap();
+}
+
+#[tauri::command]
 fn setsettings(handle: tauri::AppHandle, settings: &str) -> String {
     let data_dir = handle.path().app_data_dir().unwrap();
     let _ = create_dir_all(&data_dir);
@@ -395,6 +400,7 @@ pub fn run() {
             getsettings,
             setsettings,
             newfromtemplate,
+            opensettingsdirectory
         ])
         // Blocked on https://github.com/tauri-apps/wry/issues/451
         // .on_menu_event(|handle, event| handle.emit(event.id().0.as_str(), ()).unwrap())

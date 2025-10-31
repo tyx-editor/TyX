@@ -198,6 +198,8 @@ export const saveSettingsToFile = async (): Promise<string> => {
   })
 }
 
+export const openSettingsDirectory = () => invoke("opensettingsdirectory")
+
 export { getVersion, relaunch }
 
 export const isWeb = false
