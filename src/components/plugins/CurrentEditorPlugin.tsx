@@ -3,18 +3,22 @@ import {
   COMMAND_PRIORITY_NORMAL,
   CommandListenerPriority,
   FOCUS_COMMAND,
+  NodeKey,
 } from "lexical"
 import { useEffect } from "react"
 
 const CurrentEditorPlugin = ({
   priority,
+  nodeKey,
 }: {
   priority?: CommandListenerPriority
+  nodeKey?: NodeKey
 }) => {
   const [editor] = useLexicalComposerContext()
 
   useEffect(() => {
     window.currentEditor = editor
+    window.currentNodeKey = nodeKey
 
     return () => {
       if (window.currentEditor === editor) {
@@ -28,6 +32,7 @@ const CurrentEditorPlugin = ({
       FOCUS_COMMAND,
       () => {
         window.currentEditor = editor
+        window.currentNodeKey = nodeKey
 
         return true
       },

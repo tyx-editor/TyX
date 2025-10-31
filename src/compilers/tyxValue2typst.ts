@@ -3,7 +3,7 @@ import lexical2typst from "./lexical2typst"
 
 const tyxValue2typst = (value: TyXValue): string | undefined => {
   if (value.type === "length") {
-    return (value.value ?? "") + value.unit
+    return value.unit ? (value.value ?? "") + value.unit : "none"
   }
 
   if (value.type === "boolean") {

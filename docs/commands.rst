@@ -155,6 +155,20 @@ Example: ``insertFunctionCall ["h", [{"type": "length", "value": "10", "unit": "
 Example: ``insertFunctionCall``
 
 
+Set Function Call
+^^^^^^^^^^^^^^^^^
+
+Changes the currently selected function call to be the specified function.
+
+If the definition's positional and named parameters is exactly the same, keeps the existing values.
+
+If no function call is currently selected, inserts the specified function call.
+
+Example: ``setFunctionCall h``
+
+Example: ``setFunctionCall v``
+
+
 Toggle Math Inline
 ^^^^^^^^^^^^^^^^^^
 

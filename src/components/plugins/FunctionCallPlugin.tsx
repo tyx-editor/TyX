@@ -6,6 +6,7 @@ import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin"
 import { LexicalNestedComposer } from "@lexical/react/LexicalNestedComposer"
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin"
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
+import { mergeRegister } from "@lexical/utils"
 import { Autocomplete, Button } from "@mantine/core"
 import { modals } from "@mantine/modals"
 import { IconDeviceFloppy, IconFunction, IconPlus } from "@tabler/icons-react"
@@ -34,6 +35,7 @@ import {
   $createFunctionCallNode,
   $isFunctionCallNode,
   INSERT_FUNCTION_CALL_COMMAND,
+  SET_FUNCTION_CALL_COMMAND,
 } from "./functionCall"
 import ImagePlugin from "./ImagePlugin"
 import KeyboardMapPlugin from "./KeyboardMapPlugin"
@@ -257,7 +259,10 @@ export const FunctionCallEditor = ({
               <MathPlugin />
               <TypstCodePlugin />
               <ImagePlugin />
-              <CurrentEditorPlugin priority={COMMAND_PRIORITY_HIGH} />
+              <CurrentEditorPlugin
+                priority={COMMAND_PRIORITY_HIGH}
+                nodeKey={nodeKey}
+              />
               <KeyboardMapPlugin skipInitialization />
               <NestedEditorPlugin
                 editor={editor}
@@ -317,33 +322,54 @@ const FunctionCallPlugin = () => {
   const [editor] = useLexicalComposerContext()
 
   useEffect(() => {
-    return editor.registerCommand(
-      INSERT_FUNCTION_CALL_COMMAND,
-      (payload) => {
-        if (payload === undefined) {
-          backupEditorSelection()
-          modals.open({
-            title: "Insert Function Call",
-            children: <InsertFunctionCallModal />,
-          })
+    return mergeRegister(
+      editor.registerCommand(
+        INSERT_FUNCTION_CALL_COMMAND,
+        (payload) => {
+          if (payload === undefined) {
+            backupEditorSelection()
+            modals.open({
+              title: "Insert Function Call",
+              children: <InsertFunctionCallModal />,
+            })
+            return true
+          }
+
+          const node =
+            typeof payload === "string"
+              ? $createFunctionCallNode(payload, undefined, undefined)
+              : $createFunctionCallNode(...payload)
+          $insertNodes([node])
+
+          if (node.isKeyboardSelectable()) {
+            const selection = $createNodeSelection()
+            selection.add(node.getKey())
+            $setSelection(selection)
+          }
+
           return true
-        }
+        },
+        COMMAND_PRIORITY_EDITOR,
+      ),
+      editor.registerCommand(
+        SET_FUNCTION_CALL_COMMAND,
+        (functionName) => {
+          const node =
+            window.currentNodeKey !== undefined
+              ? $getNodeByKey(window.currentNodeKey)
+              : null
+          if ($isFunctionCallNode(node)) {
+            node.setName(functionName)
+            return true
+          }
 
-        const node =
-          typeof payload === "string"
-            ? $createFunctionCallNode(payload, undefined, undefined)
-            : $createFunctionCallNode(...payload)
-        $insertNodes([node])
-
-        if (node.isKeyboardSelectable()) {
-          const selection = $createNodeSelection()
-          selection.add(node.getKey())
-          $setSelection(selection)
-        }
-
-        return true
-      },
-      COMMAND_PRIORITY_EDITOR,
+          return editor.dispatchCommand(
+            INSERT_FUNCTION_CALL_COMMAND,
+            functionName,
+          )
+        },
+        COMMAND_PRIORITY_EDITOR,
+      ),
     )
   }, [editor])
 

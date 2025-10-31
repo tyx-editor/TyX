@@ -23,7 +23,10 @@ import {
   REDO_COMMAND,
   UNDO_COMMAND,
 } from "lexical"
-import { INSERT_FUNCTION_CALL_COMMAND } from "./components/plugins/functionCall"
+import {
+  INSERT_FUNCTION_CALL_COMMAND,
+  SET_FUNCTION_CALL_COMMAND,
+} from "./components/plugins/functionCall"
 import { INSERT_IMAGE_COMMAND } from "./components/plugins/image"
 import { TOGGLE_KEYBOARD_MAP_COMMAND } from "./components/plugins/keyboardMap"
 import {
@@ -71,6 +74,7 @@ const COMMANDS: Record<string, LexicalCommand<any>> = {
   insertTypstCode: INSERT_TYPST_CODE_COMMAND,
   insertImage: INSERT_IMAGE_COMMAND,
   insertFunctionCall: INSERT_FUNCTION_CALL_COMMAND,
+  setFunctionCall: SET_FUNCTION_CALL_COMMAND,
   insertQuote: INSERT_QUOTE_COMMAND,
   insertCodeBlock: INSERT_CODE_BLOCK_COMMAND,
   insertHeading: INSERT_HEADING_COMMAND,

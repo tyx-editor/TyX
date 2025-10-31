@@ -17,7 +17,7 @@ import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPl
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin"
 import { TablePlugin } from "@lexical/react/LexicalTablePlugin"
-import { LexicalEditor } from "lexical"
+import { LexicalEditor, NodeKey } from "lexical"
 
 import { useMemo } from "react"
 import { initialConfig } from "../config"
@@ -40,6 +40,7 @@ import UpdateLocalStoragePlugin from "./plugins/UpdateLocalStoragePlugin"
 declare global {
   interface Window {
     currentEditor?: LexicalEditor
+    currentNodeKey?: NodeKey
   }
 }
 

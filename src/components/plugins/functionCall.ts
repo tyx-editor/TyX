@@ -23,6 +23,7 @@ export const INSERT_FUNCTION_CALL_COMMAND: LexicalCommand<
   | string
   | [string, TyXValue[] | undefined, Record<string, TyXValue> | undefined]
 > = createCommand()
+export const SET_FUNCTION_CALL_COMMAND: LexicalCommand<string> = createCommand()
 
 export type SerializedFunctionCallNode = Spread<
   {
@@ -36,10 +37,10 @@ export type SerializedFunctionCallNode = Spread<
 
 export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
   __name: string
-  __positionParameters: TyXValue[]
-  __namedParameters: Record<string, TyXValue>
-  __inline: boolean
-  __editors: Record<number, LexicalEditor>
+  __positionParameters!: TyXValue[]
+  __namedParameters!: Record<string, TyXValue>
+  __inline!: boolean
+  __editors!: Record<number, LexicalEditor>
 
   static getType(): string {
     return "functioncall"
@@ -67,10 +68,18 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
     namedParameters?: Record<string, TyXValue>,
     key?: NodeKey,
   ) {
-    const functions = getFunctions()
-    const definition = functions[name]
     super(key)
     this.__name = name
+    this.__initializeFromDefinition(name, positionParameters, namedParameters)
+  }
+
+  __initializeFromDefinition(
+    name: string,
+    positionParameters?: TyXValue[],
+    namedParameters?: Record<string, TyXValue>,
+  ) {
+    const functions = getFunctions()
+    const definition = functions[name]
     this.__positionParameters =
       positionParameters ??
       definition?.positional?.map(
@@ -183,7 +192,26 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
 
   setName(name: string) {
     const self = this.getWritable()
+    const functions = getFunctions()
+    const previousDefinition = functions[this.__name]
+    const newDefinition = functions[name]
     self.__name = name
+    if (previousDefinition !== undefined && newDefinition !== undefined) {
+      if (
+        previousDefinition.inline !== newDefinition.inline &&
+        newDefinition.inline !== undefined
+      ) {
+        self.__inline = newDefinition.inline
+      }
+      if (
+        JSON.stringify(previousDefinition.named) !==
+          JSON.stringify(newDefinition.named) ||
+        JSON.stringify(previousDefinition.positional) !==
+          JSON.stringify(newDefinition.positional)
+      ) {
+        self.__initializeFromDefinition(name)
+      }
+    }
     return self
   }
 
