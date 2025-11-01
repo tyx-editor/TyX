@@ -41,6 +41,7 @@ import ImagePlugin from "./ImagePlugin"
 import KeyboardMapPlugin from "./KeyboardMapPlugin"
 import MathPlugin from "./MathPlugin"
 import NestedEditorPlugin from "./NestedEditorPlugin"
+import RTLPlugin from "./RTLPlugin"
 import TypstCodePlugin from "./TypstCodePlugin"
 import { UPDATE_LOCAL_STORAGE_COMMAND } from "./updateLocalStorage"
 
@@ -256,6 +257,7 @@ export const FunctionCallEditor = ({
               />
               <HistoryPlugin externalHistoryState={historyState} />
 
+              <RTLPlugin />
               <MathPlugin />
               <TypstCodePlugin />
               <ImagePlugin />

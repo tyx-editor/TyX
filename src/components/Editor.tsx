@@ -31,6 +31,7 @@ import ImagePlugin from "./plugins/ImagePlugin"
 import KeyboardMapPlugin from "./plugins/KeyboardMapPlugin"
 import MathPlugin from "./plugins/MathPlugin"
 import RemoveDefaultShortcutsPlugin from "./plugins/RemoveDefaultShortcutsPlugin"
+import RTLPlugin from "./plugins/RTLPlugin"
 import TableCommandsPlugin from "./plugins/TableCommandsPlugin"
 import ToolbarPlugin from "./plugins/ToolbarPlugin"
 import TypstCodePlugin from "./plugins/TypstCodePlugin"
@@ -85,6 +86,7 @@ const Editor = () => {
       <RemoveDefaultShortcutsPlugin />
       <CurrentEditorPlugin />
       <KeyboardMapPlugin />
+      <RTLPlugin />
 
       <MathPlugin />
       <TypstCodePlugin />
