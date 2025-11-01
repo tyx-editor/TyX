@@ -31,6 +31,16 @@ const RemoveDefaultShortcutsPlugin = () => {
           return true
         }
 
+        if (
+          "abcdefghijklmnopqrstuvwxyz".includes(
+            String.fromCharCode(event.which).toLowerCase(),
+          ) &&
+          isModifierMatch(event, { altKey: true })
+        ) {
+          event.preventDefault()
+          return true
+        }
+
         return false
       },
       COMMAND_PRIORITY_LOW,

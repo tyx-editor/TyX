@@ -11,6 +11,7 @@ import {
   $setSelection,
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_EDITOR,
+  isModifierMatch,
   KEY_DOWN_COMMAND,
   NodeKey,
 } from "lexical"
@@ -98,6 +99,13 @@ export const MathEditor = ({
     const mf = mathfieldRef.current
     if (mf) {
       mf.mathVirtualKeyboardPolicy = "manual"
+      mf.keybindings = mf.keybindings.filter(
+        (keybinding) =>
+          !(
+            Array.isArray(keybinding.command) &&
+            keybinding.command[0] === "insert"
+          ),
+      )
 
       if (mf.isConnected && !mf.isRegistered) {
         mf.isRegistered = true
@@ -152,6 +160,16 @@ export const MathEditor = ({
         })
 
         mf.addEventListener("keydown", (e) => {
+          if (
+            "abcdefghijklmnopqrstuvwxyz".includes(
+              String.fromCharCode(e.which).toLowerCase(),
+            ) &&
+            isModifierMatch(e, { altKey: true })
+          ) {
+            e.preventDefault()
+            return true
+          }
+
           if (e.key === " ") {
             e.preventDefault()
 
