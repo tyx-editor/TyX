@@ -59,6 +59,12 @@ import {
   OPEN_SETTINGS_COMMAND,
 } from "./components/plugins/tyxCommands"
 
+declare global {
+  interface Window {
+    executeCommandSequence?: (commandSequence: string) => void
+  }
+}
+
 const COMMANDS: Record<string, LexicalCommand<any>> = {
   toggleKeyboardMap: TOGGLE_KEYBOARD_MAP_COMMAND,
   formatElement: FORMAT_ELEMENT_COMMAND,
@@ -206,3 +212,5 @@ export const executeCommand = (command: TyXCommand) => {
     }
   }
 }
+
+window.executeCommandSequence = executeCommandSequence

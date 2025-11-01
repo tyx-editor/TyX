@@ -23,7 +23,6 @@ import {
   SELECTION_CHANGE_COMMAND,
 } from "lexical"
 import { useEffect, useMemo, useState } from "react"
-import { executeCommandSequence } from "../../commands"
 import { stringifyFunction } from "../../compilers/lexical2typst"
 import { getFunctions } from "../../functions"
 import { TyXValue } from "../../models"
@@ -291,7 +290,7 @@ export const InsertFunctionCallModal = () => {
     // TODO: why is this hack needed?
     setTimeout(() => {
       restoreEditorSelection()
-      executeCommandSequence(`insertFunctionCall ${name}`)
+      window.executeCommandSequence?.(`insertFunctionCall ${name}`)
     }, 100)
   }
 

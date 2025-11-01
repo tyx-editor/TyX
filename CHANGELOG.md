@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.13] - 2025-11-01
+
+### Fixed
+
+- Selection around math in RTL on Windows can now enter the math field.
+- Keyboard shortcuts now work more fluently with a less hacky implementation.
+
 ## [0.2.12] - 2025-10-31
 
 ### Added
