@@ -108,7 +108,7 @@ const KeyboardMapPlugin = ({
             null,
           )
 
-          if (!keyboardMap || ctrlKey || metaKey || altKey || shiftKey) {
+          if (!keyboardMap || ctrlKey || metaKey || altKey) {
             return false
           }
 
