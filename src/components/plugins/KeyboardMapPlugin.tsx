@@ -102,7 +102,7 @@ const KeyboardMapPlugin = ({
             return false
           }
 
-          const { key, ctrlKey, metaKey, altKey, shiftKey } = e
+          const { key, ctrlKey, metaKey, altKey } = e
           const keyboardMap = getLocalStorage<string | null>(
             "Keyboard Map",
             null,
