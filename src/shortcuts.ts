@@ -4,7 +4,6 @@
  */
 
 import "mousetrap"
-import "mousetrap-global-bind"
 // @ts-ignore
 import record from "mousetrap-record"
 
@@ -16,12 +15,6 @@ import { setLocalStorage } from "./utilities/hooks"
 declare global {
   namespace Mousetrap {
     interface MousetrapStatic {
-      bindGlobal(
-        keyArray: string | string[],
-        callback: (e: ExtendedKeyboardEvent, combo: string) => any,
-        action?: string,
-      ): void
-      unbindGlobal(keys: string | string[], action?: string): void
       record(callback: (result: string[]) => void): void
     }
   }
@@ -73,7 +66,7 @@ export const applyKeyboardShortcutsFromSettings = () => {
       continue
     }
 
-    Mousetrap.bindGlobal(shortcut[0], (e) => {
+    Mousetrap.bind(shortcut[0], (e) => {
       e.preventDefault()
 
       executeCommandSequence(shortcut[1])
@@ -101,6 +94,7 @@ export const updateReverseKeyboardShortcuts = () => {
 /** Performs initialization routines for using keyboard shortcuts, setting up Mousetrap and applying the shortcuts from settings. */
 export const initializeKeyboardShortcuts = () => {
   record(Mousetrap)
+  Mousetrap.prototype.stopCallback = () => false
 
   const allSequences = new Set<string>()
 

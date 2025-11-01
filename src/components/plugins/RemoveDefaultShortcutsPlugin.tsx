@@ -1,6 +1,6 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import {
-  COMMAND_PRIORITY_CRITICAL,
+  COMMAND_PRIORITY_LOW,
   isModifierMatch,
   KEY_DOWN_COMMAND,
 } from "lexical"
@@ -31,23 +31,9 @@ const RemoveDefaultShortcutsPlugin = () => {
           return true
         }
 
-        if (
-          (event.altKey || event.ctrlKey || event.metaKey) &&
-          ![
-            "ArrowUp",
-            "ArrowLeft",
-            "ArrowDown",
-            "ArrowRight",
-            "Backspace",
-          ].includes(event.key)
-        ) {
-          event.preventDefault()
-          return true
-        }
-
         return false
       },
-      COMMAND_PRIORITY_CRITICAL,
+      COMMAND_PRIORITY_LOW,
     )
   }, [editor])
 

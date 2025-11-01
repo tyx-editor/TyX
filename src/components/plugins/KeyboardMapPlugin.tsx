@@ -9,6 +9,7 @@ import {
   KEY_DOWN_COMMAND,
   SKIP_SCROLL_INTO_VIEW_TAG,
 } from "lexical"
+import { ExtendedKeyboardEvent } from "mousetrap"
 import { useEffect } from "react"
 import { TyXSettings } from "../../models"
 import { CONTROL_OR_ALT } from "../../resources/playground"
@@ -18,6 +19,28 @@ import {
   useLocalStorage,
 } from "../../utilities/hooks"
 import { KEYBOARD_MAPS, TOGGLE_KEYBOARD_MAP_COMMAND } from "./keyboardMap"
+
+const getModifiers = (e: ExtendedKeyboardEvent) => {
+  const modifiers: string[] = []
+
+  if (e.shiftKey) {
+    modifiers.push("shift")
+  }
+
+  if (e.altKey) {
+    modifiers.push("alt")
+  }
+
+  if (e.ctrlKey) {
+    modifiers.push("ctrl")
+  }
+
+  if (e.metaKey) {
+    modifiers.push("meta")
+  }
+
+  return modifiers
+}
 
 const KeyboardMapPlugin = ({
   skipInitialization,
@@ -47,6 +70,17 @@ const KeyboardMapPlugin = ({
       editor.registerCommand(
         KEY_DOWN_COMMAND,
         (e) => {
+          // @ts-ignore
+          Mousetrap.handleKey(e.key, getModifiers(e), {
+            ...e,
+            type: "keypress",
+            preventDefault: () => e.preventDefault(),
+            target: document.body,
+          })
+          if (e.defaultPrevented) {
+            return true
+          }
+
           const selection = $getSelection()
           if (selection === null) {
             return false
@@ -80,16 +114,6 @@ const KeyboardMapPlugin = ({
 
           const replacement = KEYBOARD_MAPS[keyboardMap][key.toLowerCase()]
           if (replacement) {
-            // @ts-ignore
-            Mousetrap.handleKey(e.key, [], {
-              ...e,
-              type: "keypress",
-              preventDefault: () => e.preventDefault(),
-            })
-            if (e.defaultPrevented) {
-              return true
-            }
-
             e.preventDefault()
             editor.update(
               () => {
