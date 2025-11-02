@@ -7,6 +7,7 @@ import { TyXValue } from "./values"
 
 export const TyXDirection = z
   .union([z.literal("ltr"), z.literal("rtl")])
+  .nullable()
   .optional()
 export type TyXDirection = z.infer<typeof TyXDirection>
 
