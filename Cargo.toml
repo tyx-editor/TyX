@@ -32,15 +32,15 @@ insta = "1"
 tyx-schema = { path = "crates/tyx-schema", version = "0.1.0" }
 tyx-import-typst = { path = "crates/tyx-import-typst", version = "0.1.0" }
 
-tinymist-project = "0.13.12"
-tinymist-std = "0.13.12"
-tinymist-task = "0.13.12"
-tinymist-tests = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev = "38974a3b5e43837c1982c707465abfb27d233302" }
-tinymist-vfs = "0.13.12"
-tinymist-world = "0.13.12"
-typst = "0.13.1"
-typst-pdf = "0.13.1"
-typlite = "0.13.12"
+tinymist-project = "0.14.0"
+tinymist-std = "0.14.0"
+tinymist-task = "0.14.0"
+tinymist-tests = { git = "https://github.com/Myriad-Dreamin/tinymist.git", tag = "v0.14.0" }
+tinymist-vfs = "0.14.0"
+tinymist-world = "0.14.0"
+typst = "0.14.0"
+typst-pdf = "0.14.0"
+typlite = "0.14.0"
 
 [workspace.lints.rustdoc]
 broken_intra_doc_links = "warn"
@@ -75,27 +75,12 @@ extend-exclude = ["/.git", "fixtures"]
 
 # todo: remove these typst patch?
 # A regular build MUST use `tag` or `rev` to specify the version of the patched crate to ensure stability.
-typst = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.13.10" }
-typst-library = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.13.10" }
-typst-html = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.13.10" }
-typst-timing = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.13.10" }
-typst-svg = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.13.10" }
-typst-render = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.13.10" }
-typst-pdf = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.13.10" }
-typst-syntax = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.13.10" }
-typst-eval = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.13.10" }
-
-tinymist-project = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev = "38974a3b5e43837c1982c707465abfb27d233302" }
-tinymist-std = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev = "38974a3b5e43837c1982c707465abfb27d233302" }
-tinymist-task = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev = "38974a3b5e43837c1982c707465abfb27d233302" }
-tinymist-vfs = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev = "38974a3b5e43837c1982c707465abfb27d233302" }
-tinymist-world = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev = "38974a3b5e43837c1982c707465abfb27d233302" }
-typlite = { git = "https://github.com/Myriad-Dreamin/tinymist.git", rev = "38974a3b5e43837c1982c707465abfb27d233302" }
-
-# tinymist-project = { path = "../tinymist/crates/tinymist-project" }
-# tinymist-std = { path = "../tinymist/crates/tinymist-std" }
-# tinymist-task = { path = "../tinymist/crates/tinymist-task" }
-# tinymist-tests = { path = "../tinymist/crates/tinymist-tests" }
-# tinymist-vfs = { path = "../tinymist/crates/tinymist-vfs" }
-# tinymist-world = { path = "../tinymist/crates/tinymist-world" }
-# typlite = { path = "../tinymist/crates/typlite" }
+typst = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.14.0-rc1" }
+typst-library = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.14.0-rc1" }
+typst-html = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.14.0-rc1" }
+typst-timing = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.14.0-rc1" }
+typst-svg = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.14.0-rc1" }
+typst-render = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.14.0-rc1" }
+typst-pdf = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.14.0-rc1" }
+typst-syntax = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.14.0-rc1" }
+typst-eval = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.14.0-rc1" }

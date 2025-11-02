@@ -21,8 +21,8 @@ use serde::{Deserialize, Serialize};
 pub use tinymist_project::LspWorld;
 
 use std::sync::Arc;
+use typlite::ast;
 
-use cmark_writer::ast;
 use tyx_schema::{self as s, Editor, Node as TyXNode, TextFormat};
 
 /// The settings for the TyX document.
@@ -280,31 +280,31 @@ impl Converter {
     }
 
     /// Converts a code block.
-    fn code_block(&self, language: Option<String>, content: String) -> Option<TyXNode> {
+    fn code_block(&self, language: Option<EcoString>, content: EcoString) -> Option<TyXNode> {
         Some(TyXNode::Code(s::Code {
             version: 1,
-            children: vec![TyXNode::plain(content.into())],
+            children: vec![TyXNode::plain(content)],
             direction: None,
             format: "".into(),
             indent: 0,
             text_format: None,
             text_style: None,
-            language: language.map(EcoString::from),
+            language: language,
         }))
     }
 
     /// Converts a html element, e.g. `<div></div>`.
-    fn html_block(&self, block: String) -> Option<TyXNode> {
+    fn html_block(&self, block: EcoString) -> Option<TyXNode> {
         // todo: what's a html block
-        Some(TyXNode::plain(block.into()))
+        Some(TyXNode::plain(block))
     }
 
     /// Converts a link reference definition.
     fn link_reference_definition(
         &self,
-        label: String,
-        destination: String,
-        title: Option<String>,
+        label: EcoString,
+        destination: EcoString,
+        title: Option<EcoString>,
     ) -> Option<TyXNode> {
         // todo: what's a link_reference_definition
         Some(TyXNode::plain(
@@ -505,8 +505,8 @@ impl Converter {
     }
 
     /// Converts an inline code.
-    fn inline_code(&self, code: String) -> Option<TyXNode> {
-        let mut node = TyXNode::plain(code.into());
+    fn inline_code(&self, code: EcoString) -> Option<TyXNode> {
+        let mut node = TyXNode::plain(code);
         Converter::text_format(TextFormat::Code as u64, &mut node);
         Some(node)
     }
@@ -541,7 +541,12 @@ impl Converter {
     }
 
     /// Converts a link.
-    fn link(&self, url: String, title: Option<String>, content: Vec<ast::Node>) -> Option<TyXNode> {
+    fn link(
+        &self,
+        url: EcoString,
+        title: Option<EcoString>,
+        content: Vec<ast::Node>,
+    ) -> Option<TyXNode> {
         Some(TyXNode::Link(s::Link {
             version: 1,
             children: self.children(content),
@@ -552,13 +557,13 @@ impl Converter {
             text_style: None,
             rel: None,
             target: None,
-            title: title.map(EcoString::from),
-            url: url.into(),
+            title: title,
+            url: url,
         }))
     }
 
     /// Converts a reference link.
-    fn reference_link(&self, label: String, content: Vec<ast::Node>) -> Option<TyXNode> {
+    fn reference_link(&self, label: EcoString, content: Vec<ast::Node>) -> Option<TyXNode> {
         Some(TyXNode::Link(s::Link {
             version: 1,
             children: self.children(content),
@@ -575,22 +580,27 @@ impl Converter {
     }
 
     /// Converts an image.
-    fn image(&self, url: String, title: Option<String>, alt: Vec<ast::Node>) -> Option<TyXNode> {
+    fn image(
+        &self,
+        url: EcoString,
+        title: Option<EcoString>,
+        alt: Vec<ast::Node>,
+    ) -> Option<TyXNode> {
         let _ = title;
         let _ = alt;
         // todo: use title and alt
         Some(TyXNode::Image(s::Image {
             version: 1,
-            src: url.into(),
+            src: url,
         }))
     }
 
     /// Converts an autolink.
-    fn autolink(&self, url: String, is_email: bool) -> Option<TyXNode> {
+    fn autolink(&self, url: EcoString, is_email: bool) -> Option<TyXNode> {
         let _ = is_email;
         Some(TyXNode::Link(s::Link {
             version: 1,
-            children: vec![TyXNode::plain(url.clone().into())],
+            children: vec![TyXNode::plain(url.clone())],
             direction: None,
             format: "".into(),
             indent: 0,
@@ -599,15 +609,15 @@ impl Converter {
             rel: None,
             target: None,
             title: None,
-            url: url.into(),
+            url,
         }))
     }
 
     /// Converts an extended autolink.
-    fn extended_autolink(&self, link: String) -> Option<TyXNode> {
+    fn extended_autolink(&self, link: EcoString) -> Option<TyXNode> {
         Some(TyXNode::Link(s::Link {
             version: 1,
-            children: vec![TyXNode::plain(link.clone().into())],
+            children: vec![TyXNode::plain(link.clone())],
             direction: None,
             format: "".into(),
             indent: 0,
@@ -616,7 +626,7 @@ impl Converter {
             rel: None,
             target: None,
             title: None,
-            url: link.into(),
+            url: link,
         }))
     }
 
@@ -638,8 +648,8 @@ impl Converter {
     }
 
     /// Converts a text node.
-    fn text(&self, content: String) -> Option<TyXNode> {
-        Some(TyXNode::plain(content.into()))
+    fn text(&self, content: EcoString) -> Option<TyXNode> {
+        Some(TyXNode::plain(content))
     }
 }
 
