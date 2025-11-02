@@ -69,7 +69,8 @@ export type TyXTextNode = z.infer<typeof TyXTextNode>
 export const TyXMathNode = z
   .looseObject({
     type: z.literal("math"),
-    typst: z.string().optional(),
+    expandedFormula: z.string().optional(),
+    formula: z.string().optional(),
     inline: z.boolean().optional(),
   })
   .describe("A node describing a math equation.")

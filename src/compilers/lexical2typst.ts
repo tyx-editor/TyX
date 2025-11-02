@@ -4,6 +4,7 @@
 
 import { SerializedListItemNode } from "@lexical/list"
 import { ElementFormatType, TEXT_TYPE_TO_FORMAT } from "lexical"
+import { tex2typst } from "tex2typst"
 import { TyXNode, TyXTableRowNode, TyXValue } from "../models"
 import tyxValue2typst from "./tyxValue2typst"
 
@@ -30,7 +31,7 @@ export const lexical2text = (node: TyXNode) => {
 
 export const applyDirection = (
   result: string,
-  direction: "ltr" | "rtl" | undefined,
+  direction: "ltr" | "rtl" | null | undefined,
 ) => {
   if (!direction) {
     return result
@@ -148,7 +149,11 @@ export const converters: {
     return result
   },
   math: (math) => {
-    let result = math.typst?.trim() ?? ""
+    let result = tex2typst(math.expandedFormula ?? math.formula ?? "", {
+      customTexMacros: { "\\differentialD": "\\text{d}" },
+    })
+      .trim()
+      .replaceAll("placeholder", "#sym.space")
     if (math.inline) {
       result = `$${result}$`
     } else {

@@ -17,7 +17,6 @@ import {
 } from "lexical"
 import { MathfieldElement } from "mathlive"
 import { useEffect, useRef, useState } from "react"
-import { tex2typst } from "tex2typst"
 import { DEFAULT_MATH_INLINE_SHORTCUTS, getSettings } from "../../settings"
 import {
   $createMathNode,
@@ -78,14 +77,14 @@ export const MathEditor = ({
     }
   }
 
-  const updateValue = (formula: string, typst: string) => {
+  const updateValue = (formula: string, expandedFormula: string) => {
     setFormula(formula)
     setTimeout(() => {
       editor.update(() => {
         const node = $getNodeByKey(nodeKey)
         if ($isMathNode(node)) {
           node.setFormula(formula)
-          node.setTypst(typst)
+          node.setExpandedFormula(expandedFormula)
         }
       })
     }, 0)
@@ -126,12 +125,7 @@ export const MathEditor = ({
 
         mf.addEventListener("input", (e) => {
           const target = e.target as MathfieldElement
-          updateValue(
-            target.getValue(),
-            tex2typst(target.getValue("latex-without-placeholders"), {
-              customTexMacros: { "\\differentialD": "\\text{d}" },
-            }),
-          )
+          updateValue(target.getValue(), target.getValue("latex-expanded"))
         })
 
         mf.addEventListener("move-out", (e) => {
