@@ -148,7 +148,9 @@ fn getsettings(handle: tauri::AppHandle) -> String {
 
 #[tauri::command]
 fn opensettingsdirectory(handle: tauri::AppHandle) {
-    open::that(handle.path().app_data_dir().unwrap()).unwrap();
+    let data_dir = handle.path().app_data_dir().unwrap();
+    let _ = create_dir_all(&data_dir);
+    open::that(data_dir).unwrap();
 }
 
 #[tauri::command]
