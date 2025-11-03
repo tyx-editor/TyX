@@ -289,7 +289,7 @@ impl Converter {
             indent: 0,
             text_format: None,
             text_style: None,
-            language: language,
+            language,
         }))
     }
 
@@ -557,8 +557,8 @@ impl Converter {
             text_style: None,
             rel: None,
             target: None,
-            title: title,
-            url: url,
+            title,
+            url,
         }))
     }
 
