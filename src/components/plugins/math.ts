@@ -59,7 +59,7 @@ export class MathNode extends DecoratorNode<React.ReactNode> {
       self.setFormula(serializedNode.formula)
     }
     if (typeof serializedNode.expandedFormula === "string") {
-      self.setFormula(serializedNode.expandedFormula)
+      self.setExpandedFormula(serializedNode.expandedFormula)
     }
     return self
   }

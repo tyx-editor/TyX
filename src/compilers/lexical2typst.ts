@@ -149,9 +149,14 @@ export const converters: {
     return result
   },
   math: (math) => {
-    let result = tex2typst(math.expandedFormula ?? math.formula ?? "", {
-      customTexMacros: { "\\differentialD": "\\text{d}" },
-    })
+    let formula = math.expandedFormula
+    if (!formula) {
+      formula = math.formula
+    }
+    if (!formula) {
+      formula = ""
+    }
+    let result = tex2typst(formula)
       .trim()
       .replaceAll("placeholder", "#sym.space")
     if (math.inline) {
