@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.14] - 2025-11-06
+
+### Changed
+
+- The bundled typst compiler has been bumped to 0.14.0.
+
+### Fixed
+
+- Math conversion is now more reliable with updates from tex2typst and better conversion path.
+- Open settings directory now also works when it doesn't exist yet.
+- Schema validation concerning the direction parameter no longer throws an error.
+
 ## [0.2.13] - 2025-11-01
 
 ### Fixed
