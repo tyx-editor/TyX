@@ -234,7 +234,7 @@ export const converters: {
     return `#link(${JSON.stringify(link.url)})[${children2typst(link.children)}]`
   },
   heading: (heading) => {
-    return `#heading(level: ${parseInt(heading.tag[1], 10)})[${children2typst(heading.children)}]`
+    return `#heading(depth: ${parseInt(heading.tag[1], 10)})[${children2typst(heading.children)}]`
   },
   functioncall: (functioncall) => {
     return `#${stringifyFunction(functioncall.name!, functioncall.positionParameters, functioncall.namedParameters)}`
