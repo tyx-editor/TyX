@@ -145,6 +145,7 @@ export const converters: {
   },
   text: (text) => {
     let result = typstEscape(text.text)
+    console.log("Here", text.text, result)
     result = applyTextFormat(result, text.text, text.format)
     return result
   },
@@ -242,8 +243,8 @@ export const converters: {
 }
 
 export const typstEscape = (text: string) => {
-  return text.replace(
-    /[#=[]$\*_`@<-\+\/\\'"~]/g,
+  return text.replaceAll(
+    /[#=[\]$*_`@<\-+/\\'"~]/g,
     (character) => "\\" + character,
   )
 }
