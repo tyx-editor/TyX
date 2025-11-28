@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+The settings, templates and extra fonts have moved to the [config directory](https://v2.tauri.app/reference/javascript/api/namespacepath/#configdir). You may need to move them after updating.
+
+### Fixed
+
+- Typst escaping now correctly escapes all symbols.
+
 ## [0.2.15] - 2025-11-10
 
 ### Fixed

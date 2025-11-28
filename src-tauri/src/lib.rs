@@ -120,7 +120,7 @@ fn open(handle: tauri::AppHandle, filename: &str) {
 #[tauri::command]
 fn newfromtemplate(handle: tauri::AppHandle) {
     let h = handle.clone();
-    let settings_path = handle.path().app_data_dir().unwrap().join("templates");
+    let settings_path = handle.path().app_config_dir().unwrap().join("templates");
     if !settings_path.is_dir() {
         create_dir_all(&settings_path).unwrap();
     }
@@ -141,21 +141,25 @@ fn newfromtemplate(handle: tauri::AppHandle) {
 
 #[tauri::command]
 fn getsettings(handle: tauri::AppHandle) -> String {
-    let settings_path = handle.path().app_data_dir().unwrap().join("settings.json");
+    let settings_path = handle
+        .path()
+        .app_config_dir()
+        .unwrap()
+        .join("settings.json");
 
     fs::read_to_string(settings_path).unwrap_or_default()
 }
 
 #[tauri::command]
 fn opensettingsdirectory(handle: tauri::AppHandle) {
-    let data_dir = handle.path().app_data_dir().unwrap();
+    let data_dir = handle.path().app_config_dir().unwrap();
     let _ = create_dir_all(&data_dir);
     open::that(data_dir).unwrap();
 }
 
 #[tauri::command]
 fn setsettings(handle: tauri::AppHandle, settings: &str) -> String {
-    let data_dir = handle.path().app_data_dir().unwrap();
+    let data_dir = handle.path().app_config_dir().unwrap();
     let _ = create_dir_all(&data_dir);
     let settings_path = data_dir.join("settings.json");
 
@@ -218,7 +222,7 @@ fn preview(
         .to_str()
         .unwrap();
     let pdf_file = basename.clone() + ".pdf";
-    let tyx_fonts_path = handle.path().app_data_dir().unwrap().join("fonts");
+    let tyx_fonts_path = handle.path().app_config_dir().unwrap().join("fonts");
     if !tyx_fonts_path.is_dir() {
         create_dir_all(&tyx_fonts_path).unwrap();
     }
