@@ -7,12 +7,6 @@ import { ElementFormatType, TEXT_TYPE_TO_FORMAT } from "lexical"
 import { TyXNode, TyXTableRowNode, TyXValue } from "../models"
 import tyxValue2typst from "./tyxValue2typst"
 
-export const convertCSSColor = (color: string) => {
-  const context = document.createElement("canvas").getContext("2d")!
-  context.fillStyle = color
-  return context.fillStyle
-}
-
 export const lexical2text = (node: TyXNode) => {
   const some = node as any
   if (typeof some?.text === "string") {
@@ -144,7 +138,6 @@ export const converters: {
   },
   text: (text) => {
     let result = typstEscape(text.text)
-    console.log("Here", text.text, result)
     result = applyTextFormat(result, text.text, text.format)
     return result
   },

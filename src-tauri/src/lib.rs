@@ -20,7 +20,7 @@ use typst_pdf::PdfOptions;
 use typstyle_core::Typstyle;
 
 #[tauri::command]
-fn save(filename: &str, content: &str, format: bool) {
+fn save(filename: &str, content: &str, format: bool, other: &str) {
     let mut content = String::from(content);
     if format {
         let typstyle = Typstyle::default();
@@ -40,7 +40,7 @@ fn saveas(handle: tauri::AppHandle) {
     handle
         .dialog()
         .file()
-        .add_filter("tyx", &["tyx"])
+        .add_filter("TyX", &["tyx"])
         .save_file(move |f| {
             if let Some(f) = f {
                 if let Some(path) = f.as_path() {
@@ -80,7 +80,7 @@ fn openfile(handle: &tauri::AppHandle, path: &Path, include_filename: bool) {
             return;
         }
 
-        let Some(doc) = tyx_import_typst::convert(Arc::new(world)) else {
+        let Some(doc) = tyx_converters::typst_to_tyx(Arc::new(world)) else {
             return;
         };
         // todo: we serialize it here.
@@ -107,7 +107,8 @@ fn open(handle: tauri::AppHandle, filename: &str) {
     handle
         .dialog()
         .file()
-        .add_filter("tyx", &["tyx", "typ"])
+        .add_filter("TyX", &["tyx"])
+        .add_filter("Typst", &["typ"])
         .pick_file(move |f| {
             if let Some(f) = f {
                 if let Some(path) = f.as_path() {
@@ -128,7 +129,7 @@ fn newfromtemplate(handle: tauri::AppHandle) {
     handle
         .dialog()
         .file()
-        .add_filter("tyx", &["tyx"])
+        .add_filter("TyX", &["tyx"])
         .set_directory(settings_path)
         .pick_file(move |f| {
             if let Some(f) = f {
@@ -307,7 +308,7 @@ fn insertimage(handle: tauri::AppHandle, filename: &str) {
     handle
         .dialog()
         .file()
-        .add_filter("image", &["png", "jpg", "jpeg", "gif", "svg"])
+        .add_filter("Image", &["png", "jpg", "jpeg", "gif", "svg"])
         .pick_file(move |f| {
             if let Some(f) = f {
                 if let Some(path) = f.as_path() {

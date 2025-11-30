@@ -5,10 +5,15 @@
 import { z } from "zod/v4"
 import { TyXValue } from "./values"
 
-export const TyXDirection = z
+export const TyXDirectionValue = z
   .union([z.literal("ltr"), z.literal("rtl")])
-  .nullable()
+  .describe("Possible direction values of text in TyX.")
+  .meta({ id: "TyXDirectionValue" })
+
+export const TyXDirection = TyXDirectionValue.nullable()
   .optional()
+  .describe("A direction of text in TyX.")
+  .meta({ id: "TyXDirection" })
 export type TyXDirection = z.infer<typeof TyXDirection>
 
 export const TyXEditorState = z.looseObject({

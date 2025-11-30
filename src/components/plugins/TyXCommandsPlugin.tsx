@@ -152,7 +152,7 @@ const TyXCommandsPlugin = () => {
               ".tyx",
               ".typ",
             )
-            save(filename, tyx2typst(doc)).then(() =>
+            save(filename, tyx2typst(doc), JSON.stringify(doc)).then(() =>
               showSuccessMessage(`Document exported to ${filename}.`),
             )
           }

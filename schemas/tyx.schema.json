@@ -1,51 +1,64 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "description": "An object representing an entire TyX document. Saved in `.tyx` files.",
-  "id": "TyXDocument",
-  "type": "object",
-  "properties": {
-    "$schema": {
-      "type": "string"
+  "anyOf": [
+    {
+      "$ref": "#/definitions/TyXDocument"
     },
-    "version": {
-      "description": "The version of TyX in which the document was created.",
-      "type": "string"
+    {
+      "$ref": "#/definitions/TyXSettings"
     },
-    "preamble": {
-      "description": "Raw Typst code to insert before the content.",
-      "type": "string"
-    },
-    "filename": {
-      "description": "The filename of the document, unused.",
-      "type": "string"
-    },
-    "content": {
-      "description": "The serialized content of the editor.",
+    {
+      "$ref": "#/definitions/TyXValue"
+    }
+  ],
+  "definitions": {
+    "TyXDocument": {
+      "description": "An object representing an entire TyX document. Saved in `.tyx` files.",
+      "id": "TyXDocument",
       "type": "object",
       "properties": {
-        "root": {
-          "$ref": "#/definitions/TyXRootNode"
+        "$schema": {
+          "type": "string"
+        },
+        "version": {
+          "description": "The version of TyX in which the document was created.",
+          "type": "string"
+        },
+        "preamble": {
+          "description": "Raw Typst code to insert before the content.",
+          "type": "string"
+        },
+        "filename": {
+          "description": "The filename of the document, unused.",
+          "type": "string"
+        },
+        "content": {
+          "description": "The serialized content of the editor.",
+          "type": "object",
+          "properties": {
+            "root": {
+              "$ref": "#/definitions/TyXRootNode"
+            }
+          },
+          "required": ["root"],
+          "additionalProperties": false
+        },
+        "dirty": {
+          "description": "Whether the document has been modified since loading, unused.",
+          "type": "boolean"
+        },
+        "settings": {
+          "description": "The document's settings.",
+          "allOf": [
+            {
+              "$ref": "#/definitions/TyXDocumentSettings"
+            }
+          ]
         }
       },
-      "required": ["root"],
+      "required": ["version"],
       "additionalProperties": false
     },
-    "dirty": {
-      "description": "Whether the document has been modified since loading, unused.",
-      "type": "boolean"
-    },
-    "settings": {
-      "description": "The document's settings.",
-      "allOf": [
-        {
-          "$ref": "#/definitions/TyXDocumentSettings"
-        }
-      ]
-    }
-  },
-  "required": ["version"],
-  "additionalProperties": false,
-  "definitions": {
     "TyXRootNode": {
       "description": "The node at the root of a TyX document.",
       "id": "TyXRootNode",
@@ -815,7 +828,81 @@
       },
       "required": ["type"],
       "additionalProperties": false
+    },
+    "TyXSettings": {
+      "description": "App-wide customization for TyX.",
+      "id": "TyXSettings",
+      "type": "object",
+      "properties": {
+        "$schema": {
+          "type": "string"
+        },
+        "language": {
+          "description": "The UI Language for the app.",
+          "type": "string"
+        },
+        "keyboardShortcuts": {
+          "description": "An array of pairs of [shortcut, command] of keyboard shortcuts.",
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "unbindKeyboardShortcuts": {
+          "description": "An array of default shortcuts to unbind, e.g. \"mod+b\"",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "keyboardMap": {
+          "description": "The keyboard map for the app.",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mathInlineShortcuts": {
+          "description": "An array of pairs of [shortcut, command] of LaTeX inline math replacements.",
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "format": {
+          "description": "Whether to format the output Typst documents.",
+          "type": "boolean"
+        },
+        "autoStartServer": {
+          "description": "Whether to automatically start a server that updates the PDF when the document changes.",
+          "type": "boolean"
+        },
+        "serverDebounce": {
+          "description": "The amount in milliseconds to debounce before updating the PDF.",
+          "type": "number"
+        },
+        "functions": {
+          "description": "Additional TyX function definitions.",
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "$ref": "#/definitions/FunctionDefinition"
+          }
+        }
+      },
+      "additionalProperties": false
     }
-  },
-  "title": "TyXDocument"
+  }
 }

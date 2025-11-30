@@ -1,8 +1,7 @@
 import json
 from pathlib import Path
 
-from tyx_schema.document import *
-from tyx_schema.settings import *
+from tyx_schema.schema import *
 
 
 def get_document(path: Path):

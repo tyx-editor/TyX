@@ -153,9 +153,9 @@ export const onOpen = (
 
 export const open = (filename: string = "") => invoke("open", { filename })
 
-export const save = (filename: string, content: string) => {
+export const save = (filename: string, content: string, other: string) => {
   const format = getSettings().format ?? false
-  return invoke("save", { filename, content, format })
+  return invoke("save", { filename, content, format, other })
 }
 
 export const saveAs = () => invoke("saveas")

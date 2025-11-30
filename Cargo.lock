@@ -7015,17 +7015,19 @@ dependencies = [
  "typst",
  "typst-pdf",
  "typstyle-core",
- "tyx-import-typst",
+ "tyx-converters",
+ "tyx-schema",
  "url",
 ]
 
 [[package]]
-name = "tyx-import-typst"
+name = "tyx-converters"
 version = "0.1.0"
 dependencies = [
  "cmark-writer 0.6.3",
  "ecow",
  "insta",
+ "regex",
  "serde",
  "serde_json",
  "tinymist-project 0.14.0 (registry+https://github.com/rust-lang/crates.io-index)",

@@ -13,16 +13,16 @@
 //!     .expect("failed to resolve system universe");
 //!
 //! let world = verse.snapshot();
-//! let tyx_document = tyx_import_typst::convert(Arc::new(world));
+//! let tyx_document = tyx_converters::typst_to_tyx(Arc::new(world));
 //! ```
-
 use ecow::EcoString;
 pub use tinymist_project::LspWorld;
 
 use std::sync::Arc;
 use typlite::ast;
 
-use tyx_schema::document::{self as s, TyXNode};
+use crate::common::TextFormat;
+use tyx_schema::{self as s, TyXNode};
 
 fn plain(text: String) -> TyXNode {
     TyXNode::TextNode(s::TyXTextNode {
@@ -33,35 +33,8 @@ fn plain(text: String) -> TyXNode {
     })
 }
 
-/// Masks for text format.
-/// See https://github.com/facebook/lexical/blob/cde863d444adf9c189626c789b53657c3352dbb1/packages/lexical/src/LexicalConstants.ts#L106.
-pub enum TextFormat {
-    /// Bold.
-    Bold = 1,
-    /// Italic.
-    Italic = 1 << 1,
-    /// Strikethrough.
-    Strikethrough = 1 << 2,
-    /// Underline.
-    Underline = 1 << 3,
-    /// Code.
-    Code = 1 << 4,
-    /// Subscript.
-    Subscript = 1 << 5,
-    /// Superscript.
-    Superscript = 1 << 6,
-    /// Highlight.
-    Highlight = 1 << 7,
-    /// Lowercase.
-    Lowercase = 1 << 8,
-    /// Uppercase.
-    Uppercase = 1 << 9,
-    /// Capitalize.
-    Capitalize = 1 << 10,
-}
-
 /// Converts the main document in a [`LspWorld`] to a [`TyXDocument`]
-pub fn convert(world: Arc<LspWorld>) -> Option<s::TyXDocument> {
+pub fn typst_to_tyx(world: Arc<LspWorld>) -> Option<s::TyXDocument> {
     // Converts the source code into a markdown document
     let converter = typlite::Typlite::new(world);
     let md_doc = match converter.convert_doc(typlite::common::Format::Md) {
@@ -594,6 +567,3 @@ impl Converter {
         Some(plain(content.into()))
     }
 }
-
-#[cfg(test)]
-mod tests;

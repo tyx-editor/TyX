@@ -1,33 +1,90 @@
 //! Based on https://github.com/oxidecomputer/typify/blob/main/example-build/build.rs
-use std::{fs, path::Path};
-
 use typify::{TypeSpace, TypeSpaceSettings};
 
+const SCHEMA_PATH: &str = "../../schemas/tyx.schema.json";
+const OUTPUT_PATH: &str = "./src/lib.rs";
+
 fn main() {
-    let schema_dir = Path::new("../../schemas");
-    let output_path = Path::new("src");
+    let content = std::fs::read_to_string(SCHEMA_PATH).unwrap();
+    let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content).unwrap();
 
-    for (schema_name, output_name) in vec![
-        ("tyx-document.schema.json", "document.rs"),
-        ("tyx-settings.schema.json", "settings.rs"),
-    ] {
-        let mut schema_path = schema_dir.to_path_buf();
-        schema_path.push(schema_name);
-        let content = std::fs::read_to_string(schema_path).unwrap();
-        let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content).unwrap();
+    let mut type_space = TypeSpace::new(&TypeSpaceSettings::default());
+    type_space.add_root_schema(schema).unwrap();
 
-        let mut type_space = TypeSpace::new(TypeSpaceSettings::default().with_struct_builder(true));
-        type_space.add_root_schema(schema).unwrap();
+    let mut contents = String::from("#![allow(missing_docs)]\n")
+        + prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap())
+            .as_str();
 
-        let contents = String::from("#![allow(missing_docs)]\n")
-            + prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap())
-                .as_str();
+    contents = contents
+        .replace(
+            r#"#[serde(untagged)]
+pub enum TyXNode {
+    RootNode(TyXRootNode),
+    ParagraphNode(TyXParagraphNode),
+    TextNode(TyXTextNode),
+    MathNode(TyXMathNode),
+    ListItemNode(TyXListItemNode),
+    ListNode(TyXListNode),
+    CodeNode(TyXCodeNode),
+    QuoteNode(TyXQuoteNode),
+    TableNode(TyXTableNode),
+    TableRowNode(TyXTableRowNode),
+    TableCellNode(TyXTableCellNode),
+    LineBreakNode(TyXLineBreakNode),
+    HorizontalRuleNode(TyXHorizontalRuleNode),
+    TypstCodeNode(TyXTypstCodeNode),
+    ImageNode(TyXImageNode),
+    LinkNode(TyXLinkNode),
+    HeadingNode(TyXHeadingNode),
+    FunctionCallNode(TyXFunctionCallNode),
+}"#,
+            r#"#[serde(tag = "type")]
+pub enum TyXNode {
+    #[serde(rename = "root")]
+    RootNode(TyXRootNode),
+    #[serde(rename = "paragraph")]
+    ParagraphNode(TyXParagraphNode),
+    #[serde(rename = "text")]
+    TextNode(TyXTextNode),
+    #[serde(rename = "math")]
+    MathNode(TyXMathNode),
+    #[serde(rename = "listitem")]
+    ListItemNode(TyXListItemNode),
+    #[serde(rename = "list")]
+    ListNode(TyXListNode),
+    #[serde(rename = "code")]
+    CodeNode(TyXCodeNode),
+    #[serde(rename = "quote")]
+    QuoteNode(TyXQuoteNode),
+    #[serde(rename = "table")]
+    TableNode(TyXTableNode),
+    #[serde(rename = "tablerow")]
+    TableRowNode(TyXTableRowNode),
+    #[serde(rename = "tablecell")]
+    TableCellNode(TyXTableCellNode),
+    #[serde(rename = "linebreak")]
+    LineBreakNode(TyXLineBreakNode),
+    #[serde(rename = "horizontalrule")]
+    HorizontalRuleNode(TyXHorizontalRuleNode),
+    #[serde(rename = "typstcode")]
+    TypstCodeNode(TyXTypstCodeNode),
+    #[serde(rename = "image")]
+    ImageNode(TyXImageNode),
+    #[serde(rename = "link")]
+    LinkNode(TyXLinkNode),
+    #[serde(rename = "heading")]
+    HeadingNode(TyXHeadingNode),
+    #[serde(rename = "functioncall")]
+    FunctionCallNode(TyXFunctionCallNode),
+}"#,
+        )
+        .replace(
+            "pub type_: ::std::string::String",
+            "#[serde(skip_deserializing)]\npub type_: ::std::string::String",
+        );
 
-        let mut output_path = output_path.to_path_buf();
-        output_path.push(output_name);
-        let current = std::fs::read_to_string(&output_path).unwrap();
-        if current != contents {
-            fs::write(output_path, contents).unwrap();
-        }
+    let current = std::fs::read_to_string(OUTPUT_PATH).unwrap_or_default();
+    if current != contents {
+        std::fs::write(OUTPUT_PATH, contents).unwrap();
     }
 }

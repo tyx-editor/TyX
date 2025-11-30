@@ -28,7 +28,8 @@ tauri-plugin-process = "2"
 tinymist-project = { workspace = true, features = ["lsp"] }
 typst.workspace = true
 typst-pdf.workspace = true
-tyx-import-typst.workspace = true
+tyx-schema.workspace = true
+tyx-converters.workspace = true
 typstyle-core = "0.13.14"
 url = "2.5.4"
 open = "5"
