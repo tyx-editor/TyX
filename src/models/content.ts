@@ -60,7 +60,7 @@ export const TyXTextNode = z
   .looseObject({
     type: z.literal("text"),
     text: z.string(),
-    format: z.number(),
+    format: z.int(),
   })
   .describe("A node describing text.")
   .meta({ id: "TyXTextNode" })
@@ -69,7 +69,7 @@ export type TyXTextNode = z.infer<typeof TyXTextNode>
 export const TyXMathNode = z
   .looseObject({
     type: z.literal("math"),
-    expandedFormula: z.string().optional(),
+    typst: z.string().optional(),
     formula: z.string().optional(),
     inline: z.boolean().optional(),
   })
@@ -80,6 +80,7 @@ export type TyXMathNode = z.infer<typeof TyXMathNode>
 export const TyXListItemNode = z
   .looseObject({
     type: z.literal("listitem"),
+    value: z.int(),
     get children() {
       return z.array(TyXNode)
     },
@@ -99,7 +100,7 @@ export const TyXListNode = z
       z.literal("number"),
       z.literal("check"),
     ]),
-    start: z.number(),
+    start: z.int(),
     direction: TyXDirection,
   })
   .describe("A node describing a bullet or numbered list.")

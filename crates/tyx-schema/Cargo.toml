@@ -16,6 +16,10 @@ typst.workspace = true
 [build-dependencies]
 serde.workspace = true
 serde_json.workspace = true
+prettyplease = "0.2"
+schemars = "0.8"
+syn = "2.0"
+typify = "0.5.0"
 
 [lints]
 workspace = true

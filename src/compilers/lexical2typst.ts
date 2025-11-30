@@ -4,7 +4,6 @@
 
 import { SerializedListItemNode } from "@lexical/list"
 import { ElementFormatType, TEXT_TYPE_TO_FORMAT } from "lexical"
-import { tex2typst } from "tex2typst"
 import { TyXNode, TyXTableRowNode, TyXValue } from "../models"
 import tyxValue2typst from "./tyxValue2typst"
 
@@ -150,16 +149,7 @@ export const converters: {
     return result
   },
   math: (math) => {
-    let formula = math.expandedFormula
-    if (!formula) {
-      formula = math.formula
-    }
-    if (!formula) {
-      formula = ""
-    }
-    let result = tex2typst(formula)
-      .trim()
-      .replaceAll("placeholder", "#sym.space")
+    let result = math.typst ?? ""
     if (math.inline) {
       result = `$${result}$`
     } else {

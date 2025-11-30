@@ -17,6 +17,7 @@ import {
 } from "lexical"
 import { MathfieldElement } from "mathlive"
 import { useEffect, useRef, useState } from "react"
+import { tex2typst } from "tex2typst"
 import { DEFAULT_MATH_INLINE_SHORTCUTS, getSettings } from "../../settings"
 import {
   $createMathNode,
@@ -84,7 +85,11 @@ export const MathEditor = ({
         const node = $getNodeByKey(nodeKey)
         if ($isMathNode(node)) {
           node.setFormula(formula)
-          node.setExpandedFormula(expandedFormula)
+          node.setTypst(
+            tex2typst(expandedFormula ?? formula ?? "")
+              .trim()
+              .replaceAll("placeholder", "#sym.space"),
+          )
         }
       })
     }, 0)

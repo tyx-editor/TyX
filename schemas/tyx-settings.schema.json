@@ -16,14 +16,9 @@
       "type": "array",
       "items": {
         "type": "array",
-        "items": [
-          {
-            "type": "string"
-          },
-          {
-            "type": "string"
-          }
-        ]
+        "items": {
+          "type": "string"
+        }
       }
     },
     "unbindKeyboardShortcuts": {
@@ -49,14 +44,9 @@
       "type": "array",
       "items": {
         "type": "array",
-        "items": [
-          {
-            "type": "string"
-          },
-          {
-            "type": "string"
-          }
-        ]
+        "items": {
+          "type": "string"
+        }
       }
     },
     "format": {
@@ -158,5 +148,6 @@
       "required": ["type"],
       "additionalProperties": false
     }
-  }
+  },
+  "title": "TyXSettings"
 }

@@ -64,12 +64,19 @@
         "direction": {
           "anyOf": [
             {
-              "type": "string",
-              "const": "ltr"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "ltr"
+                },
+                {
+                  "type": "string",
+                  "const": "rtl"
+                }
+              ]
             },
             {
-              "type": "string",
-              "const": "rtl"
+              "type": "null"
             }
           ]
         }
@@ -187,12 +194,19 @@
         "direction": {
           "anyOf": [
             {
-              "type": "string",
-              "const": "ltr"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "ltr"
+                },
+                {
+                  "type": "string",
+                  "const": "rtl"
+                }
+              ]
             },
             {
-              "type": "string",
-              "const": "rtl"
+              "type": "null"
             }
           ]
         }
@@ -213,7 +227,9 @@
           "type": "string"
         },
         "format": {
-          "type": "number"
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
         }
       },
       "required": ["type", "text", "format"],
@@ -229,6 +245,9 @@
           "const": "math"
         },
         "typst": {
+          "type": "string"
+        },
+        "formula": {
           "type": "string"
         },
         "inline": {
@@ -247,6 +266,11 @@
           "type": "string",
           "const": "listitem"
         },
+        "value": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
         "children": {
           "type": "array",
           "items": {
@@ -254,7 +278,7 @@
           }
         }
       },
-      "required": ["type", "children"],
+      "required": ["type", "value", "children"],
       "additionalProperties": {}
     },
     "TyXListNode": {
@@ -289,17 +313,26 @@
           ]
         },
         "start": {
-          "type": "number"
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
         },
         "direction": {
           "anyOf": [
             {
-              "type": "string",
-              "const": "ltr"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "ltr"
+                },
+                {
+                  "type": "string",
+                  "const": "rtl"
+                }
+              ]
             },
             {
-              "type": "string",
-              "const": "rtl"
+              "type": "null"
             }
           ]
         }
@@ -347,12 +380,19 @@
         "direction": {
           "anyOf": [
             {
-              "type": "string",
-              "const": "ltr"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "ltr"
+                },
+                {
+                  "type": "string",
+                  "const": "rtl"
+                }
+              ]
             },
             {
-              "type": "string",
-              "const": "rtl"
+              "type": "null"
             }
           ]
         }
@@ -378,12 +418,19 @@
         "direction": {
           "anyOf": [
             {
-              "type": "string",
-              "const": "ltr"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "ltr"
+                },
+                {
+                  "type": "string",
+                  "const": "rtl"
+                }
+              ]
             },
             {
-              "type": "string",
-              "const": "rtl"
+              "type": "null"
             }
           ]
         }
@@ -428,12 +475,19 @@
         "direction": {
           "anyOf": [
             {
-              "type": "string",
-              "const": "ltr"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "ltr"
+                },
+                {
+                  "type": "string",
+                  "const": "rtl"
+                }
+              ]
             },
             {
-              "type": "string",
-              "const": "rtl"
+              "type": "null"
             }
           ]
         }
@@ -838,5 +892,6 @@
       "required": ["type"],
       "additionalProperties": false
     }
-  }
+  },
+  "title": "TyXDocument"
 }

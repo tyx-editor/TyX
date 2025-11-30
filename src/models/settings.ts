@@ -10,7 +10,7 @@ export const TyXSettings = z
     $schema: z.string().optional(),
     language: z.string().optional().describe("The UI Language for the app."),
     keyboardShortcuts: z
-      .array(z.tuple([z.string(), z.string()]))
+      .array(z.array(z.string()))
       .optional()
       .describe(
         "An array of pairs of [shortcut, command] of keyboard shortcuts.",
@@ -25,7 +25,7 @@ export const TyXSettings = z
       .optional()
       .describe("The keyboard map for the app."),
     mathInlineShortcuts: z
-      .array(z.tuple([z.string(), z.string()]))
+      .array(z.array(z.string()))
       .optional()
       .describe(
         "An array of pairs of [shortcut, command] of LaTeX inline math replacements.",

@@ -21,7 +21,7 @@ export type SerializedMathNode = Spread<
   {
     inline?: boolean
     formula?: string
-    expandedFormula?: string
+    typst?: string
   },
   SerializedLexicalNode
 >
@@ -29,19 +29,14 @@ export type SerializedMathNode = Spread<
 export class MathNode extends DecoratorNode<React.ReactNode> {
   __inline: boolean
   __formula: string
-  __expandedFormula: string
+  __typst: string
 
   static getType(): string {
     return "math"
   }
 
   static clone(node: MathNode): MathNode {
-    return new MathNode(
-      node.__formula,
-      node.__expandedFormula,
-      node.__inline,
-      node.__key,
-    )
+    return new MathNode(node.__formula, node.__typst, node.__inline, node.__key)
   }
 
   static importJSON(
@@ -58,8 +53,8 @@ export class MathNode extends DecoratorNode<React.ReactNode> {
     if (typeof serializedNode.formula === "string") {
       self.setFormula(serializedNode.formula)
     }
-    if (typeof serializedNode.expandedFormula === "string") {
-      self.setExpandedFormula(serializedNode.expandedFormula)
+    if (typeof serializedNode.typst === "string") {
+      self.setTypst(serializedNode.typst)
     }
     return self
   }
@@ -68,7 +63,7 @@ export class MathNode extends DecoratorNode<React.ReactNode> {
     const serializedNode: SerializedMathNode = super.exportJSON()
     serializedNode.inline = this.getLatest().__inline
     serializedNode.formula = this.getLatest().__formula
-    serializedNode.expandedFormula = this.getLatest().__expandedFormula
+    serializedNode.typst = this.getLatest().__typst
     return serializedNode
   }
 
@@ -84,21 +79,21 @@ export class MathNode extends DecoratorNode<React.ReactNode> {
     return self
   }
 
-  setExpandedFormula(expandedFormula: string) {
+  setTypst(typst: string) {
     const self = this.getWritable()
-    self.__expandedFormula = expandedFormula
+    self.__typst = typst
     return self
   }
 
   constructor(
     formula: string = "",
-    expandedFormula: string = "",
+    typst: string = "",
     inline: boolean = true,
     key?: NodeKey,
   ) {
     super(key)
     this.__formula = formula
-    this.__expandedFormula = expandedFormula
+    this.__typst = typst
     this.__inline = inline
   }
 
