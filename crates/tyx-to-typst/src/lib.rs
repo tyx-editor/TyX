@@ -1,7 +1,6 @@
 //! Converts a TyX document to a Typst string.
 use std::{collections::HashMap, sync::LazyLock};
 
-use crate::common::TextFormat;
 use regex::{Captures, Regex};
 use tyx_schema::*;
 
@@ -127,7 +126,7 @@ fn typst_escape(text: &str) -> String {
 }
 
 /// Converts a TyX node to Typst code.
-pub(crate) fn node_to_typst(root: &TyXNode) -> Option<String> {
+fn node_to_typst(root: &TyXNode) -> Option<String> {
     println!("{:?}", root);
     match root {
         TyXNode::RootNode(tyx_root_node) => Some(apply_direction(
@@ -284,20 +283,27 @@ pub(crate) fn node_to_typst(root: &TyXNode) -> Option<String> {
             stringify_function(
                 &tyx_function_call_node.name,
                 &tyx_function_call_node.position_parameters,
-                &tyx_function_call_node.named_parameters
+                &tyx_function_call_node.named_parameters,
+                true
             )
         )),
     }
 }
 
-fn stringify_function(
+/// Converts the given TyX function call to Typst code.
+pub fn stringify_function(
     name: &Option<String>,
     position_parameters: &Vec<TyXValue>,
     named_parameters: &HashMap<String, TyXValue>,
+    include_content: bool,
 ) -> String {
     let mut parameters = Vec::new();
 
     for parameter in position_parameters {
+        if !include_content && let TyXValue::ContentValue(_) = parameter {
+            continue;
+        }
+
         if let Some(value) = tyx_value_to_typst(parameter.clone()) {
             parameters.push(value);
         }
@@ -309,14 +315,14 @@ fn stringify_function(
     }
 
     format!(
-        "#{}({})",
+        "{}({})",
         name.clone().unwrap_or_default(),
         parameters.join(", ")
     )
 }
 
 /// Converts a TyX value to a Typst string.
-pub(crate) fn tyx_value_to_typst(value: TyXValue) -> Option<String> {
+fn tyx_value_to_typst(value: TyXValue) -> Option<String> {
     match value {
         TyXValue::LengthValue(length) => {
             Some(length.unit.clone().map_or(String::from("none"), |unit| {
@@ -339,7 +345,7 @@ pub(crate) fn tyx_value_to_typst(value: TyXValue) -> Option<String> {
 }
 
 /// Converts the given TyX document settings to Typst code.
-pub(crate) fn tyx_document_settings_to_typst(settings: &Option<TyXDocumentSettings>) -> String {
+fn tyx_document_settings_to_typst(settings: &Option<TyXDocumentSettings>) -> String {
     let mut result = String::new();
 
     let Some(settings) = settings else {
@@ -376,7 +382,8 @@ pub(crate) fn tyx_document_settings_to_typst(settings: &Option<TyXDocumentSettin
         type_: "length".into(),
         unit: indentation.unit,
         value: indentation.value,
-    })) {
+    })) && indentation != "none"
+    {
         result += &format!("#set par(first-line-indent: {})\n", &indentation);
     }
 
@@ -414,4 +421,28 @@ pub fn tyx_to_typst(document: &TyXDocument) -> String {
     }
 
     content
+}
+
+/// Converts the serialized TyX document to Typst code.
+pub fn serialized_tyx_to_typst(document: &str) -> String {
+    let document = serde_json::from_str::<TyXDocument>(document).unwrap();
+    tyx_to_typst(&document)
+}
+
+/// Converts the serialized TyX function data to Typst code.
+pub fn serialized_stringify_function(
+    name: Option<String>,
+    position_parameters: &str,
+    named_parameters: &str,
+    include_content: bool,
+) -> String {
+    let position_parameters = serde_json::from_str::<Vec<TyXValue>>(position_parameters).unwrap();
+    let named_parameters =
+        serde_json::from_str::<HashMap<String, TyXValue>>(named_parameters).unwrap();
+    stringify_function(
+        &name,
+        &position_parameters,
+        &named_parameters,
+        include_content,
+    )
 }

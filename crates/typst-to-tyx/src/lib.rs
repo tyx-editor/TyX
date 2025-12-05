@@ -21,8 +21,7 @@ pub use tinymist_project::LspWorld;
 use std::sync::Arc;
 use typlite::ast;
 
-use crate::common::TextFormat;
-use tyx_schema::{self as s, TyXNode};
+use tyx_schema::{self as s, TextFormat, TyXNode};
 
 fn plain(text: String) -> TyXNode {
     TyXNode::TextNode(s::TyXTextNode {

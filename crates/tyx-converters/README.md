@@ -1,3 +1,3 @@
-# TyX Import Typst
+# TyX Converters
 
-This crates provides a converter from Typst to TyX.
+This crates provides converters between Typst and TyX.

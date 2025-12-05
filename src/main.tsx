@@ -13,7 +13,10 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import App from "./App"
 import { initializeBackend } from "./backend"
+import initializeWasm from "./converters"
 import { initializeKeyboardShortcuts } from "./shortcuts"
+
+export let wasmInitialized = false
 
 /** Initialize everything and render the main application. */
 const main = () => {
@@ -21,6 +24,8 @@ const main = () => {
   MathfieldElement.soundsDirectory = null
   initializeBackend()
   initializeKeyboardShortcuts()
+
+  initializeWasm().then(() => (wasmInitialized = true))
 
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>

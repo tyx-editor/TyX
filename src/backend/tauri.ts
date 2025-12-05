@@ -10,7 +10,7 @@ import { relaunch } from "@tauri-apps/plugin-process"
 import { check } from "@tauri-apps/plugin-updater"
 import { z } from "zod/v4"
 import { executeCommandSequence } from "../commands"
-import tyx2typst from "../compilers/tyx2typst"
+import { serialized_tyx_to_typst } from "../converters"
 import { TyXDocument, TyXSettings } from "../models"
 import { getSettings } from "../settings"
 import { showFailureMessage } from "../utilities"
@@ -59,11 +59,12 @@ export const onPreview = async (open = false) => {
 
   let content = ""
   try {
-    content = tyx2typst(document, version)
+    content = serialized_tyx_to_typst(JSON.stringify(document))
   } catch (e: any) {
     showFailureMessage(e.message)
     return
   }
+  console.log(content)
   const result: string = await invoke("preview", {
     filename: document.filename ?? "",
     content,
@@ -153,9 +154,9 @@ export const onOpen = (
 
 export const open = (filename: string = "") => invoke("open", { filename })
 
-export const save = (filename: string, content: string, other: string) => {
+export const save = (filename: string, content: string) => {
   const format = getSettings().format ?? false
-  return invoke("save", { filename, content, format, other })
+  return invoke("save", { filename, content, format })
 }
 
 export const saveAs = () => invoke("saveas")

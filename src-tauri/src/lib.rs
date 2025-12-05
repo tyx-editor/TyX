@@ -20,7 +20,7 @@ use typst_pdf::PdfOptions;
 use typstyle_core::Typstyle;
 
 #[tauri::command]
-fn save(filename: &str, content: &str, format: bool, other: &str) {
+fn save(filename: &str, content: &str, format: bool) {
     let mut content = String::from(content);
     if format {
         let typstyle = Typstyle::default();

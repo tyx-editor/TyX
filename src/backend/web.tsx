@@ -6,8 +6,8 @@
 import { modals } from "@mantine/modals"
 import { createTypstCompiler, TypstCompiler } from "@myriaddreamin/typst.ts"
 import { version } from "../../src-tauri/tauri.conf.json"
-import tyx2typst from "../compilers/tyx2typst"
 import SaveAsModal from "../components/SaveAsModal"
+import { serialized_tyx_to_typst } from "../converters"
 import { TyXDocument, TyXSettings } from "../models"
 import { showFailureMessage } from "../utilities"
 import { getLocalStorage, setLocalStorage } from "../utilities/hooks"
@@ -42,7 +42,10 @@ export const onPreview = async (_open = false) => {
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   const currentDocument = getLocalStorage<number>("Current Document")
   const document = openDocuments[currentDocument]
-  compiler.addSource("/main.typ", tyx2typst(document, version))
+  compiler.addSource(
+    "/main.typ",
+    serialized_tyx_to_typst(JSON.stringify(document)),
+  )
   const result = await compiler.compile({
     format: "pdf",
     mainFilePath: "/main.typ",

@@ -31,6 +31,8 @@ insta = "1"
 
 tyx-schema = { path = "crates/tyx-schema", version = "0.1.0" }
 tyx-converters = { path = "crates/tyx-converters", version = "0.1.0" }
+tyx-to-typst = { path = "crates/tyx-to-typst", version = "0.1.0" }
+typst-to-tyx = { path = "crates/typst-to-tyx", version = "0.1.0" }
 
 tinymist-project = "0.14.0"
 tinymist-std = "0.14.0"

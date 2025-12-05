@@ -2,7 +2,7 @@
 use typify::{TypeSpace, TypeSpaceSettings};
 
 const SCHEMA_PATH: &str = "../../schemas/tyx.schema.json";
-const OUTPUT_PATH: &str = "./src/lib.rs";
+const OUTPUT_PATH: &str = "./src/generated.rs";
 
 fn main() {
     let content = std::fs::read_to_string(SCHEMA_PATH).unwrap();
@@ -17,9 +17,7 @@ fn main() {
 
     contents = contents
         .replace(
-            r#"#[serde(untagged)]
-pub enum TyXNode {
-    RootNode(TyXRootNode),
+            r#"RootNode(TyXRootNode),
     ParagraphNode(TyXParagraphNode),
     TextNode(TyXTextNode),
     MathNode(TyXMathNode),
@@ -38,9 +36,7 @@ pub enum TyXNode {
     HeadingNode(TyXHeadingNode),
     FunctionCallNode(TyXFunctionCallNode),
 }"#,
-            r#"#[serde(tag = "type")]
-pub enum TyXNode {
-    #[serde(rename = "root")]
+            r#"#[serde(rename = "root")]
     RootNode(TyXRootNode),
     #[serde(rename = "paragraph")]
     ParagraphNode(TyXParagraphNode),
@@ -79,8 +75,20 @@ pub enum TyXNode {
 }"#,
         )
         .replace(
+            r#"LengthValue(TyXLengthValue),
+    BooleanValue(TyXBooleanValue),
+    ContentValue(TyXContentValue)"#,
+            r#"#[serde(rename = "length")]
+    LengthValue(TyXLengthValue),
+    #[serde(rename = "boolean")]
+    BooleanValue(TyXBooleanValue),
+    #[serde(rename = "content")]
+    ContentValue(TyXContentValue)"#,
+        )
+        .replace("#[serde(untagged)]", r#"#[serde(tag = "type")]"#)
+        .replace(
             "pub type_: ::std::string::String",
-            "#[serde(skip_deserializing)]\npub type_: ::std::string::String",
+            "#[serde(skip_deserializing)]\n    pub type_: ::std::string::String",
         );
 
     let current = std::fs::read_to_string(OUTPUT_PATH).unwrap_or_default();

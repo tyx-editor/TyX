@@ -23,8 +23,9 @@ import {
   SELECTION_CHANGE_COMMAND,
 } from "lexical"
 import { useEffect, useMemo, useState } from "react"
-import { stringifyFunction } from "../../compilers/lexical2typst"
+import { serialized_stringify_function } from "../../converters"
 import { getFunctions } from "../../functions"
+import { wasmInitialized } from "../../main"
 import { TyXValue } from "../../models"
 import { useSharedHistoryContext } from "../../resources/playground"
 import { backupEditorSelection, restoreEditorSelection } from "../../utilities"
@@ -185,6 +186,13 @@ export const FunctionCallEditor = ({
     )
   }, [editor])
 
+  console.log(
+    name,
+    JSON.stringify(positionParameters),
+    JSON.stringify(namedParameters),
+    false,
+  )
+
   return (
     <>
       <span
@@ -195,7 +203,7 @@ export const FunctionCallEditor = ({
         }}
         onClick={() =>
           modals.open({
-            title: `Edit ${stringifyFunction(name, positionParameters, namedParameters, false).replace("()", "")}`,
+            title: `Edit ${wasmInitialized ? serialized_stringify_function(name, JSON.stringify(positionParameters), JSON.stringify(namedParameters), false).replace("()", "") : ""}`,
             children: (
               <FunctionCallEditModal
                 editor={editor}
@@ -208,12 +216,14 @@ export const FunctionCallEditor = ({
           })
         }
       >
-        {stringifyFunction(
-          name,
-          positionParameters,
-          namedParameters,
-          false,
-        ).replace("()", "")}
+        {wasmInitialized
+          ? serialized_stringify_function(
+              name,
+              JSON.stringify(positionParameters),
+              JSON.stringify(namedParameters),
+              false,
+            ).replace("()", "")
+          : ""}
       </span>
       {Object.keys(contents).length !== 0 &&
         Object.keys(contents)

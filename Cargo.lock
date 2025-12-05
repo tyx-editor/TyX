@@ -6954,6 +6954,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "typst-to-tyx"
+version = "0.1.0"
+dependencies = [
+ "cmark-writer 0.6.3",
+ "ecow",
+ "serde",
+ "serde_json",
+ "tinymist-project 0.14.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "typlite",
+ "typst",
+ "tyx-schema",
+]
+
+[[package]]
 name = "typst-utils"
 version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -7024,31 +7038,42 @@ dependencies = [
 name = "tyx-converters"
 version = "0.1.0"
 dependencies = [
- "cmark-writer 0.6.3",
- "ecow",
  "insta",
- "regex",
- "serde",
- "serde_json",
- "tinymist-project 0.14.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "tinymist-tests",
- "typlite",
- "typst",
- "tyx-schema",
+ "typst-to-tyx",
+ "tyx-to-typst",
+]
+
+[[package]]
+name = "tyx-converters-wasm"
+version = "0.1.0"
+dependencies = [
+ "js-sys",
+ "tyx-to-typst",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]
 name = "tyx-schema"
 version = "0.1.0"
 dependencies = [
- "ecow",
  "prettyplease",
  "schemars",
  "serde",
  "serde_json",
  "syn 2.0.111",
  "typify",
- "typst",
+]
+
+[[package]]
+name = "tyx-to-typst"
+version = "0.1.0"
+dependencies = [
+ "regex",
+ "serde",
+ "serde_json",
+ "tyx-schema",
 ]
 
 [[package]]

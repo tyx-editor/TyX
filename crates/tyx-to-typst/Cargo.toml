@@ -1,6 +1,6 @@
 [package]
-name = "tyx-schema"
-description = "The strong-typed JSON schema for TyX."
+name = "tyx-to-typst"
+description = "Converts TyX to Typst."
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
@@ -10,14 +10,8 @@ rust-version.workspace = true
 [dependencies]
 serde.workspace = true
 serde_json.workspace = true
-
-[build-dependencies]
-serde.workspace = true
-serde_json.workspace = true
-prettyplease = "0.2"
-schemars = "0.8"
-syn = "2.0"
-typify = "0.5.0"
+tyx-schema.workspace = true
+regex = { version = "1.12.2" }
 
 [lints]
 workspace = true

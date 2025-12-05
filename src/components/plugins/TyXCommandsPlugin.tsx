@@ -15,7 +15,7 @@ import {
   save,
 } from "../../backend"
 import { onClose } from "../../backend/common"
-import tyx2typst from "../../compilers/tyx2typst"
+import { serialized_tyx_to_typst } from "../../converters"
 import { TyXDocument } from "../../models"
 import {
   $getToolbarState,
@@ -152,8 +152,8 @@ const TyXCommandsPlugin = () => {
               ".tyx",
               ".typ",
             )
-            save(filename, tyx2typst(doc), JSON.stringify(doc)).then(() =>
-              showSuccessMessage(`Document exported to ${filename}.`),
+            save(filename, serialized_tyx_to_typst(JSON.stringify(doc))).then(
+              () => showSuccessMessage(`Document exported to ${filename}.`),
             )
           }
           return true

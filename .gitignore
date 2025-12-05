@@ -33,3 +33,4 @@ src-tauri/bin
 
 docs/_build
 __pycache__
+src/converters
