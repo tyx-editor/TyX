@@ -12,12 +12,32 @@ use tauri::{
     menu::{AboutMetadata, MenuBuilder, MenuItemBuilder, SubmenuBuilder},
 };
 
+use clap::{Parser, ValueEnum};
 use tauri_plugin_dialog::DialogExt;
 use tinymist_project::{
     CompileFontArgs, CompileOnceArgs, EntryReader, TaskInputs, WorldProvider, base::ShadowApi,
 };
 use typst_pdf::PdfOptions;
 use typstyle_core::Typstyle;
+
+mod version;
+
+#[derive(Debug, Clone, ValueEnum)]
+enum OutputFormat {
+    Typst,
+    PDF,
+}
+
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+#[command(version = version::VERSION, about, long_about = None, display_name="TyX")]
+struct Args {
+    /// Files to open or export.
+    files: Vec<String>,
+    /// Export as this file format.
+    #[arg(short, long)]
+    export: Option<OutputFormat>,
+}
 
 #[tauri::command]
 fn save(filename: &str, content: &str, format: bool) {
@@ -43,13 +63,14 @@ fn saveas(handle: tauri::AppHandle) {
         .add_filter("TyX", &["tyx"])
         .save_file(move |f| {
             if let Some(f) = f
-                && let Some(path) = f.as_path() {
-                    let mut path = path.to_str().unwrap().to_string();
-                    if !path.ends_with(".tyx") {
-                        path += ".tyx";
-                    }
-                    h.emit("saveas", (path,)).unwrap();
+                && let Some(path) = f.as_path()
+            {
+                let mut path = path.to_str().unwrap().to_string();
+                if !path.ends_with(".tyx") {
+                    path += ".tyx";
                 }
+                h.emit("saveas", (path,)).unwrap();
+            }
         });
 }
 
@@ -110,9 +131,10 @@ fn open(handle: tauri::AppHandle, filename: &str) {
         .add_filter("Typst", &["typ"])
         .pick_file(move |f| {
             if let Some(f) = f
-                && let Some(path) = f.as_path() {
-                    openfile(&h, path, true);
-                }
+                && let Some(path) = f.as_path()
+            {
+                openfile(&h, path, true);
+            }
         });
 }
 
@@ -131,9 +153,10 @@ fn newfromtemplate(handle: tauri::AppHandle) {
         .set_directory(settings_path)
         .pick_file(move |f| {
             if let Some(f) = f
-                && let Some(path) = f.as_path() {
-                    openfile(&h, path, false);
-                }
+                && let Some(path) = f.as_path()
+            {
+                openfile(&h, path, false);
+            }
         });
 }
 
@@ -190,6 +213,57 @@ fn readimage(filename: &str, image: &str) -> String {
     String::from("data:") + mimetype + ";base64," + STANDARD.encode(&bytes).as_str()
 }
 
+fn typst_to_pdf(
+    filename: &str,
+    content: &str,
+    root_path: PathBuf,
+    font_paths: Vec<PathBuf>,
+) -> Result<Vec<u8>, String> {
+    let filename_path = PathBuf::from(&filename);
+    if !filename_path.is_file() {
+        File::create(&filename_path).unwrap();
+    }
+    let filename_path = dunce::canonicalize(filename_path).unwrap();
+    let universe = CompileOnceArgs {
+        root: Some(dunce::canonicalize(&root_path).unwrap()),
+        input: Some(filename_path.to_str().unwrap().to_string()),
+        font: CompileFontArgs {
+            font_paths,
+            ..CompileFontArgs::default()
+        },
+        ..CompileOnceArgs::default()
+    }
+    .resolve()
+    .unwrap();
+    let entry = match universe
+        .entry_state()
+        .try_select_path_in_workspace(&filename_path)
+    {
+        Ok(entry) => entry,
+        Err(_e) => {
+            return Err("Invalid root directory, couldn't select the file itself!".into());
+        }
+    };
+    let mut world = universe.snapshot_with(Some(TaskInputs {
+        entry,
+        ..TaskInputs::default()
+    }));
+    let main = world.main_id().unwrap();
+    let _ = world.map_shadow_by_id(
+        main,
+        typst::foundations::Bytes::from_string(content.to_owned()),
+    );
+    let doc = match typst::compile(&world).output {
+        Ok(doc) => doc,
+        Err(e) => {
+            return Err(e[0].message.to_string());
+        }
+    };
+    let pdf = typst_pdf::pdf(&doc, &PdfOptions::default()).unwrap();
+
+    Ok(pdf)
+}
+
 #[tauri::command]
 fn preview(
     handle: tauri::AppHandle,
@@ -237,51 +311,16 @@ fn preview(
             dunce::canonicalize(&p).unwrap()
         })
         .collect::<Vec<PathBuf>>();
+
     font_paths.insert(0, tyx_fonts_path);
-    let filename_path = PathBuf::from(&filename);
-    if !filename_path.is_file() {
-        File::create(&filename_path).unwrap();
-    }
-    let filename_path = dunce::canonicalize(filename_path).unwrap();
-    let universe = CompileOnceArgs {
-        root: Some(dunce::canonicalize(&root_path).unwrap()),
-        input: Some(filename_path.to_str().unwrap().to_string()),
-        font: CompileFontArgs {
-            font_paths,
-            ..CompileFontArgs::default()
-        },
-        ..CompileOnceArgs::default()
-    }
-    .resolve()
-    .unwrap();
-    let entry = match universe
-        .entry_state()
-        .try_select_path_in_workspace(&filename_path)
-    {
-        Ok(entry) => entry,
-        Err(_e) => {
-            return String::from("Invalid root directory, couldn't select the file itself!");
-        }
-    };
-    let mut world = universe.snapshot_with(Some(TaskInputs {
-        entry,
-        ..TaskInputs::default()
-    }));
-    let main = world.main_id().unwrap();
-    let _ = world.map_shadow_by_id(
-        main,
-        typst::foundations::Bytes::from_string(content.to_owned()),
-    );
-    let doc = match typst::compile(&world).output {
-        Ok(doc) => doc,
+
+    let pdf = match typst_to_pdf(&filename, content, root_path, font_paths) {
+        Ok(pdf) => pdf,
         Err(e) => {
-            if e.is_empty() {
-                return String::new();
-            }
-            return e[0].message.to_string();
+            return e;
         }
     };
-    let pdf = typst_pdf::pdf(&doc, &PdfOptions::default()).unwrap();
+
     let mut f = File::create(&pdf_file).unwrap();
     f.write_all(&pdf).unwrap();
 
@@ -308,13 +347,14 @@ fn insertimage(handle: tauri::AppHandle, filename: &str) {
         .add_filter("Image", &["png", "jpg", "jpeg", "gif", "svg"])
         .pick_file(move |f| {
             if let Some(f) = f
-                && let Some(path) = f.as_path() {
-                    h.emit(
-                        "insertImage",
-                        (path.strip_prefix(dirname).unwrap_or(path).to_str().unwrap(),),
-                    )
-                    .unwrap();
-                }
+                && let Some(path) = f.as_path()
+            {
+                h.emit(
+                    "insertImage",
+                    (path.strip_prefix(dirname).unwrap_or(path).to_str().unwrap(),),
+                )
+                .unwrap();
+            }
         });
 }
 
@@ -354,6 +394,38 @@ pub fn run() {
 
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
 pub fn run() {
+    let args = Args::parse();
+
+    if let Some(format) = args.export {
+        for file in args.files {
+            let file_base = match file.strip_suffix(".tyx") {
+                Some(file) => file,
+                None => {
+                    println!("warning: file {file} might not be a TyX document!");
+                    &file
+                }
+            };
+            let dirname = Path::new(&file).parent().unwrap().to_str().unwrap();
+            let contents = std::fs::read_to_string(&file).unwrap();
+            let result = match format {
+                OutputFormat::Typst => {
+                    tyx_converters::serialized_tyx_to_typst(&contents).into_bytes()
+                }
+                OutputFormat::PDF => {
+                    let contents = tyx_converters::serialized_tyx_to_typst(&contents);
+                    typst_to_pdf(&file, &contents, PathBuf::from(dirname), vec![]).unwrap()
+                }
+            };
+            let file_extension = match format {
+                OutputFormat::Typst => ".typ",
+                OutputFormat::PDF => ".pdf",
+            };
+
+            std::fs::write(String::from(file_base) + file_extension, result).unwrap();
+        }
+        return;
+    }
+
     tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())

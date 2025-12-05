@@ -365,7 +365,7 @@ fn tyx_document_settings_to_typst(settings: &Option<TyXDocumentSettings>) -> Str
     }
     if let Some(language) = &settings.language {
         result += &format!(
-            "#set page(lang: {})\n",
+            "#set text(lang: {})\n",
             serde_json::to_string(language).unwrap()
         );
     }

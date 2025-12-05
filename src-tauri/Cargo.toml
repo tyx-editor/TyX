@@ -18,6 +18,8 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
+serde.workspace = true
+serde_json.workspace = true
 
 [dependencies]
 serde.workspace = true
@@ -35,6 +37,7 @@ url = "2.5.4"
 open = "5"
 base64 = "0.22"
 dunce = "1.0.5"
+clap = "4.5.53"
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
 tauri-plugin-updater = "2"

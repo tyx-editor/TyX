@@ -1,5 +1,5 @@
 [workspace.package]
-description = "A Tauri App"
+description = "A LyX-like experience for Typst"
 authors = ["Noam Zaks", "Myriad-Dreamin", "TyX Developers"]
 version = "0.1.0"
 rust-version = "1.88.0"
@@ -8,7 +8,6 @@ readme = "README.md"
 license = "MIT"
 homepage = "https://tyx-editor.com/"
 repository = "https://github.com/tyx-editor/TyX"
-
 
 [workspace]
 resolver = "2"
@@ -20,20 +19,15 @@ opt-level = 3
 panic = "abort"
 
 [workspace.dependencies]
-
 cmark-writer = { version = "0.6.3", features = ["gfm"] }
 ecow = { version = "0.2", features = ["serde"] }
-
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-
 insta = "1"
-
 tyx-schema = { path = "crates/tyx-schema", version = "0.1.0" }
 tyx-converters = { path = "crates/tyx-converters", version = "0.1.0" }
 tyx-to-typst = { path = "crates/tyx-to-typst", version = "0.1.0" }
 typst-to-tyx = { path = "crates/typst-to-tyx", version = "0.1.0" }
-
 tinymist-project = "0.14.0"
 tinymist-std = "0.14.0"
 tinymist-task = "0.14.0"
@@ -49,7 +43,6 @@ broken_intra_doc_links = "warn"
 
 [workspace.lints.rust]
 missing_docs = "warn"
-
 unexpected_cfgs = { level = "allow", check-cfg = [
     'cfg(wasm_bindgen_unstable_test_coverage)',
     'cfg(noop)',
@@ -74,7 +67,6 @@ ignore-hidden = false
 extend-exclude = ["/.git", "fixtures"]
 
 [patch.crates-io]
-
 # todo: remove these typst patch?
 # A regular build MUST use `tag` or `rev` to specify the version of the patched crate to ensure stability.
 typst = { git = "https://github.com/Myriad-Dreamin/typst.git", tag = "tinymist/v0.14.0-rc1" }
