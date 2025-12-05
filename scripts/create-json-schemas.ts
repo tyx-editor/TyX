@@ -21,7 +21,7 @@ for (const [path, type, title] of [
 
 const output = `python/src/tyx_schema/schema.py`
 execSync(
-  `python/.venv/bin/datamodel-codegen --input schemas/tyx.schema.json --output ${output} --output-model-type pydantic_v2.BaseModel --use-schema-description`,
+  `python/.venv/bin/datamodel-codegen --input-file-type jsonschema --input schemas/tyx.schema.json --output ${output} --output-model-type pydantic_v2.BaseModel --use-title-as-name --use-schema-description --skip-root-model`,
 )
 let result = readFileSync(output).toString()
 // TODO: fixes typing errors

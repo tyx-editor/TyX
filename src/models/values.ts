@@ -23,7 +23,7 @@ export const TyXLengthValue = TyXLength.extend({
   type: z.literal("length"),
 })
   .describe("An object representing Typst `relative` or `fraction` types.")
-  .meta({ id: "TyXLengthValue" })
+  .meta({ title: "TyXLengthValue" })
 export type TyXLengthValue = z.infer<typeof TyXLengthValue>
 
 /** An object representing Typst `bool` type. */
@@ -33,7 +33,7 @@ export const TyXBooleanValue = z
     value: z.boolean().optional(),
   })
   .describe("An object representing Typst `bool` type.")
-  .meta({ id: "TyXBooleanValue" })
+  .meta({ title: "TyXBooleanValue" })
 export type TyXBooleanValue = z.infer<typeof TyXBooleanValue>
 
 /** An object representing Typst `content` type. */
@@ -45,7 +45,7 @@ export const TyXContentValue = z
     },
   })
   .describe("An object representing Typst `content` type.")
-  .meta({ id: "TyXContentValue" })
+  .meta({ title: "TyXContentValue" })
 export type TyXContentValue = z.infer<typeof TyXContentValue>
 
 /** An object representing any TyX value (which in turn, represents some Typst value) */

@@ -51,6 +51,12 @@ export const TyXDocumentSettings = TyXCompilationOptions.extend({
   .meta({ id: "TyXDocumentSettings" })
 export type TyXDocumentSettings = z.infer<typeof TyXDocumentSettings>
 
+export const TyXDocumentContent = z
+  .object({ root: TyXRootNode })
+  .describe("The serialized content of the editor.")
+  .meta({ id: "TyXDocumentContent" })
+export type TyXDocumentContent = z.infer<typeof TyXDocumentContent>
+
 export const TyXDocument = z
   .object({
     $schema: z.string().optional(),
@@ -65,10 +71,7 @@ export const TyXDocument = z
       .string()
       .optional()
       .describe("The filename of the document, unused."),
-    content: z
-      .object({ root: TyXRootNode })
-      .optional()
-      .describe("The serialized content of the editor."),
+    content: TyXDocumentContent.optional(),
     dirty: z
       .boolean()
       .optional()

@@ -20,15 +20,11 @@
       "type": "string"
     },
     "content": {
-      "description": "The serialized content of the editor.",
-      "type": "object",
-      "properties": {
-        "root": {
-          "$ref": "#/definitions/TyXRootNode"
+      "allOf": [
+        {
+          "$ref": "#/definitions/TyXDocumentContent"
         }
-      },
-      "required": ["root"],
-      "additionalProperties": false
+      ]
     },
     "dirty": {
       "description": "Whether the document has been modified since loading, unused.",
@@ -46,6 +42,18 @@
   "required": ["version"],
   "additionalProperties": false,
   "definitions": {
+    "TyXDocumentContent": {
+      "description": "The serialized content of the editor.",
+      "id": "TyXDocumentContent",
+      "type": "object",
+      "properties": {
+        "root": {
+          "$ref": "#/definitions/TyXRootNode"
+        }
+      },
+      "required": ["root"],
+      "additionalProperties": false
+    },
     "TyXRootNode": {
       "description": "The node at the root of a TyX document.",
       "id": "TyXRootNode",
@@ -602,72 +610,63 @@
       "id": "TyXValue",
       "anyOf": [
         {
-          "$ref": "#/definitions/TyXLengthValue"
+          "description": "An object representing Typst `relative` or `fraction` types.",
+          "title": "TyXLengthValue",
+          "type": "object",
+          "properties": {
+            "unit": {
+              "description": "The TyX length unit, one of 'pt', 'mm', 'cm', 'in', 'em', 'fr', '%'.",
+              "type": "string"
+            },
+            "value": {
+              "description": "The length numeric value.",
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "length"
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false
         },
         {
-          "$ref": "#/definitions/TyXBooleanValue"
+          "title": "TyXBooleanValue",
+          "description": "An object representing Typst `bool` type.",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "boolean"
+            },
+            "value": {
+              "type": "boolean"
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false
         },
         {
-          "$ref": "#/definitions/TyXContentValue"
+          "title": "TyXContentValue",
+          "description": "An object representing Typst `content` type.",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "content"
+            },
+            "value": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/TyXRootNode"
+                }
+              ]
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false
         }
       ]
-    },
-    "TyXLengthValue": {
-      "description": "An object representing Typst `relative` or `fraction` types.",
-      "id": "TyXLengthValue",
-      "type": "object",
-      "properties": {
-        "unit": {
-          "description": "The TyX length unit, one of 'pt', 'mm', 'cm', 'in', 'em', 'fr', '%'.",
-          "type": "string"
-        },
-        "value": {
-          "description": "The length numeric value.",
-          "type": "string"
-        },
-        "type": {
-          "type": "string",
-          "const": "length"
-        }
-      },
-      "required": ["type"],
-      "additionalProperties": false
-    },
-    "TyXBooleanValue": {
-      "description": "An object representing Typst `bool` type.",
-      "id": "TyXBooleanValue",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "boolean"
-        },
-        "value": {
-          "type": "boolean"
-        }
-      },
-      "required": ["type"],
-      "additionalProperties": false
-    },
-    "TyXContentValue": {
-      "description": "An object representing Typst `content` type.",
-      "id": "TyXContentValue",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "content"
-        },
-        "value": {
-          "allOf": [
-            {
-              "$ref": "#/definitions/TyXRootNode"
-            }
-          ]
-        }
-      },
-      "required": ["type"],
-      "additionalProperties": false
     },
     "TyXDocumentSettings": {
       "description": "An object wrapping some common Typst document configuration options.",

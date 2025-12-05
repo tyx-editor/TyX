@@ -233,45 +233,6 @@ impl ::std::convert::From<&ParameterDescription> for ParameterDescription {
         value.clone()
     }
 }
-///An object representing Typst `bool` type.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "An object representing Typst `bool` type.",
-///  "type": "object",
-///  "required": [
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "boolean"
-///    },
-///    "value": {
-///      "type": "boolean"
-///    }
-///  },
-///  "additionalProperties": false,
-///  "id": "TyXBooleanValue"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-#[serde(deny_unknown_fields)]
-pub struct TyXBooleanValue {
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub value: ::std::option::Option<bool>,
-}
-impl ::std::convert::From<&TyXBooleanValue> for TyXBooleanValue {
-    fn from(value: &TyXBooleanValue) -> Self {
-        value.clone()
-    }
-}
 ///A node describing a code block.
 ///
 /// <details><summary>JSON schema</summary>
@@ -317,49 +278,6 @@ pub struct TyXCodeNode {
 }
 impl ::std::convert::From<&TyXCodeNode> for TyXCodeNode {
     fn from(value: &TyXCodeNode) -> Self {
-        value.clone()
-    }
-}
-///An object representing Typst `content` type.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "An object representing Typst `content` type.",
-///  "type": "object",
-///  "required": [
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "content"
-///    },
-///    "value": {
-///      "allOf": [
-///        {
-///          "$ref": "#/definitions/TyXRootNode"
-///        }
-///      ]
-///    }
-///  },
-///  "additionalProperties": false,
-///  "id": "TyXContentValue"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-#[serde(deny_unknown_fields)]
-pub struct TyXContentValue {
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub value: ::std::option::Option<TyXRootNode>,
-}
-impl ::std::convert::From<&TyXContentValue> for TyXContentValue {
-    fn from(value: &TyXContentValue) -> Self {
         value.clone()
     }
 }
@@ -522,17 +440,11 @@ impl ::std::convert::TryFrom<::std::string::String> for TyXDirectionValue {
 ///      "type": "string"
 ///    },
 ///    "content": {
-///      "description": "The serialized content of the editor.",
-///      "type": "object",
-///      "required": [
-///        "root"
-///      ],
-///      "properties": {
-///        "root": {
-///          "$ref": "#/definitions/TyXRootNode"
+///      "allOf": [
+///        {
+///          "$ref": "#/definitions/TyXDocumentContent"
 ///        }
-///      },
-///      "additionalProperties": false
+///      ]
 ///    },
 ///    "dirty": {
 ///      "description": "Whether the document has been modified since loading, unused.",
@@ -599,7 +511,8 @@ impl ::std::convert::From<&TyXDocument> for TyXDocument {
 ///      "$ref": "#/definitions/TyXRootNode"
 ///    }
 ///  },
-///  "additionalProperties": false
+///  "additionalProperties": false,
+///  "id": "TyXDocumentContent"
 ///}
 /// ```
 /// </details>
@@ -1111,54 +1024,6 @@ impl ::std::default::Default for TyXLength {
             unit: Default::default(),
             value: Default::default(),
         }
-    }
-}
-///An object representing Typst `relative` or `fraction` types.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "An object representing Typst `relative` or `fraction` types.",
-///  "type": "object",
-///  "required": [
-///    "type"
-///  ],
-///  "properties": {
-///    "unit": {
-///      "description": "The TyX length unit, one of 'pt', 'mm', 'cm', 'in', 'em', 'fr', '%'.",
-///      "type": "string"
-///    },
-///    "value": {
-///      "description": "The length numeric value.",
-///      "type": "string"
-///    },
-///    "type": {
-///      "type": "string",
-///      "const": "length"
-///    }
-///  },
-///  "additionalProperties": false,
-///  "id": "TyXLengthValue"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-#[serde(deny_unknown_fields)]
-pub struct TyXLengthValue {
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    ///The TyX length unit, one of 'pt', 'mm', 'cm', 'in', 'em', 'fr', '%'.
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub unit: ::std::option::Option<::std::string::String>,
-    ///The length numeric value.
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub value: ::std::option::Option<::std::string::String>,
-}
-impl ::std::convert::From<&TyXLengthValue> for TyXLengthValue {
-    fn from(value: &TyXLengthValue) -> Self {
-        value.clone()
     }
 }
 ///A line break node.
@@ -2508,13 +2373,67 @@ for TyXTypstCodeNodeTextEditorState {
 ///  "description": "An object representing some Typst type.",
 ///  "anyOf": [
 ///    {
-///      "$ref": "#/definitions/TyXLengthValue"
+///      "title": "TyXLengthValue",
+///      "description": "An object representing Typst `relative` or `fraction` types.",
+///      "type": "object",
+///      "required": [
+///        "type"
+///      ],
+///      "properties": {
+///        "unit": {
+///          "description": "The TyX length unit, one of 'pt', 'mm', 'cm', 'in', 'em', 'fr', '%'.",
+///          "type": "string"
+///        },
+///        "value": {
+///          "description": "The length numeric value.",
+///          "type": "string"
+///        },
+///        "type": {
+///          "type": "string",
+///          "const": "length"
+///        }
+///      },
+///      "additionalProperties": false
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXBooleanValue"
+///      "title": "TyXBooleanValue",
+///      "description": "An object representing Typst `bool` type.",
+///      "type": "object",
+///      "required": [
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "boolean"
+///        },
+///        "value": {
+///          "type": "boolean"
+///        }
+///      },
+///      "additionalProperties": false
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXContentValue"
+///      "title": "TyXContentValue",
+///      "description": "An object representing Typst `content` type.",
+///      "type": "object",
+///      "required": [
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "content"
+///        },
+///        "value": {
+///          "allOf": [
+///            {
+///              "$ref": "#/definitions/TyXRootNode"
+///            }
+///          ]
+///        }
+///      },
+///      "additionalProperties": false
 ///    }
 ///  ],
 ///  "id": "TyXValue"
@@ -2522,32 +2441,39 @@ for TyXTypstCodeNodeTextEditorState {
 /// ```
 /// </details>
 #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-#[serde(tag = "type")]
+#[serde(tag = "type", deny_unknown_fields)]
 pub enum TyXValue {
+    /**TyXLengthValue
+
+An object representing Typst `relative` or `fraction` types.*/
     #[serde(rename = "length")]
-    LengthValue(TyXLengthValue),
+    Length {
+        ///The TyX length unit, one of 'pt', 'mm', 'cm', 'in', 'em', 'fr', '%'.
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        unit: ::std::option::Option<::std::string::String>,
+        ///The length numeric value.
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        value: ::std::option::Option<::std::string::String>,
+    },
+    /**TyXBooleanValue
+
+An object representing Typst `bool` type.*/
     #[serde(rename = "boolean")]
-    BooleanValue(TyXBooleanValue),
+    Boolean {
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        value: ::std::option::Option<bool>,
+    },
+    /**TyXContentValue
+
+An object representing Typst `content` type.*/
     #[serde(rename = "content")]
-    ContentValue(TyXContentValue),
+    Content {
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        value: ::std::option::Option<TyXRootNode>,
+    },
 }
 impl ::std::convert::From<&Self> for TyXValue {
     fn from(value: &TyXValue) -> Self {
         value.clone()
-    }
-}
-impl ::std::convert::From<TyXLengthValue> for TyXValue {
-    fn from(value: TyXLengthValue) -> Self {
-        Self::LengthValue(value)
-    }
-}
-impl ::std::convert::From<TyXBooleanValue> for TyXValue {
-    fn from(value: TyXBooleanValue) -> Self {
-        Self::BooleanValue(value)
-    }
-}
-impl ::std::convert::From<TyXContentValue> for TyXValue {
-    fn from(value: TyXContentValue) -> Self {
-        Self::ContentValue(value)
     }
 }
