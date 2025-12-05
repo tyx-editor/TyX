@@ -11,7 +11,7 @@ fn main() {
     let mut type_space = TypeSpace::new(&TypeSpaceSettings::default());
     type_space.add_root_schema(schema).unwrap();
 
-    let mut contents = String::from("#![allow(missing_docs)]\n")
+    let mut contents = String::from("#![allow(missing_docs)]\n#![allow(clippy::all)]\n")
         + prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap())
             .as_str();
 

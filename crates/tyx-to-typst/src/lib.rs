@@ -16,7 +16,7 @@ fn get_tag_number(tag: &TyXHeadingNodeTag) -> i64 {
 }
 
 /// Converts TyX nodes to text by joining their texts together.
-fn nodes_to_text(nodes: &Vec<TyXNode>) -> String {
+fn nodes_to_text(nodes: &[TyXNode]) -> String {
     nodes
         .iter()
         .map(node_to_text)
@@ -53,7 +53,7 @@ fn node_to_text(node: &TyXNode) -> String {
 /// Applies the given direction to the output Typst code.
 fn apply_direction(result: &str, direction: TyXDirection) -> String {
     match direction.0 {
-        Some(d) => format!("#text(dir: {})[{}]", d, result),
+        Some(d) => format!("#text(dir: {d})[{result}]"),
         None => result.into(),
     }
 }
@@ -61,22 +61,22 @@ fn apply_direction(result: &str, direction: TyXDirection) -> String {
 /// Applies the given text format to the output Typst code.
 fn apply_text_format(mut result: String, text: &str, format: i64) -> String {
     if format & (TextFormat::Bold as i64) != 0 {
-        result = format!("#strong[{}]", result);
+        result = format!("#strong[{result}]");
     }
     if format & (TextFormat::Italic as i64) != 0 {
-        result = format!("#emph[{}]", result);
+        result = format!("#emph[{result}]");
     }
     if format & (TextFormat::Underline as i64) != 0 {
-        result = format!("#underline[{}]", result);
+        result = format!("#underline[{result}]");
     }
     if format & (TextFormat::Strikethrough as i64) != 0 {
-        result = format!("#strike[{}]", result);
+        result = format!("#strike[{result}]");
     }
     if format & (TextFormat::Subscript as i64) != 0 {
-        result = format!("#sub[{}]", result);
+        result = format!("#sub[{result}]");
     }
     if format & (TextFormat::Superscript as i64) != 0 {
-        result = format!("#super[{}]", result);
+        result = format!("#super[{result}]");
     }
     if format & (TextFormat::Code as i64) != 0 {
         result = format!("#raw({})", serde_json::to_string(text).unwrap());
@@ -88,21 +88,21 @@ fn apply_text_format(mut result: String, text: &str, format: i64) -> String {
 /// Applies the given alignment format to the output Typst code.
 fn apply_format(result: &str, format: &str) -> String {
     if format == "justify" {
-        format!("#par(justify: true)[{}]", result)
+        format!("#par(justify: true)[{result}]")
     } else if format == "left"
         || format == "center"
         || format == "right"
         || format == "start"
         || format == "end"
     {
-        format!("#align({})[{}]", format, result)
+        format!("#align({format})[{result}]")
     } else {
         result.into()
     }
 }
 
 /// Joins the children's Typst code, and adds newlines between paragraph children.
-fn children_to_typst(children: &Vec<TyXNode>) -> String {
+fn children_to_typst(children: &[TyXNode]) -> String {
     let mut result = String::new();
     let translated = children.iter().map(node_to_typst).collect::<Vec<_>>();
     for i in 0..translated.len() {
@@ -121,13 +121,12 @@ fn typst_escape(text: &str) -> String {
     static TYPST_SPECIAL_SYMBOL_REGEX: LazyLock<Regex> =
         LazyLock::new(|| Regex::new("[#=\\[\\]$*_`@<\\-+/\\'\\\"~]").unwrap());
     TYPST_SPECIAL_SYMBOL_REGEX
-        .replace_all(text, |c: &Captures| String::from("\\") + &c[0].to_string())
+        .replace_all(text, |c: &Captures| String::from("\\") + &c[0])
         .to_string()
 }
 
 /// Converts a TyX node to Typst code.
 fn node_to_typst(root: &TyXNode) -> Option<String> {
-    println!("{:?}", root);
     match root {
         TyXNode::RootNode(tyx_root_node) => Some(apply_direction(
             &children_to_typst(&tyx_root_node.children),
@@ -237,7 +236,7 @@ fn node_to_typst(root: &TyXNode) -> Option<String> {
                 .join(", ");
 
             Some(apply_direction(
-                &format!("#table(columns: ({}), {})", columns, children),
+                &format!("#table(columns: ({columns}), {children})"),
                 tyx_table_node
                     .direction
                     .clone()
@@ -310,7 +309,7 @@ pub fn stringify_function(
     }
     for (parameter_name, parameter_value) in named_parameters.iter() {
         if let Some(value) = tyx_value_to_typst(parameter_value.clone()) {
-            parameters.push(format!("{}: {}", parameter_name, value));
+            parameters.push(format!("{parameter_name}: {value}"));
         }
     }
 
@@ -359,10 +358,10 @@ fn tyx_document_settings_to_typst(settings: &Option<TyXDocumentSettings>) -> Str
         );
     }
     if let Some(flipped) = &settings.flipped {
-        result += &format!("#set page(flipped: {})\n", flipped);
+        result += &format!("#set page(flipped: {flipped})\n");
     }
     if let Some(columns) = &settings.columns {
-        result += &format!("#set page(columns: {})\n", columns);
+        result += &format!("#set page(columns: {columns})\n");
     }
     if let Some(language) = &settings.language {
         result += &format!(
@@ -371,7 +370,7 @@ fn tyx_document_settings_to_typst(settings: &Option<TyXDocumentSettings>) -> Str
         );
     }
     if let Some(justified) = &settings.justified {
-        result += &format!("#set par(justify: {})\n", justified);
+        result += &format!("#set par(justify: {justified})\n");
     }
 
     let indentation = settings.indentation.clone().unwrap_or(TyXLength {

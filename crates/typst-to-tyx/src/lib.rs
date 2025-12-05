@@ -288,15 +288,12 @@ impl Converter {
         title: Option<EcoString>,
     ) -> Option<TyXNode> {
         // todo: what's a link_reference_definition
-        Some(plain(
-            format!(
-                "link_reference_definition: {} {} {}",
-                label,
-                destination,
-                title.unwrap_or_default()
-            )
-            .into(),
-        ))
+        Some(plain(format!(
+            "link_reference_definition: {} {} {}",
+            label,
+            destination,
+            title.unwrap_or_default()
+        )))
     }
 
     /// Converts a paragraph.
@@ -495,7 +492,7 @@ impl Converter {
         Some(TyXNode::LinkNode(s::TyXLinkNode {
             type_: "link".into(),
             children: self.children(content),
-            url: format!("#{label}").into(),
+            url: format!("#{label}"),
             extra: Default::default(),
         }))
     }

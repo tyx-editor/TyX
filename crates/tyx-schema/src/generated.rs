@@ -1,4 +1,5 @@
 #![allow(missing_docs)]
+#![allow(clippy::all)]
 /// Error types.
 pub mod error {
     /// Error from a `TryFrom` or `FromStr` implementation.

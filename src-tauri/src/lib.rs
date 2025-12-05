@@ -42,15 +42,14 @@ fn saveas(handle: tauri::AppHandle) {
         .file()
         .add_filter("TyX", &["tyx"])
         .save_file(move |f| {
-            if let Some(f) = f {
-                if let Some(path) = f.as_path() {
+            if let Some(f) = f
+                && let Some(path) = f.as_path() {
                     let mut path = path.to_str().unwrap().to_string();
                     if !path.ends_with(".tyx") {
                         path += ".tyx";
                     }
                     h.emit("saveas", (path,)).unwrap();
                 }
-            }
         });
 }
 
@@ -110,11 +109,10 @@ fn open(handle: tauri::AppHandle, filename: &str) {
         .add_filter("TyX", &["tyx"])
         .add_filter("Typst", &["typ"])
         .pick_file(move |f| {
-            if let Some(f) = f {
-                if let Some(path) = f.as_path() {
+            if let Some(f) = f
+                && let Some(path) = f.as_path() {
                     openfile(&h, path, true);
                 }
-            }
         });
 }
 
@@ -132,11 +130,10 @@ fn newfromtemplate(handle: tauri::AppHandle) {
         .add_filter("TyX", &["tyx"])
         .set_directory(settings_path)
         .pick_file(move |f| {
-            if let Some(f) = f {
-                if let Some(path) = f.as_path() {
+            if let Some(f) = f
+                && let Some(path) = f.as_path() {
                     openfile(&h, path, false);
                 }
-            }
         });
 }
 
@@ -310,15 +307,14 @@ fn insertimage(handle: tauri::AppHandle, filename: &str) {
         .file()
         .add_filter("Image", &["png", "jpg", "jpeg", "gif", "svg"])
         .pick_file(move |f| {
-            if let Some(f) = f {
-                if let Some(path) = f.as_path() {
+            if let Some(f) = f
+                && let Some(path) = f.as_path() {
                     h.emit(
                         "insertImage",
                         (path.strip_prefix(dirname).unwrap_or(path).to_str().unwrap(),),
                     )
                     .unwrap();
                 }
-            }
         });
 }
 
