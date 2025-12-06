@@ -25,7 +25,7 @@ mod version;
 #[derive(Debug, Clone, ValueEnum)]
 enum OutputFormat {
     Typst,
-    PDF,
+    Pdf,
 }
 
 /// Simple program to greet a person
@@ -411,14 +411,14 @@ pub fn run() {
                 OutputFormat::Typst => {
                     tyx_converters::serialized_tyx_to_typst(&contents).into_bytes()
                 }
-                OutputFormat::PDF => {
+                OutputFormat::Pdf => {
                     let contents = tyx_converters::serialized_tyx_to_typst(&contents);
                     typst_to_pdf(&file, &contents, PathBuf::from(dirname), vec![]).unwrap()
                 }
             };
             let file_extension = match format {
                 OutputFormat::Typst => ".typ",
-                OutputFormat::PDF => ".pdf",
+                OutputFormat::Pdf => ".pdf",
             };
 
             std::fs::write(String::from(file_base) + file_extension, result).unwrap();

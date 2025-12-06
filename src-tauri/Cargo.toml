@@ -27,7 +27,7 @@ serde_json.workspace = true
 tauri = { version = "2", features = [] }
 tauri-plugin-dialog = "2"
 tauri-plugin-process = "2"
-tinymist-project = { workspace = true, features = ["lsp"] }
+tinymist-project = { workspace = true, features = ["lsp", "no-content-hint"] }
 typst.workspace = true
 typst-pdf.workspace = true
 tyx-schema.workspace = true
