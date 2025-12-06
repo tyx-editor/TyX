@@ -28,15 +28,19 @@ tyx-schema = { path = "crates/tyx-schema", version = "0.1.0" }
 tyx-converters = { path = "crates/tyx-converters", version = "0.1.0" }
 tyx-to-typst = { path = "crates/tyx-to-typst", version = "0.1.0" }
 typst-to-tyx = { path = "crates/typst-to-tyx", version = "0.1.0" }
-tinymist-project = { version = "0.14.0", features = ["no-content-hint"] }
-tinymist-std = "0.14.0"
-tinymist-task = { version = "0.14.0", features = ["no-content-hint"] }
+tinymist-project = { git = "https://github.com/Myriad-Dreamin/tinymist.git", tag = "v0.14.0" }
+tinymist-std = { git = "https://github.com/Myriad-Dreamin/tinymist.git", tag = "v0.14.0" }
+tinymist-task = { git = "https://github.com/Myriad-Dreamin/tinymist.git", tag = "v0.14.0", features = [
+    "no-content-hint",
+] }
 tinymist-tests = { git = "https://github.com/Myriad-Dreamin/tinymist.git", tag = "v0.14.0" }
-tinymist-vfs = "0.14.0"
-tinymist-world = "0.14.0"
+tinymist-vfs = { git = "https://github.com/Myriad-Dreamin/tinymist.git", tag = "v0.14.0" }
+tinymist-world = { git = "https://github.com/Myriad-Dreamin/tinymist.git", tag = "v0.14.0" }
 typst = "0.14.0"
 typst-pdf = "0.14.0"
-typlite = { version = "0.14.0", features = ["no-content-hint"] }
+typlite = { git = "https://github.com/Myriad-Dreamin/tinymist.git", tag = "v0.14.0", features = [
+    "no-content-hint",
+] }
 
 [workspace.lints.rustdoc]
 broken_intra_doc_links = "warn"

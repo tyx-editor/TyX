@@ -14,6 +14,10 @@ typst-to-tyx.workspace = true
 [dev-dependencies]
 insta.workspace = true
 tinymist-tests.workspace = true
+tinymist-project.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tyx-schema.workspace = true
 
 [lints]
 workspace = true
