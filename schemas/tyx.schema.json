@@ -644,8 +644,8 @@
           "additionalProperties": false
         },
         {
-          "title": "TyXBooleanValue",
           "description": "An object representing Typst `bool` type.",
+          "title": "TyXBooleanValue",
           "type": "object",
           "properties": {
             "type": {
@@ -660,8 +660,8 @@
           "additionalProperties": false
         },
         {
-          "title": "TyXContentValue",
           "description": "An object representing Typst `content` type.",
+          "title": "TyXContentValue",
           "type": "object",
           "properties": {
             "type": {

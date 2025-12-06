@@ -13,7 +13,7 @@
 //!     .expect("failed to resolve system universe");
 //!
 //! let world = verse.snapshot();
-//! let tyx_document = tyx_converters::typst_to_tyx(Arc::new(world));
+//! let tyx_document = typst_to_tyx::typst_to_tyx(Arc::new(world));
 //! ```
 use ecow::EcoString;
 pub use tinymist_project::LspWorld;

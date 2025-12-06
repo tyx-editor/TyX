@@ -60,7 +60,7 @@ TyX uses lexical to build its wysiwyg editor. To convert typst documents into le
 To perform snapshot testing about the converter, please run:
 
 ```bash
-cargo insta test -p tyx-import-typst --accept
+cargo insta test -p tyx-converters --accept
 ```
 
 You may need to install [cargo-insta](https://crates.io/crates/cargo-insta)

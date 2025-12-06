@@ -1,44 +1,32 @@
 ---
-source: crates/tyx-import-typst/src/tests.rs
+source: crates/tyx-converters/src/tests.rs
 expression: conv(world)
-input_file: crates/tyx-import-typst/src/fixtures/integration/link.typ
+input_file: crates/tyx-converters/src/fixtures/integration/link.typ
 ---
 {
  "root": {
-  "type": "root",
-  "version": 1,
   "children": [
    {
     "type": "paragraph",
-    "version": 1,
     "children": [
      {
       "type": "link",
-      "version": 1,
       "children": [
        {
         "type": "text",
-        "version": 1,
-        "detail": 0,
         "format": 0,
-        "mode": "normal",
-        "style": "",
-        "text": "https://example.com"
+        "text": "https://example.com",
+        "type": "text"
        }
       ],
-      "direction": null,
-      "format": "",
-      "indent": 0,
+      "type": "link",
       "url": "https://example.com"
      }
     ],
-    "direction": null,
     "format": "",
-    "indent": 0
+    "type": "paragraph"
    }
   ],
-  "direction": null,
-  "format": "",
-  "indent": 0
+  "type": "root"
  }
 }
