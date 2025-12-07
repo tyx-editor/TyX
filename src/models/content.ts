@@ -19,7 +19,7 @@ export type TyXDirection = z.infer<typeof TyXDirection>
 export const TyXEditorState = z.looseObject({
   editorState: z.looseObject({
     get root() {
-      return TyXRootNode
+      return TyXNode
     },
   }),
 })
@@ -45,7 +45,7 @@ export const TyXRootNode = z
     direction: TyXDirection,
   })
   .describe("The node at the root of a TyX document.")
-  .meta({ id: "TyXRootNode" })
+  .meta({ title: "TyXRootNode" })
 export type TyXRootNode = z.infer<typeof TyXRootNode>
 
 export const TyXParagraphNode = z
@@ -58,7 +58,7 @@ export const TyXParagraphNode = z
     direction: TyXDirection,
   })
   .describe("A node describing a paragraph.")
-  .meta({ id: "TyXParagraphNode" })
+  .meta({ title: "TyXParagraphNode" })
 export type TyXParagraphNode = z.infer<typeof TyXParagraphNode>
 
 export const TyXTextNode = z
@@ -68,7 +68,7 @@ export const TyXTextNode = z
     format: z.int(),
   })
   .describe("A node describing text.")
-  .meta({ id: "TyXTextNode" })
+  .meta({ title: "TyXTextNode" })
 export type TyXTextNode = z.infer<typeof TyXTextNode>
 
 export const TyXMathNode = z
@@ -79,7 +79,7 @@ export const TyXMathNode = z
     inline: z.boolean().optional(),
   })
   .describe("A node describing a math equation.")
-  .meta({ id: "TyXMathNode" })
+  .meta({ title: "TyXMathNode" })
 export type TyXMathNode = z.infer<typeof TyXMathNode>
 
 export const TyXListItemNode = z
@@ -91,7 +91,7 @@ export const TyXListItemNode = z
     },
   })
   .describe("A node describing a list item.")
-  .meta({ id: "TyXListItemNode" })
+  .meta({ title: "TyXListItemNode" })
 export type TyXListItemNode = z.infer<typeof TyXListItemNode>
 
 export const TyXListNode = z
@@ -109,7 +109,7 @@ export const TyXListNode = z
     direction: TyXDirection,
   })
   .describe("A node describing a bullet or numbered list.")
-  .meta({ id: "TyXListNode" })
+  .meta({ title: "TyXListNode" })
 export type TyXListNode = z.infer<typeof TyXListNode>
 
 export const TyXQuoteNode = z
@@ -121,7 +121,7 @@ export const TyXQuoteNode = z
     direction: TyXDirection,
   })
   .describe("A node describing a block quote.")
-  .meta({ id: "TyXQuoteNode" })
+  .meta({ title: "TyXQuoteNode" })
 export type TyXQuoteNode = z.infer<typeof TyXQuoteNode>
 
 export const TyXCodeNode = z
@@ -133,7 +133,7 @@ export const TyXCodeNode = z
     language: z.string().optional(),
   })
   .describe("A node describing a code block.")
-  .meta({ id: "TyXCodeNode" })
+  .meta({ title: "TyXCodeNode" })
 export type TyXCodeNode = z.infer<typeof TyXCodeNode>
 
 export const TyXTableNode = z
@@ -145,7 +145,7 @@ export const TyXTableNode = z
     direction: TyXDirection,
   })
   .describe("A node describing a table.")
-  .meta({ id: "TyXTableNode" })
+  .meta({ title: "TyXTableNode" })
 export type TyXTableNode = z.infer<typeof TyXTableNode>
 
 export const TyXTableRowNode = z
@@ -156,7 +156,7 @@ export const TyXTableRowNode = z
     },
   })
   .describe("A node describing a table row.")
-  .meta({ id: "TyXTableRowNode" })
+  .meta({ title: "TyXTableRowNode" })
 export type TyXTableRowNode = z.infer<typeof TyXTableRowNode>
 
 export const TyXTableCellNode = z
@@ -168,7 +168,7 @@ export const TyXTableCellNode = z
     direction: TyXDirection,
   })
   .describe("A node describing a table cell.")
-  .meta({ id: "TyXTableCellNode" })
+  .meta({ title: "TyXTableCellNode" })
 export type TyXTableCellNode = z.infer<typeof TyXTableCellNode>
 
 export const TyXLineBreakNode = z
@@ -176,7 +176,7 @@ export const TyXLineBreakNode = z
     type: z.literal("linebreak"),
   })
   .describe("A line break node.")
-  .meta({ id: "TyXLineBreakNode" })
+  .meta({ title: "TyXLineBreakNode" })
 export type TyXLineBreakNode = z.infer<typeof TyXLineBreakNode>
 
 export const TyXHorizontalRuleNode = z
@@ -184,7 +184,7 @@ export const TyXHorizontalRuleNode = z
     type: z.literal("horizontalrule"),
   })
   .describe("A horizontal rule node.")
-  .meta({ id: "TyXHorizontalRuleNode" })
+  .meta({ title: "TyXHorizontalRuleNode" })
 export type TyXHorizontalRuleNode = z.infer<typeof TyXHorizontalRuleNode>
 
 export const TyXTypstCodeNode = z
@@ -193,7 +193,7 @@ export const TyXTypstCodeNode = z
     text: TyXEditorState,
   })
   .describe("A raw Typst code node.")
-  .meta({ id: "TyXTypstCodeNode" })
+  .meta({ title: "TyXTypstCodeNode" })
 export type TyXTypstCodeNode = z.infer<typeof TyXTypstCodeNode>
 
 export const TyXImageNode = z
@@ -202,7 +202,7 @@ export const TyXImageNode = z
     src: z.string(),
   })
   .describe("An image node.")
-  .meta({ id: "TyXImageNode" })
+  .meta({ title: "TyXImageNode" })
 export type TyXImageNode = z.infer<typeof TyXImageNode>
 
 export const TyXLinkNode = z
@@ -214,7 +214,7 @@ export const TyXLinkNode = z
     url: z.string(),
   })
   .describe("A link node.")
-  .meta({ id: "TyXLinkNode" })
+  .meta({ title: "TyXLinkNode" })
 export type TyXLinkNode = z.infer<typeof TyXLinkNode>
 
 export const TyXHeadingNode = z
@@ -233,7 +233,7 @@ export const TyXHeadingNode = z
     },
   })
   .describe("A heading node.")
-  .meta({ id: "TyXHeadingNode" })
+  .meta({ title: "TyXHeadingNode" })
 export type TyXHeadingNode = z.infer<typeof TyXHeadingNode>
 
 export const TyXFunctionCallNode = z
@@ -244,7 +244,7 @@ export const TyXFunctionCallNode = z
     namedParameters: z.record(z.string(), TyXValue).optional(),
   })
   .describe("A function call node.")
-  .meta({ id: "TyXFunctionCallNode" })
+  .meta({ title: "TyXFunctionCallNode" })
 export type TyXFunctionCallNode = z.infer<typeof TyXFunctionCallNode>
 
 export const TyXNode = z

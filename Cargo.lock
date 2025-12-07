@@ -6750,6 +6750,7 @@ dependencies = [
  "typlite",
  "typst",
  "tyx-schema",
+ "tyx-version",
 ]
 
 [[package]]
@@ -6817,6 +6818,7 @@ dependencies = [
  "typstyle-core",
  "tyx-converters",
  "tyx-schema",
+ "tyx-version",
  "url",
 ]
 
@@ -6864,6 +6866,14 @@ dependencies = [
  "serde",
  "serde_json",
  "tyx-schema",
+]
+
+[[package]]
+name = "tyx-version"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

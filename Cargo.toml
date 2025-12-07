@@ -25,6 +25,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 insta = "1"
 tyx-schema = { path = "crates/tyx-schema", version = "0.1.0" }
+tyx-version = { path = "crates/tyx-version", version = "0.1.0" }
 tyx-converters = { path = "crates/tyx-converters", version = "0.1.0" }
 tyx-to-typst = { path = "crates/tyx-to-typst", version = "0.1.0" }
 typst-to-tyx = { path = "crates/typst-to-tyx", version = "0.1.0" }

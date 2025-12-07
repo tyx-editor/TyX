@@ -5,6 +5,7 @@ input_file: crates/tyx-converters/src/fixtures/integration/link.typ
 ---
 {
  "root": {
+  "type": "root",
   "children": [
    {
     "type": "paragraph",
@@ -15,18 +16,14 @@ input_file: crates/tyx-converters/src/fixtures/integration/link.typ
        {
         "type": "text",
         "format": 0,
-        "text": "https://example.com",
-        "type": "text"
+        "text": "https://example.com"
        }
       ],
-      "type": "link",
       "url": "https://example.com"
      }
     ],
-    "format": "",
-    "type": "paragraph"
+    "format": ""
    }
-  ],
-  "type": "root"
+  ]
  }
 }

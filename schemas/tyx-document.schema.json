@@ -48,147 +48,462 @@
       "type": "object",
       "properties": {
         "root": {
-          "$ref": "#/definitions/TyXRootNode"
+          "$ref": "#/definitions/TyXNode"
         }
       },
       "required": ["root"],
       "additionalProperties": false
-    },
-    "TyXRootNode": {
-      "description": "The node at the root of a TyX document.",
-      "id": "TyXRootNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "root"
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TyXNode"
-          }
-        },
-        "direction": {
-          "$ref": "#/definitions/TyXDirection"
-        }
-      },
-      "required": ["type", "children"],
-      "additionalProperties": {}
     },
     "TyXNode": {
       "description": "Some TyX node.",
       "id": "TyXNode",
       "anyOf": [
         {
-          "$ref": "#/definitions/TyXRootNode"
+          "description": "The node at the root of a TyX document.",
+          "title": "TyXRootNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "root"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TyXNode"
+              }
+            },
+            "direction": {
+              "$ref": "#/definitions/TyXDirection"
+            }
+          },
+          "required": ["type", "children"]
         },
         {
-          "$ref": "#/definitions/TyXParagraphNode"
+          "description": "A node describing a paragraph.",
+          "title": "TyXParagraphNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "paragraph"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TyXNode"
+              }
+            },
+            "format": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "left"
+                },
+                {
+                  "type": "string",
+                  "const": "start"
+                },
+                {
+                  "type": "string",
+                  "const": "center"
+                },
+                {
+                  "type": "string",
+                  "const": "right"
+                },
+                {
+                  "type": "string",
+                  "const": "end"
+                },
+                {
+                  "type": "string",
+                  "const": "justify"
+                },
+                {
+                  "type": "string",
+                  "const": ""
+                }
+              ]
+            },
+            "direction": {
+              "$ref": "#/definitions/TyXDirection"
+            }
+          },
+          "required": ["type", "children", "format"]
         },
         {
-          "$ref": "#/definitions/TyXTextNode"
+          "description": "A node describing text.",
+          "title": "TyXTextNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "text"
+            },
+            "text": {
+              "type": "string"
+            },
+            "format": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": ["type", "text", "format"]
         },
         {
-          "$ref": "#/definitions/TyXMathNode"
+          "description": "A node describing a math equation.",
+          "title": "TyXMathNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "math"
+            },
+            "typst": {
+              "type": "string"
+            },
+            "formula": {
+              "type": "string"
+            },
+            "inline": {
+              "type": "boolean"
+            }
+          },
+          "required": ["type"]
         },
         {
-          "$ref": "#/definitions/TyXListItemNode"
+          "description": "A node describing a list item.",
+          "title": "TyXListItemNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "listitem"
+            },
+            "value": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TyXNode"
+              }
+            }
+          },
+          "required": ["type", "value", "children"]
         },
         {
-          "$ref": "#/definitions/TyXListNode"
+          "description": "A node describing a bullet or numbered list.",
+          "title": "TyXListNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "list"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TyXNode"
+              }
+            },
+            "listType": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "bullet"
+                },
+                {
+                  "type": "string",
+                  "const": "number"
+                },
+                {
+                  "type": "string",
+                  "const": "check"
+                }
+              ]
+            },
+            "start": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "direction": {
+              "$ref": "#/definitions/TyXDirection"
+            }
+          },
+          "required": ["type", "children", "listType", "start"]
         },
         {
-          "$ref": "#/definitions/TyXCodeNode"
+          "description": "A node describing a code block.",
+          "title": "TyXCodeNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "code"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TyXNode"
+              }
+            },
+            "language": {
+              "type": "string"
+            }
+          },
+          "required": ["type", "children"]
         },
         {
-          "$ref": "#/definitions/TyXQuoteNode"
+          "description": "A node describing a block quote.",
+          "title": "TyXQuoteNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "quote"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TyXNode"
+              }
+            },
+            "direction": {
+              "$ref": "#/definitions/TyXDirection"
+            }
+          },
+          "required": ["type", "children"]
         },
         {
-          "$ref": "#/definitions/TyXTableNode"
+          "description": "A node describing a table.",
+          "title": "TyXTableNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "table"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TyXNode"
+              }
+            },
+            "direction": {
+              "$ref": "#/definitions/TyXDirection"
+            }
+          },
+          "required": ["type", "children"]
         },
         {
-          "$ref": "#/definitions/TyXTableRowNode"
+          "description": "A node describing a table row.",
+          "title": "TyXTableRowNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "tablerow"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TyXNode"
+              }
+            }
+          },
+          "required": ["type", "children"]
         },
         {
-          "$ref": "#/definitions/TyXTableCellNode"
+          "description": "A node describing a table cell.",
+          "title": "TyXTableCellNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "tablecell"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TyXNode"
+              }
+            },
+            "direction": {
+              "$ref": "#/definitions/TyXDirection"
+            }
+          },
+          "required": ["type", "children"]
         },
         {
-          "$ref": "#/definitions/TyXLineBreakNode"
+          "description": "A line break node.",
+          "title": "TyXLineBreakNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "linebreak"
+            }
+          },
+          "required": ["type"]
         },
         {
-          "$ref": "#/definitions/TyXHorizontalRuleNode"
+          "description": "A horizontal rule node.",
+          "title": "TyXHorizontalRuleNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "horizontalrule"
+            }
+          },
+          "required": ["type"]
         },
         {
-          "$ref": "#/definitions/TyXTypstCodeNode"
+          "description": "A raw Typst code node.",
+          "title": "TyXTypstCodeNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "typstcode"
+            },
+            "text": {
+              "type": "object",
+              "properties": {
+                "editorState": {
+                  "type": "object",
+                  "properties": {
+                    "root": {
+                      "$ref": "#/definitions/TyXNode"
+                    }
+                  },
+                  "required": ["root"]
+                }
+              },
+              "required": ["editorState"]
+            }
+          },
+          "required": ["type", "text"]
         },
         {
-          "$ref": "#/definitions/TyXImageNode"
+          "description": "An image node.",
+          "title": "TyXImageNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "image"
+            },
+            "src": {
+              "type": "string"
+            }
+          },
+          "required": ["type", "src"]
         },
         {
-          "$ref": "#/definitions/TyXLinkNode"
+          "description": "A link node.",
+          "title": "TyXLinkNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "link"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TyXNode"
+              }
+            },
+            "url": {
+              "type": "string"
+            }
+          },
+          "required": ["type", "children", "url"]
         },
         {
-          "$ref": "#/definitions/TyXHeadingNode"
+          "description": "A heading node.",
+          "title": "TyXHeadingNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "heading"
+            },
+            "tag": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "h1"
+                },
+                {
+                  "type": "string",
+                  "const": "h2"
+                },
+                {
+                  "type": "string",
+                  "const": "h3"
+                },
+                {
+                  "type": "string",
+                  "const": "h4"
+                },
+                {
+                  "type": "string",
+                  "const": "h5"
+                },
+                {
+                  "type": "string",
+                  "const": "h6"
+                }
+              ]
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TyXNode"
+              }
+            }
+          },
+          "required": ["type", "tag", "children"]
         },
         {
-          "$ref": "#/definitions/TyXFunctionCallNode"
+          "description": "A function call node.",
+          "title": "TyXFunctionCallNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "functioncall"
+            },
+            "name": {
+              "type": "string"
+            },
+            "positionParameters": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TyXValue"
+              }
+            },
+            "namedParameters": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {
+                "$ref": "#/definitions/TyXValue"
+              }
+            }
+          },
+          "required": ["type"]
         }
       ]
-    },
-    "TyXParagraphNode": {
-      "description": "A node describing a paragraph.",
-      "id": "TyXParagraphNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "paragraph"
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TyXNode"
-          }
-        },
-        "format": {
-          "anyOf": [
-            {
-              "type": "string",
-              "const": "left"
-            },
-            {
-              "type": "string",
-              "const": "start"
-            },
-            {
-              "type": "string",
-              "const": "center"
-            },
-            {
-              "type": "string",
-              "const": "right"
-            },
-            {
-              "type": "string",
-              "const": "end"
-            },
-            {
-              "type": "string",
-              "const": "justify"
-            },
-            {
-              "type": "string",
-              "const": ""
-            }
-          ]
-        },
-        "direction": {
-          "$ref": "#/definitions/TyXDirection"
-        }
-      },
-      "required": ["type", "children", "format"],
-      "additionalProperties": {}
     },
     "TyXDirection": {
       "description": "A direction of text in TyX.",
@@ -215,395 +530,6 @@
           "const": "rtl"
         }
       ]
-    },
-    "TyXTextNode": {
-      "description": "A node describing text.",
-      "id": "TyXTextNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "text"
-        },
-        "text": {
-          "type": "string"
-        },
-        "format": {
-          "type": "integer",
-          "minimum": -9007199254740991,
-          "maximum": 9007199254740991
-        }
-      },
-      "required": ["type", "text", "format"],
-      "additionalProperties": {}
-    },
-    "TyXMathNode": {
-      "description": "A node describing a math equation.",
-      "id": "TyXMathNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "math"
-        },
-        "typst": {
-          "type": "string"
-        },
-        "formula": {
-          "type": "string"
-        },
-        "inline": {
-          "type": "boolean"
-        }
-      },
-      "required": ["type"],
-      "additionalProperties": {}
-    },
-    "TyXListItemNode": {
-      "description": "A node describing a list item.",
-      "id": "TyXListItemNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "listitem"
-        },
-        "value": {
-          "type": "integer",
-          "minimum": -9007199254740991,
-          "maximum": 9007199254740991
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TyXNode"
-          }
-        }
-      },
-      "required": ["type", "value", "children"],
-      "additionalProperties": {}
-    },
-    "TyXListNode": {
-      "description": "A node describing a bullet or numbered list.",
-      "id": "TyXListNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "list"
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TyXNode"
-          }
-        },
-        "listType": {
-          "anyOf": [
-            {
-              "type": "string",
-              "const": "bullet"
-            },
-            {
-              "type": "string",
-              "const": "number"
-            },
-            {
-              "type": "string",
-              "const": "check"
-            }
-          ]
-        },
-        "start": {
-          "type": "integer",
-          "minimum": -9007199254740991,
-          "maximum": 9007199254740991
-        },
-        "direction": {
-          "$ref": "#/definitions/TyXDirection"
-        }
-      },
-      "required": ["type", "children", "listType", "start"],
-      "additionalProperties": {}
-    },
-    "TyXCodeNode": {
-      "description": "A node describing a code block.",
-      "id": "TyXCodeNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "code"
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TyXNode"
-          }
-        },
-        "language": {
-          "type": "string"
-        }
-      },
-      "required": ["type", "children"],
-      "additionalProperties": {}
-    },
-    "TyXQuoteNode": {
-      "description": "A node describing a block quote.",
-      "id": "TyXQuoteNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "quote"
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TyXNode"
-          }
-        },
-        "direction": {
-          "$ref": "#/definitions/TyXDirection"
-        }
-      },
-      "required": ["type", "children"],
-      "additionalProperties": {}
-    },
-    "TyXTableNode": {
-      "description": "A node describing a table.",
-      "id": "TyXTableNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "table"
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TyXNode"
-          }
-        },
-        "direction": {
-          "$ref": "#/definitions/TyXDirection"
-        }
-      },
-      "required": ["type", "children"],
-      "additionalProperties": {}
-    },
-    "TyXTableRowNode": {
-      "description": "A node describing a table row.",
-      "id": "TyXTableRowNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "tablerow"
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TyXNode"
-          }
-        }
-      },
-      "required": ["type", "children"],
-      "additionalProperties": {}
-    },
-    "TyXTableCellNode": {
-      "description": "A node describing a table cell.",
-      "id": "TyXTableCellNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "tablecell"
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TyXNode"
-          }
-        },
-        "direction": {
-          "$ref": "#/definitions/TyXDirection"
-        }
-      },
-      "required": ["type", "children"],
-      "additionalProperties": {}
-    },
-    "TyXLineBreakNode": {
-      "description": "A line break node.",
-      "id": "TyXLineBreakNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "linebreak"
-        }
-      },
-      "required": ["type"],
-      "additionalProperties": {}
-    },
-    "TyXHorizontalRuleNode": {
-      "description": "A horizontal rule node.",
-      "id": "TyXHorizontalRuleNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "horizontalrule"
-        }
-      },
-      "required": ["type"],
-      "additionalProperties": {}
-    },
-    "TyXTypstCodeNode": {
-      "description": "A raw Typst code node.",
-      "id": "TyXTypstCodeNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "typstcode"
-        },
-        "text": {
-          "type": "object",
-          "properties": {
-            "editorState": {
-              "type": "object",
-              "properties": {
-                "root": {
-                  "$ref": "#/definitions/TyXRootNode"
-                }
-              },
-              "required": ["root"],
-              "additionalProperties": {}
-            }
-          },
-          "required": ["editorState"],
-          "additionalProperties": {}
-        }
-      },
-      "required": ["type", "text"],
-      "additionalProperties": {}
-    },
-    "TyXImageNode": {
-      "description": "An image node.",
-      "id": "TyXImageNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "image"
-        },
-        "src": {
-          "type": "string"
-        }
-      },
-      "required": ["type", "src"],
-      "additionalProperties": {}
-    },
-    "TyXLinkNode": {
-      "description": "A link node.",
-      "id": "TyXLinkNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "link"
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TyXNode"
-          }
-        },
-        "url": {
-          "type": "string"
-        }
-      },
-      "required": ["type", "children", "url"],
-      "additionalProperties": {}
-    },
-    "TyXHeadingNode": {
-      "description": "A heading node.",
-      "id": "TyXHeadingNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "heading"
-        },
-        "tag": {
-          "anyOf": [
-            {
-              "type": "string",
-              "const": "h1"
-            },
-            {
-              "type": "string",
-              "const": "h2"
-            },
-            {
-              "type": "string",
-              "const": "h3"
-            },
-            {
-              "type": "string",
-              "const": "h4"
-            },
-            {
-              "type": "string",
-              "const": "h5"
-            },
-            {
-              "type": "string",
-              "const": "h6"
-            }
-          ]
-        },
-        "children": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TyXNode"
-          }
-        }
-      },
-      "required": ["type", "tag", "children"],
-      "additionalProperties": {}
-    },
-    "TyXFunctionCallNode": {
-      "description": "A function call node.",
-      "id": "TyXFunctionCallNode",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "functioncall"
-        },
-        "name": {
-          "type": "string"
-        },
-        "positionParameters": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/TyXValue"
-          }
-        },
-        "namedParameters": {
-          "type": "object",
-          "propertyNames": {
-            "type": "string"
-          },
-          "additionalProperties": {
-            "$ref": "#/definitions/TyXValue"
-          }
-        }
-      },
-      "required": ["type"],
-      "additionalProperties": {}
     },
     "TyXValue": {
       "description": "An object representing some Typst type.",
@@ -658,7 +584,7 @@
             "value": {
               "allOf": [
                 {
-                  "$ref": "#/definitions/TyXRootNode"
+                  "$ref": "#/definitions/TyXNode"
                 }
               ]
             }

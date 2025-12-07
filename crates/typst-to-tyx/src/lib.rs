@@ -24,12 +24,7 @@ use typlite::ast;
 use tyx_schema::{self as s, TextFormat, TyXNode};
 
 fn plain(text: String) -> TyXNode {
-    TyXNode::TextNode(s::TyXTextNode {
-        format: 0,
-        text,
-        type_: "text".into(),
-        extra: Default::default(),
-    })
+    TyXNode::Text { format: 0, text }
 }
 
 /// Converts the main document in a [`LspWorld`] to a [`TyXDocument`]
@@ -55,20 +50,15 @@ pub fn typst_to_tyx(world: Arc<LspWorld>) -> Option<s::TyXDocument> {
         return None;
     };
 
-    if let TyXNode::RootNode(root) = content {
-        Some(s::TyXDocument {
-            schema: Some("https://tyx-editor.com/schemas/tyx-document.schema.json".into()),
-            // TODO: use the version from Tauri
-            version: "0.2.1".into(),
-            preamble: None,
-            content: Some(s::TyXDocumentContent { root }),
-            settings,
-            filename: None,
-            dirty: Some(false),
-        })
-    } else {
-        None
-    }
+    Some(s::TyXDocument {
+        schema: Some("https://tyx-editor.com/schemas/tyx-document.schema.json".into()),
+        version: tyx_version::VERSION.into(),
+        preamble: None,
+        content: Some(s::TyXDocumentContent { root: content }),
+        settings,
+        filename: None,
+        dirty: Some(false),
+    })
 }
 
 /// Converts a typst document to a TyX node
@@ -164,62 +154,22 @@ impl Converter {
 
     /// Applies the given text format to any child text nodes.
     fn text_format(mask: u64, node: &mut TyXNode) {
-        if let TyXNode::TextNode(text) = node {
-            text.format |= mask as i64;
+        if let TyXNode::Text { format, .. } = node {
+            *format |= mask as i64;
         }
         match node {
-            TyXNode::RootNode(node) => {
-                for child in node.children.iter_mut() {
-                    Converter::text_format(mask, child);
-                }
-            }
-            TyXNode::ParagraphNode(node) => {
-                for child in node.children.iter_mut() {
-                    Converter::text_format(mask, child);
-                }
-            }
-            TyXNode::ListNode(node) => {
-                for child in node.children.iter_mut() {
-                    Converter::text_format(mask, child);
-                }
-            }
-            TyXNode::ListItemNode(node) => {
-                for child in node.children.iter_mut() {
-                    Converter::text_format(mask, child);
-                }
-            }
-            TyXNode::QuoteNode(node) => {
-                for child in node.children.iter_mut() {
-                    Converter::text_format(mask, child);
-                }
-            }
-            TyXNode::CodeNode(node) => {
-                for child in node.children.iter_mut() {
-                    Converter::text_format(mask, child);
-                }
-            }
-            TyXNode::TableNode(node) => {
-                for child in node.children.iter_mut() {
-                    Converter::text_format(mask, child);
-                }
-            }
-            TyXNode::TableRowNode(node) => {
-                for child in node.children.iter_mut() {
-                    Converter::text_format(mask, child);
-                }
-            }
-            TyXNode::TableCellNode(node) => {
-                for child in node.children.iter_mut() {
-                    Converter::text_format(mask, child);
-                }
-            }
-            TyXNode::LinkNode(node) => {
-                for child in node.children.iter_mut() {
-                    Converter::text_format(mask, child);
-                }
-            }
-            TyXNode::HeadingNode(node) => {
-                for child in node.children.iter_mut() {
+            TyXNode::Root { children, .. }
+            | TyXNode::Paragraph { children, .. }
+            | TyXNode::List { children, .. }
+            | TyXNode::Listitem { children, .. }
+            | TyXNode::Quote { children, .. }
+            | TyXNode::Code { children, .. }
+            | TyXNode::Table { children, .. }
+            | TyXNode::Tablerow { children, .. }
+            | TyXNode::Tablecell { children, .. }
+            | TyXNode::Link { children, .. }
+            | TyXNode::Heading { children, .. } => {
+                for child in children.iter_mut() {
                     Converter::text_format(mask, child);
                 }
             }
@@ -229,49 +179,40 @@ impl Converter {
 
     /// Converts a markdown document.
     fn document(&self, nodes: Vec<ast::Node>) -> Option<TyXNode> {
-        Some(TyXNode::RootNode(s::TyXRootNode {
-            type_: "root".into(),
+        Some(TyXNode::Root {
             children: self.children(nodes),
             direction: None,
-            extra: Default::default(),
-        }))
+        })
     }
 
     /// Converts a thematic break.
     fn thematic_break(&self) -> Option<TyXNode> {
-        Some(TyXNode::HorizontalRuleNode(s::TyXHorizontalRuleNode {
-            type_: "horizontalrule".into(),
-            extra: Default::default(),
-        }))
+        Some(TyXNode::Horizontalrule {})
     }
 
     /// Converts a heading.
     fn heading(&self, level: u8, nodes: Vec<ast::Node>) -> Option<TyXNode> {
         let tag = match level {
-            1 => s::TyXHeadingNodeTag::H1,
-            2 => s::TyXHeadingNodeTag::H2,
-            3 => s::TyXHeadingNodeTag::H3,
-            4 => s::TyXHeadingNodeTag::H4,
-            5 => s::TyXHeadingNodeTag::H5,
-            6 => s::TyXHeadingNodeTag::H6,
+            1 => s::TyXNodeTag::H1,
+            2 => s::TyXNodeTag::H2,
+            3 => s::TyXNodeTag::H3,
+            4 => s::TyXNodeTag::H4,
+            5 => s::TyXNodeTag::H5,
+            6 => s::TyXNodeTag::H6,
             _ => return None,
         };
-        Some(TyXNode::HeadingNode(s::TyXHeadingNode {
-            type_: "heading".into(),
+        Some(TyXNode::Heading {
             children: self.children(nodes),
             tag,
-            extra: Default::default(),
-        }))
+        })
     }
 
     /// Converts a code block.
     fn code_block(&self, language: Option<EcoString>, content: EcoString) -> Option<TyXNode> {
-        Some(TyXNode::CodeNode(s::TyXCodeNode {
-            type_: "code".into(),
+        Some(TyXNode::Code {
             children: vec![plain(content.into())],
             language: language.map(|x| x.into()),
-            extra: Default::default(),
-        }))
+        })
     }
 
     /// Converts a html element, e.g. `<div></div>`.
@@ -298,23 +239,19 @@ impl Converter {
 
     /// Converts a paragraph.
     fn paragraph(&self, nodes: Vec<ast::Node>) -> Option<TyXNode> {
-        Some(TyXNode::ParagraphNode(s::TyXParagraphNode {
-            type_: "paragraph".into(),
+        Some(TyXNode::Paragraph {
             children: self.children(nodes),
             direction: None,
-            format: s::TyXParagraphNodeFormat::X,
-            extra: Default::default(),
-        }))
+            format: s::TyXNodeFormat::X,
+        })
     }
 
     /// Converts a block quote.
     fn block_quote(&self, nodes: Vec<ast::Node>) -> Option<TyXNode> {
-        Some(TyXNode::QuoteNode(s::TyXQuoteNode {
-            type_: "quote".into(),
+        Some(TyXNode::Quote {
             children: self.children(nodes),
             direction: None,
-            extra: Default::default(),
-        }))
+        })
     }
 
     /// Converts an ordered list.
@@ -325,14 +262,12 @@ impl Converter {
                 children.push(child);
             }
         }
-        Some(TyXNode::ListNode(s::TyXListNode {
-            type_: "list".into(),
+        Some(TyXNode::List {
             children,
             direction: None,
-            list_type: s::TyXListNodeListType::Number,
+            list_type: s::TyXNodeListType::Number,
             start: start as i64,
-            extra: Default::default(),
-        }))
+        })
     }
 
     /// Converts an unordered list.
@@ -345,14 +280,12 @@ impl Converter {
             }
         }
 
-        Some(TyXNode::ListNode(s::TyXListNode {
-            type_: "list".into(),
+        Some(TyXNode::List {
             children,
             direction: None,
-            list_type: s::TyXListNodeListType::Bullet,
+            list_type: s::TyXNodeListType::Bullet,
             start: 0,
-            extra: Default::default(),
-        }))
+        })
     }
 
     /// Converts a list item.
@@ -368,12 +301,10 @@ impl Converter {
             ast::ListItem::Task { content, .. } => content,
         };
 
-        Some(TyXNode::ListItemNode(s::TyXListItemNode {
-            type_: "listitem".into(),
+        Some(TyXNode::Listitem {
             children: self.children(nodes),
             value: value.unwrap_or(0) as i64,
-            extra: Default::default(),
-        }))
+        })
     }
 
     /// Converts a table.
@@ -388,19 +319,15 @@ impl Converter {
             let mut header_children = Vec::new();
             for header in headers {
                 if let NodeOptionOrList::Node(Some(child)) = self.work(header) {
-                    header_children.push(TyXNode::TableCellNode(s::TyXTableCellNode {
-                        type_: "tablecell".into(),
+                    header_children.push(TyXNode::Tablecell {
                         children: vec![child],
                         direction: None,
-                        extra: Default::default(),
-                    }));
+                    });
                 }
             }
-            children.push(TyXNode::TableRowNode(s::TyXTableRowNode {
-                type_: "tablerow".into(),
+            children.push(TyXNode::Tablerow {
                 children: header_children,
-                extra: Default::default(),
-            }));
+            });
 
             // todo: alignments
             let _ = alignments;
@@ -410,27 +337,21 @@ impl Converter {
             let mut row_children = Vec::new();
             for cell in row {
                 if let NodeOptionOrList::Node(Some(child)) = self.work(cell) {
-                    row_children.push(TyXNode::TableCellNode(s::TyXTableCellNode {
-                        type_: "tablecell".into(),
+                    row_children.push(TyXNode::Tablecell {
                         children: vec![child],
                         direction: None,
-                        extra: Default::default(),
-                    }));
+                    });
                 }
             }
-            children.push(TyXNode::TableRowNode(s::TyXTableRowNode {
-                type_: "tablerow".into(),
+            children.push(TyXNode::Tablerow {
                 children: row_children,
-                extra: Default::default(),
-            }));
+            });
         }
 
-        Some(TyXNode::TableNode(s::TyXTableNode {
-            type_: "table".into(),
+        Some(TyXNode::Table {
             children,
             direction: None,
-            extra: Default::default(),
-        }))
+        })
     }
 
     /// Converts an inline code.
@@ -479,22 +400,18 @@ impl Converter {
         // todo: title
         let _ = title;
 
-        Some(TyXNode::LinkNode(s::TyXLinkNode {
-            type_: "link".into(),
+        Some(TyXNode::Link {
             children: self.children(content),
             url: url.into(),
-            extra: Default::default(),
-        }))
+        })
     }
 
     /// Converts a reference link.
     fn reference_link(&self, label: EcoString, content: Vec<ast::Node>) -> Option<TyXNode> {
-        Some(TyXNode::LinkNode(s::TyXLinkNode {
-            type_: "link".into(),
+        Some(TyXNode::Link {
             children: self.children(content),
             url: format!("#{label}"),
-            extra: Default::default(),
-        }))
+        })
     }
 
     /// Converts an image.
@@ -507,32 +424,24 @@ impl Converter {
         let _ = title;
         let _ = alt;
         // todo: use title and alt
-        Some(TyXNode::ImageNode(s::TyXImageNode {
-            type_: "image".into(),
-            src: url.into(),
-            extra: Default::default(),
-        }))
+        Some(TyXNode::Image { src: url.into() })
     }
 
     /// Converts an autolink.
     fn autolink(&self, url: EcoString, is_email: bool) -> Option<TyXNode> {
         let _ = is_email;
-        Some(TyXNode::LinkNode(s::TyXLinkNode {
-            type_: "link".into(),
+        Some(TyXNode::Link {
             children: vec![plain(url.clone().into())],
             url: url.into(),
-            extra: Default::default(),
-        }))
+        })
     }
 
     /// Converts an extended autolink.
     fn extended_autolink(&self, link: EcoString) -> Option<TyXNode> {
-        Some(TyXNode::LinkNode(s::TyXLinkNode {
-            type_: "link".into(),
+        Some(TyXNode::Link {
             children: vec![plain(link.clone().into())],
             url: link.into(),
-            extra: Default::default(),
-        }))
+        })
     }
 
     /// Converts a typst html element.
@@ -543,19 +452,13 @@ impl Converter {
 
     /// Converts a hard break.
     fn hard_break(&self) -> Option<TyXNode> {
-        Some(TyXNode::LineBreakNode(s::TyXLineBreakNode {
-            type_: "linebreak".into(),
-            extra: Default::default(),
-        }))
+        Some(TyXNode::Linebreak {})
     }
 
     /// Converts a soft break.
     fn soft_break(&self) -> Option<TyXNode> {
         // todo: soft break
-        Some(TyXNode::LineBreakNode(s::TyXLineBreakNode {
-            type_: "linebreak".into(),
-            extra: Default::default(),
-        }))
+        Some(TyXNode::Linebreak {})
     }
 
     /// Converts a text node.

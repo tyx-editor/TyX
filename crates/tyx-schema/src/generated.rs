@@ -169,7 +169,6 @@ pub struct FunctionDefinitionNamedItem {
     pub required: ::std::option::Option<bool>,
     ///The TyX type of this parameter.
     #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
     pub type_: ::std::string::String,
 }
 impl ::std::convert::From<&FunctionDefinitionNamedItem> for FunctionDefinitionNamedItem {
@@ -225,59 +224,10 @@ pub struct ParameterDescription {
     pub required: ::std::option::Option<bool>,
     ///The TyX type of this parameter.
     #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
     pub type_: ::std::string::String,
 }
 impl ::std::convert::From<&ParameterDescription> for ParameterDescription {
     fn from(value: &ParameterDescription) -> Self {
-        value.clone()
-    }
-}
-///A node describing a code block.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A node describing a code block.",
-///  "type": "object",
-///  "required": [
-///    "children",
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "code"
-///    },
-///    "children": {
-///      "type": "array",
-///      "items": {
-///        "$ref": "#/definitions/TyXNode"
-///      }
-///    },
-///    "language": {
-///      "type": "string"
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXCodeNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXCodeNode {
-    pub children: ::std::vec::Vec<TyXNode>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub language: ::std::option::Option<::std::string::String>,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXCodeNode> for TyXCodeNode {
-    fn from(value: &TyXCodeNode) -> Self {
         value.clone()
     }
 }
@@ -508,7 +458,7 @@ impl ::std::convert::From<&TyXDocument> for TyXDocument {
 ///  ],
 ///  "properties": {
 ///    "root": {
-///      "$ref": "#/definitions/TyXRootNode"
+///      "$ref": "#/definitions/TyXNode"
 ///    }
 ///  },
 ///  "additionalProperties": false,
@@ -519,7 +469,7 @@ impl ::std::convert::From<&TyXDocument> for TyXDocument {
 #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct TyXDocumentContent {
-    pub root: TyXRootNode,
+    pub root: TyXNode,
 }
 impl ::std::convert::From<&TyXDocumentContent> for TyXDocumentContent {
     fn from(value: &TyXDocumentContent) -> Self {
@@ -647,339 +597,6 @@ impl ::std::default::Default for TyXDocumentSettings {
         }
     }
 }
-///A function call node.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A function call node.",
-///  "type": "object",
-///  "required": [
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "functioncall"
-///    },
-///    "name": {
-///      "type": "string"
-///    },
-///    "positionParameters": {
-///      "type": "array",
-///      "items": {
-///        "$ref": "#/definitions/TyXValue"
-///      }
-///    },
-///    "namedParameters": {
-///      "type": "object",
-///      "additionalProperties": {
-///        "$ref": "#/definitions/TyXValue"
-///      },
-///      "propertyNames": {
-///        "type": "string"
-///      }
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXFunctionCallNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXFunctionCallNode {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub name: ::std::option::Option<::std::string::String>,
-    #[serde(
-        rename = "namedParameters",
-        default,
-        skip_serializing_if = ":: std :: collections :: HashMap::is_empty"
-    )]
-    pub named_parameters: ::std::collections::HashMap<::std::string::String, TyXValue>,
-    #[serde(
-        rename = "positionParameters",
-        default,
-        skip_serializing_if = "::std::vec::Vec::is_empty"
-    )]
-    pub position_parameters: ::std::vec::Vec<TyXValue>,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXFunctionCallNode> for TyXFunctionCallNode {
-    fn from(value: &TyXFunctionCallNode) -> Self {
-        value.clone()
-    }
-}
-///A heading node.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A heading node.",
-///  "type": "object",
-///  "required": [
-///    "children",
-///    "tag",
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "heading"
-///    },
-///    "tag": {
-///      "anyOf": [
-///        {
-///          "type": "string",
-///          "const": "h1"
-///        },
-///        {
-///          "type": "string",
-///          "const": "h2"
-///        },
-///        {
-///          "type": "string",
-///          "const": "h3"
-///        },
-///        {
-///          "type": "string",
-///          "const": "h4"
-///        },
-///        {
-///          "type": "string",
-///          "const": "h5"
-///        },
-///        {
-///          "type": "string",
-///          "const": "h6"
-///        }
-///      ]
-///    },
-///    "children": {
-///      "type": "array",
-///      "items": {
-///        "$ref": "#/definitions/TyXNode"
-///      }
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXHeadingNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXHeadingNode {
-    pub children: ::std::vec::Vec<TyXNode>,
-    pub tag: TyXHeadingNodeTag,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXHeadingNode> for TyXHeadingNode {
-    fn from(value: &TyXHeadingNode) -> Self {
-        value.clone()
-    }
-}
-///`TyXHeadingNodeTag`
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "anyOf": [
-///    {
-///      "type": "string",
-///      "const": "h1"
-///    },
-///    {
-///      "type": "string",
-///      "const": "h2"
-///    },
-///    {
-///      "type": "string",
-///      "const": "h3"
-///    },
-///    {
-///      "type": "string",
-///      "const": "h4"
-///    },
-///    {
-///      "type": "string",
-///      "const": "h5"
-///    },
-///    {
-///      "type": "string",
-///      "const": "h6"
-///    }
-///  ]
-///}
-/// ```
-/// </details>
-#[derive(
-    ::serde::Deserialize,
-    ::serde::Serialize,
-    Clone,
-    Copy,
-    Debug,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd
-)]
-pub enum TyXHeadingNodeTag {
-    #[serde(rename = "h1")]
-    H1,
-    #[serde(rename = "h2")]
-    H2,
-    #[serde(rename = "h3")]
-    H3,
-    #[serde(rename = "h4")]
-    H4,
-    #[serde(rename = "h5")]
-    H5,
-    #[serde(rename = "h6")]
-    H6,
-}
-impl ::std::convert::From<&Self> for TyXHeadingNodeTag {
-    fn from(value: &TyXHeadingNodeTag) -> Self {
-        value.clone()
-    }
-}
-impl ::std::fmt::Display for TyXHeadingNodeTag {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        match *self {
-            Self::H1 => f.write_str("h1"),
-            Self::H2 => f.write_str("h2"),
-            Self::H3 => f.write_str("h3"),
-            Self::H4 => f.write_str("h4"),
-            Self::H5 => f.write_str("h5"),
-            Self::H6 => f.write_str("h6"),
-        }
-    }
-}
-impl ::std::str::FromStr for TyXHeadingNodeTag {
-    type Err = self::error::ConversionError;
-    fn from_str(
-        value: &str,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        match value {
-            "h1" => Ok(Self::H1),
-            "h2" => Ok(Self::H2),
-            "h3" => Ok(Self::H3),
-            "h4" => Ok(Self::H4),
-            "h5" => Ok(Self::H5),
-            "h6" => Ok(Self::H6),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl ::std::convert::TryFrom<&str> for TyXHeadingNodeTag {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &str,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for TyXHeadingNodeTag {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<::std::string::String> for TyXHeadingNodeTag {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: ::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-///A horizontal rule node.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A horizontal rule node.",
-///  "type": "object",
-///  "required": [
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "horizontalrule"
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXHorizontalRuleNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXHorizontalRuleNode {
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXHorizontalRuleNode> for TyXHorizontalRuleNode {
-    fn from(value: &TyXHorizontalRuleNode) -> Self {
-        value.clone()
-    }
-}
-///An image node.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "An image node.",
-///  "type": "object",
-///  "required": [
-///    "src",
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "image"
-///    },
-///    "src": {
-///      "type": "string"
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXImageNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXImageNode {
-    pub src: ::std::string::String,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXImageNode> for TyXImageNode {
-    fn from(value: &TyXImageNode) -> Self {
-        value.clone()
-    }
-}
 ///An object representing Typst `relative` or `fraction` types.
 ///
 /// <details><summary>JSON schema</summary>
@@ -1026,357 +643,6 @@ impl ::std::default::Default for TyXLength {
         }
     }
 }
-///A line break node.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A line break node.",
-///  "type": "object",
-///  "required": [
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "linebreak"
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXLineBreakNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXLineBreakNode {
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXLineBreakNode> for TyXLineBreakNode {
-    fn from(value: &TyXLineBreakNode) -> Self {
-        value.clone()
-    }
-}
-///A link node.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A link node.",
-///  "type": "object",
-///  "required": [
-///    "children",
-///    "type",
-///    "url"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "link"
-///    },
-///    "children": {
-///      "type": "array",
-///      "items": {
-///        "$ref": "#/definitions/TyXNode"
-///      }
-///    },
-///    "url": {
-///      "type": "string"
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXLinkNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXLinkNode {
-    pub children: ::std::vec::Vec<TyXNode>,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    pub url: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXLinkNode> for TyXLinkNode {
-    fn from(value: &TyXLinkNode) -> Self {
-        value.clone()
-    }
-}
-///A node describing a list item.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A node describing a list item.",
-///  "type": "object",
-///  "required": [
-///    "children",
-///    "type",
-///    "value"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "listitem"
-///    },
-///    "value": {
-///      "type": "integer",
-///      "maximum": 9007199254740991.0,
-///      "minimum": -9007199254740991.0
-///    },
-///    "children": {
-///      "type": "array",
-///      "items": {
-///        "$ref": "#/definitions/TyXNode"
-///      }
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXListItemNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXListItemNode {
-    pub children: ::std::vec::Vec<TyXNode>,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    pub value: i64,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXListItemNode> for TyXListItemNode {
-    fn from(value: &TyXListItemNode) -> Self {
-        value.clone()
-    }
-}
-///A node describing a bullet or numbered list.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A node describing a bullet or numbered list.",
-///  "type": "object",
-///  "required": [
-///    "children",
-///    "listType",
-///    "start",
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "list"
-///    },
-///    "children": {
-///      "type": "array",
-///      "items": {
-///        "$ref": "#/definitions/TyXNode"
-///      }
-///    },
-///    "listType": {
-///      "anyOf": [
-///        {
-///          "type": "string",
-///          "const": "bullet"
-///        },
-///        {
-///          "type": "string",
-///          "const": "number"
-///        },
-///        {
-///          "type": "string",
-///          "const": "check"
-///        }
-///      ]
-///    },
-///    "start": {
-///      "type": "integer",
-///      "maximum": 9007199254740991.0,
-///      "minimum": -9007199254740991.0
-///    },
-///    "direction": {
-///      "$ref": "#/definitions/TyXDirection"
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXListNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXListNode {
-    pub children: ::std::vec::Vec<TyXNode>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub direction: ::std::option::Option<TyXDirection>,
-    #[serde(rename = "listType")]
-    pub list_type: TyXListNodeListType,
-    pub start: i64,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXListNode> for TyXListNode {
-    fn from(value: &TyXListNode) -> Self {
-        value.clone()
-    }
-}
-///`TyXListNodeListType`
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "anyOf": [
-///    {
-///      "type": "string",
-///      "const": "bullet"
-///    },
-///    {
-///      "type": "string",
-///      "const": "number"
-///    },
-///    {
-///      "type": "string",
-///      "const": "check"
-///    }
-///  ]
-///}
-/// ```
-/// </details>
-#[derive(
-    ::serde::Deserialize,
-    ::serde::Serialize,
-    Clone,
-    Copy,
-    Debug,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd
-)]
-pub enum TyXListNodeListType {
-    #[serde(rename = "bullet")]
-    Bullet,
-    #[serde(rename = "number")]
-    Number,
-    #[serde(rename = "check")]
-    Check,
-}
-impl ::std::convert::From<&Self> for TyXListNodeListType {
-    fn from(value: &TyXListNodeListType) -> Self {
-        value.clone()
-    }
-}
-impl ::std::fmt::Display for TyXListNodeListType {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        match *self {
-            Self::Bullet => f.write_str("bullet"),
-            Self::Number => f.write_str("number"),
-            Self::Check => f.write_str("check"),
-        }
-    }
-}
-impl ::std::str::FromStr for TyXListNodeListType {
-    type Err = self::error::ConversionError;
-    fn from_str(
-        value: &str,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        match value {
-            "bullet" => Ok(Self::Bullet),
-            "number" => Ok(Self::Number),
-            "check" => Ok(Self::Check),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl ::std::convert::TryFrom<&str> for TyXListNodeListType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &str,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for TyXListNodeListType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<::std::string::String> for TyXListNodeListType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: ::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-///A node describing a math equation.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A node describing a math equation.",
-///  "type": "object",
-///  "required": [
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "math"
-///    },
-///    "typst": {
-///      "type": "string"
-///    },
-///    "formula": {
-///      "type": "string"
-///    },
-///    "inline": {
-///      "type": "boolean"
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXMathNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXMathNode {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub formula: ::std::option::Option<::std::string::String>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub inline: ::std::option::Option<bool>,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub typst: ::std::option::Option<::std::string::String>,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXMathNode> for TyXMathNode {
-    fn from(value: &TyXMathNode) -> Self {
-        value.clone()
-    }
-}
 ///Some TyX node.
 ///
 /// <details><summary>JSON schema</summary>
@@ -1386,58 +652,510 @@ impl ::std::convert::From<&TyXMathNode> for TyXMathNode {
 ///  "description": "Some TyX node.",
 ///  "anyOf": [
 ///    {
-///      "$ref": "#/definitions/TyXRootNode"
+///      "title": "TyXRootNode",
+///      "description": "The node at the root of a TyX document.",
+///      "type": "object",
+///      "required": [
+///        "children",
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "root"
+///        },
+///        "children": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXNode"
+///          }
+///        },
+///        "direction": {
+///          "$ref": "#/definitions/TyXDirection"
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXParagraphNode"
+///      "title": "TyXParagraphNode",
+///      "description": "A node describing a paragraph.",
+///      "type": "object",
+///      "required": [
+///        "children",
+///        "format",
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "paragraph"
+///        },
+///        "children": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXNode"
+///          }
+///        },
+///        "format": {
+///          "anyOf": [
+///            {
+///              "type": "string",
+///              "const": "left"
+///            },
+///            {
+///              "type": "string",
+///              "const": "start"
+///            },
+///            {
+///              "type": "string",
+///              "const": "center"
+///            },
+///            {
+///              "type": "string",
+///              "const": "right"
+///            },
+///            {
+///              "type": "string",
+///              "const": "end"
+///            },
+///            {
+///              "type": "string",
+///              "const": "justify"
+///            },
+///            {
+///              "type": "string",
+///              "const": ""
+///            }
+///          ]
+///        },
+///        "direction": {
+///          "$ref": "#/definitions/TyXDirection"
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXTextNode"
+///      "title": "TyXTextNode",
+///      "description": "A node describing text.",
+///      "type": "object",
+///      "required": [
+///        "format",
+///        "text",
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "text"
+///        },
+///        "text": {
+///          "type": "string"
+///        },
+///        "format": {
+///          "type": "integer",
+///          "maximum": 9007199254740991.0,
+///          "minimum": -9007199254740991.0
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXMathNode"
+///      "title": "TyXMathNode",
+///      "description": "A node describing a math equation.",
+///      "type": "object",
+///      "required": [
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "math"
+///        },
+///        "typst": {
+///          "type": "string"
+///        },
+///        "formula": {
+///          "type": "string"
+///        },
+///        "inline": {
+///          "type": "boolean"
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXListItemNode"
+///      "title": "TyXListItemNode",
+///      "description": "A node describing a list item.",
+///      "type": "object",
+///      "required": [
+///        "children",
+///        "type",
+///        "value"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "listitem"
+///        },
+///        "value": {
+///          "type": "integer",
+///          "maximum": 9007199254740991.0,
+///          "minimum": -9007199254740991.0
+///        },
+///        "children": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXNode"
+///          }
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXListNode"
+///      "title": "TyXListNode",
+///      "description": "A node describing a bullet or numbered list.",
+///      "type": "object",
+///      "required": [
+///        "children",
+///        "listType",
+///        "start",
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "list"
+///        },
+///        "children": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXNode"
+///          }
+///        },
+///        "listType": {
+///          "anyOf": [
+///            {
+///              "type": "string",
+///              "const": "bullet"
+///            },
+///            {
+///              "type": "string",
+///              "const": "number"
+///            },
+///            {
+///              "type": "string",
+///              "const": "check"
+///            }
+///          ]
+///        },
+///        "start": {
+///          "type": "integer",
+///          "maximum": 9007199254740991.0,
+///          "minimum": -9007199254740991.0
+///        },
+///        "direction": {
+///          "$ref": "#/definitions/TyXDirection"
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXCodeNode"
+///      "title": "TyXCodeNode",
+///      "description": "A node describing a code block.",
+///      "type": "object",
+///      "required": [
+///        "children",
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "code"
+///        },
+///        "children": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXNode"
+///          }
+///        },
+///        "language": {
+///          "type": "string"
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXQuoteNode"
+///      "title": "TyXQuoteNode",
+///      "description": "A node describing a block quote.",
+///      "type": "object",
+///      "required": [
+///        "children",
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "quote"
+///        },
+///        "children": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXNode"
+///          }
+///        },
+///        "direction": {
+///          "$ref": "#/definitions/TyXDirection"
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXTableNode"
+///      "title": "TyXTableNode",
+///      "description": "A node describing a table.",
+///      "type": "object",
+///      "required": [
+///        "children",
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "table"
+///        },
+///        "children": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXNode"
+///          }
+///        },
+///        "direction": {
+///          "$ref": "#/definitions/TyXDirection"
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXTableRowNode"
+///      "title": "TyXTableRowNode",
+///      "description": "A node describing a table row.",
+///      "type": "object",
+///      "required": [
+///        "children",
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "tablerow"
+///        },
+///        "children": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXNode"
+///          }
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXTableCellNode"
+///      "title": "TyXTableCellNode",
+///      "description": "A node describing a table cell.",
+///      "type": "object",
+///      "required": [
+///        "children",
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "tablecell"
+///        },
+///        "children": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXNode"
+///          }
+///        },
+///        "direction": {
+///          "$ref": "#/definitions/TyXDirection"
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXLineBreakNode"
+///      "title": "TyXLineBreakNode",
+///      "description": "A line break node.",
+///      "type": "object",
+///      "required": [
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "linebreak"
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXHorizontalRuleNode"
+///      "title": "TyXHorizontalRuleNode",
+///      "description": "A horizontal rule node.",
+///      "type": "object",
+///      "required": [
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "horizontalrule"
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXTypstCodeNode"
+///      "title": "TyXTypstCodeNode",
+///      "description": "A raw Typst code node.",
+///      "type": "object",
+///      "required": [
+///        "text",
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "typstcode"
+///        },
+///        "text": {
+///          "type": "object",
+///          "required": [
+///            "editorState"
+///          ],
+///          "properties": {
+///            "editorState": {
+///              "type": "object",
+///              "required": [
+///                "root"
+///              ],
+///              "properties": {
+///                "root": {
+///                  "$ref": "#/definitions/TyXNode"
+///                }
+///              }
+///            }
+///          }
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXImageNode"
+///      "title": "TyXImageNode",
+///      "description": "An image node.",
+///      "type": "object",
+///      "required": [
+///        "src",
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "image"
+///        },
+///        "src": {
+///          "type": "string"
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXLinkNode"
+///      "title": "TyXLinkNode",
+///      "description": "A link node.",
+///      "type": "object",
+///      "required": [
+///        "children",
+///        "type",
+///        "url"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "link"
+///        },
+///        "children": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXNode"
+///          }
+///        },
+///        "url": {
+///          "type": "string"
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXHeadingNode"
+///      "title": "TyXHeadingNode",
+///      "description": "A heading node.",
+///      "type": "object",
+///      "required": [
+///        "children",
+///        "tag",
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "heading"
+///        },
+///        "tag": {
+///          "anyOf": [
+///            {
+///              "type": "string",
+///              "const": "h1"
+///            },
+///            {
+///              "type": "string",
+///              "const": "h2"
+///            },
+///            {
+///              "type": "string",
+///              "const": "h3"
+///            },
+///            {
+///              "type": "string",
+///              "const": "h4"
+///            },
+///            {
+///              "type": "string",
+///              "const": "h5"
+///            },
+///            {
+///              "type": "string",
+///              "const": "h6"
+///            }
+///          ]
+///        },
+///        "children": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXNode"
+///          }
+///        }
+///      }
 ///    },
 ///    {
-///      "$ref": "#/definitions/TyXFunctionCallNode"
+///      "title": "TyXFunctionCallNode",
+///      "description": "A function call node.",
+///      "type": "object",
+///      "required": [
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "functioncall"
+///        },
+///        "name": {
+///          "type": "string"
+///        },
+///        "positionParameters": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXValue"
+///          }
+///        },
+///        "namedParameters": {
+///          "type": "object",
+///          "additionalProperties": {
+///            "$ref": "#/definitions/TyXValue"
+///          },
+///          "propertyNames": {
+///            "type": "string"
+///          }
+///        }
+///      }
 ///    }
 ///  ],
 ///  "id": "TyXNode"
@@ -1447,221 +1165,151 @@ impl ::std::convert::From<&TyXMathNode> for TyXMathNode {
 #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
 #[serde(tag = "type")]
 pub enum TyXNode {
+    /**TyXRootNode
+
+The node at the root of a TyX document.*/
     #[serde(rename = "root")]
-    RootNode(TyXRootNode),
+    Root {
+        children: ::std::vec::Vec<TyXNode>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        direction: ::std::option::Option<TyXDirection>,
+    },
+    /**TyXParagraphNode
+
+A node describing a paragraph.*/
     #[serde(rename = "paragraph")]
-    ParagraphNode(TyXParagraphNode),
+    Paragraph {
+        children: ::std::vec::Vec<TyXNode>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        direction: ::std::option::Option<TyXDirection>,
+        format: TyXNodeFormat,
+    },
+    /**TyXTextNode
+
+A node describing text.*/
     #[serde(rename = "text")]
-    TextNode(TyXTextNode),
+    Text { format: i64, text: ::std::string::String },
+    /**TyXMathNode
+
+A node describing a math equation.*/
     #[serde(rename = "math")]
-    MathNode(TyXMathNode),
+    Math {
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        formula: ::std::option::Option<::std::string::String>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        inline: ::std::option::Option<bool>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        typst: ::std::option::Option<::std::string::String>,
+    },
+    /**TyXListItemNode
+
+A node describing a list item.*/
     #[serde(rename = "listitem")]
-    ListItemNode(TyXListItemNode),
+    Listitem { children: ::std::vec::Vec<TyXNode>, value: i64 },
+    /**TyXListNode
+
+A node describing a bullet or numbered list.*/
     #[serde(rename = "list")]
-    ListNode(TyXListNode),
+    List {
+        children: ::std::vec::Vec<TyXNode>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        direction: ::std::option::Option<TyXDirection>,
+        #[serde(rename = "listType")]
+        list_type: TyXNodeListType,
+        start: i64,
+    },
+    /**TyXCodeNode
+
+A node describing a code block.*/
     #[serde(rename = "code")]
-    CodeNode(TyXCodeNode),
+    Code {
+        children: ::std::vec::Vec<TyXNode>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        language: ::std::option::Option<::std::string::String>,
+    },
+    /**TyXQuoteNode
+
+A node describing a block quote.*/
     #[serde(rename = "quote")]
-    QuoteNode(TyXQuoteNode),
+    Quote {
+        children: ::std::vec::Vec<TyXNode>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        direction: ::std::option::Option<TyXDirection>,
+    },
+    /**TyXTableNode
+
+A node describing a table.*/
     #[serde(rename = "table")]
-    TableNode(TyXTableNode),
+    Table {
+        children: ::std::vec::Vec<TyXNode>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        direction: ::std::option::Option<TyXDirection>,
+    },
+    /**TyXTableRowNode
+
+A node describing a table row.*/
     #[serde(rename = "tablerow")]
-    TableRowNode(TyXTableRowNode),
+    Tablerow { children: ::std::vec::Vec<TyXNode> },
+    /**TyXTableCellNode
+
+A node describing a table cell.*/
     #[serde(rename = "tablecell")]
-    TableCellNode(TyXTableCellNode),
+    Tablecell {
+        children: ::std::vec::Vec<TyXNode>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        direction: ::std::option::Option<TyXDirection>,
+    },
     #[serde(rename = "linebreak")]
-    LineBreakNode(TyXLineBreakNode),
+    Linebreak,
     #[serde(rename = "horizontalrule")]
-    HorizontalRuleNode(TyXHorizontalRuleNode),
+    Horizontalrule,
+    /**TyXTypstCodeNode
+
+A raw Typst code node.*/
     #[serde(rename = "typstcode")]
-    TypstCodeNode(TyXTypstCodeNode),
+    Typstcode { text: TyXNodeText },
+    /**TyXImageNode
+
+An image node.*/
     #[serde(rename = "image")]
-    ImageNode(TyXImageNode),
+    Image { src: ::std::string::String },
+    /**TyXLinkNode
+
+A link node.*/
     #[serde(rename = "link")]
-    LinkNode(TyXLinkNode),
+    Link { children: ::std::vec::Vec<TyXNode>, url: ::std::string::String },
+    /**TyXHeadingNode
+
+A heading node.*/
     #[serde(rename = "heading")]
-    HeadingNode(TyXHeadingNode),
+    Heading { children: ::std::vec::Vec<TyXNode>, tag: TyXNodeTag },
+    /**TyXFunctionCallNode
+
+A function call node.*/
     #[serde(rename = "functioncall")]
-    FunctionCallNode(TyXFunctionCallNode),
+    Functioncall {
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        name: ::std::option::Option<::std::string::String>,
+        #[serde(
+            rename = "namedParameters",
+            default,
+            skip_serializing_if = ":: std :: collections :: HashMap::is_empty"
+        )]
+        named_parameters: ::std::collections::HashMap<::std::string::String, TyXValue>,
+        #[serde(
+            rename = "positionParameters",
+            default,
+            skip_serializing_if = "::std::vec::Vec::is_empty"
+        )]
+        position_parameters: ::std::vec::Vec<TyXValue>,
+    },
 }
 impl ::std::convert::From<&Self> for TyXNode {
     fn from(value: &TyXNode) -> Self {
         value.clone()
     }
 }
-impl ::std::convert::From<TyXRootNode> for TyXNode {
-    fn from(value: TyXRootNode) -> Self {
-        Self::RootNode(value)
-    }
-}
-impl ::std::convert::From<TyXParagraphNode> for TyXNode {
-    fn from(value: TyXParagraphNode) -> Self {
-        Self::ParagraphNode(value)
-    }
-}
-impl ::std::convert::From<TyXTextNode> for TyXNode {
-    fn from(value: TyXTextNode) -> Self {
-        Self::TextNode(value)
-    }
-}
-impl ::std::convert::From<TyXMathNode> for TyXNode {
-    fn from(value: TyXMathNode) -> Self {
-        Self::MathNode(value)
-    }
-}
-impl ::std::convert::From<TyXListItemNode> for TyXNode {
-    fn from(value: TyXListItemNode) -> Self {
-        Self::ListItemNode(value)
-    }
-}
-impl ::std::convert::From<TyXListNode> for TyXNode {
-    fn from(value: TyXListNode) -> Self {
-        Self::ListNode(value)
-    }
-}
-impl ::std::convert::From<TyXCodeNode> for TyXNode {
-    fn from(value: TyXCodeNode) -> Self {
-        Self::CodeNode(value)
-    }
-}
-impl ::std::convert::From<TyXQuoteNode> for TyXNode {
-    fn from(value: TyXQuoteNode) -> Self {
-        Self::QuoteNode(value)
-    }
-}
-impl ::std::convert::From<TyXTableNode> for TyXNode {
-    fn from(value: TyXTableNode) -> Self {
-        Self::TableNode(value)
-    }
-}
-impl ::std::convert::From<TyXTableRowNode> for TyXNode {
-    fn from(value: TyXTableRowNode) -> Self {
-        Self::TableRowNode(value)
-    }
-}
-impl ::std::convert::From<TyXTableCellNode> for TyXNode {
-    fn from(value: TyXTableCellNode) -> Self {
-        Self::TableCellNode(value)
-    }
-}
-impl ::std::convert::From<TyXLineBreakNode> for TyXNode {
-    fn from(value: TyXLineBreakNode) -> Self {
-        Self::LineBreakNode(value)
-    }
-}
-impl ::std::convert::From<TyXHorizontalRuleNode> for TyXNode {
-    fn from(value: TyXHorizontalRuleNode) -> Self {
-        Self::HorizontalRuleNode(value)
-    }
-}
-impl ::std::convert::From<TyXTypstCodeNode> for TyXNode {
-    fn from(value: TyXTypstCodeNode) -> Self {
-        Self::TypstCodeNode(value)
-    }
-}
-impl ::std::convert::From<TyXImageNode> for TyXNode {
-    fn from(value: TyXImageNode) -> Self {
-        Self::ImageNode(value)
-    }
-}
-impl ::std::convert::From<TyXLinkNode> for TyXNode {
-    fn from(value: TyXLinkNode) -> Self {
-        Self::LinkNode(value)
-    }
-}
-impl ::std::convert::From<TyXHeadingNode> for TyXNode {
-    fn from(value: TyXHeadingNode) -> Self {
-        Self::HeadingNode(value)
-    }
-}
-impl ::std::convert::From<TyXFunctionCallNode> for TyXNode {
-    fn from(value: TyXFunctionCallNode) -> Self {
-        Self::FunctionCallNode(value)
-    }
-}
-///A node describing a paragraph.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A node describing a paragraph.",
-///  "type": "object",
-///  "required": [
-///    "children",
-///    "format",
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "paragraph"
-///    },
-///    "children": {
-///      "type": "array",
-///      "items": {
-///        "$ref": "#/definitions/TyXNode"
-///      }
-///    },
-///    "format": {
-///      "anyOf": [
-///        {
-///          "type": "string",
-///          "const": "left"
-///        },
-///        {
-///          "type": "string",
-///          "const": "start"
-///        },
-///        {
-///          "type": "string",
-///          "const": "center"
-///        },
-///        {
-///          "type": "string",
-///          "const": "right"
-///        },
-///        {
-///          "type": "string",
-///          "const": "end"
-///        },
-///        {
-///          "type": "string",
-///          "const": "justify"
-///        },
-///        {
-///          "type": "string",
-///          "const": ""
-///        }
-///      ]
-///    },
-///    "direction": {
-///      "$ref": "#/definitions/TyXDirection"
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXParagraphNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXParagraphNode {
-    pub children: ::std::vec::Vec<TyXNode>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub direction: ::std::option::Option<TyXDirection>,
-    pub format: TyXParagraphNodeFormat,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXParagraphNode> for TyXParagraphNode {
-    fn from(value: &TyXParagraphNode) -> Self {
-        value.clone()
-    }
-}
-///`TyXParagraphNodeFormat`
+///`TyXNodeFormat`
 ///
 /// <details><summary>JSON schema</summary>
 ///
@@ -1712,7 +1360,7 @@ impl ::std::convert::From<&TyXParagraphNode> for TyXParagraphNode {
     PartialEq,
     PartialOrd
 )]
-pub enum TyXParagraphNodeFormat {
+pub enum TyXNodeFormat {
     #[serde(rename = "left")]
     Left,
     #[serde(rename = "start")]
@@ -1728,12 +1376,12 @@ pub enum TyXParagraphNodeFormat {
     #[serde(rename = "")]
     X,
 }
-impl ::std::convert::From<&Self> for TyXParagraphNodeFormat {
-    fn from(value: &TyXParagraphNodeFormat) -> Self {
+impl ::std::convert::From<&Self> for TyXNodeFormat {
+    fn from(value: &TyXNodeFormat) -> Self {
         value.clone()
     }
 }
-impl ::std::fmt::Display for TyXParagraphNodeFormat {
+impl ::std::fmt::Display for TyXNodeFormat {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Left => f.write_str("left"),
@@ -1746,7 +1394,7 @@ impl ::std::fmt::Display for TyXParagraphNodeFormat {
         }
     }
 }
-impl ::std::str::FromStr for TyXParagraphNodeFormat {
+impl ::std::str::FromStr for TyXNodeFormat {
     type Err = self::error::ConversionError;
     fn from_str(
         value: &str,
@@ -1763,7 +1411,7 @@ impl ::std::str::FromStr for TyXParagraphNodeFormat {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for TyXParagraphNodeFormat {
+impl ::std::convert::TryFrom<&str> for TyXNodeFormat {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &str,
@@ -1771,7 +1419,7 @@ impl ::std::convert::TryFrom<&str> for TyXParagraphNodeFormat {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for TyXParagraphNodeFormat {
+impl ::std::convert::TryFrom<&::std::string::String> for TyXNodeFormat {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -1779,7 +1427,7 @@ impl ::std::convert::TryFrom<&::std::string::String> for TyXParagraphNodeFormat 
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<::std::string::String> for TyXParagraphNodeFormat {
+impl ::std::convert::TryFrom<::std::string::String> for TyXNodeFormat {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -1787,99 +1435,278 @@ impl ::std::convert::TryFrom<::std::string::String> for TyXParagraphNodeFormat {
         value.parse()
     }
 }
-///A node describing a block quote.
+///`TyXNodeListType`
 ///
 /// <details><summary>JSON schema</summary>
 ///
 /// ```json
 ///{
-///  "description": "A node describing a block quote.",
-///  "type": "object",
-///  "required": [
-///    "children",
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
+///  "anyOf": [
+///    {
 ///      "type": "string",
-///      "const": "quote"
+///      "const": "bullet"
 ///    },
-///    "children": {
-///      "type": "array",
-///      "items": {
-///        "$ref": "#/definitions/TyXNode"
-///      }
+///    {
+///      "type": "string",
+///      "const": "number"
 ///    },
-///    "direction": {
-///      "$ref": "#/definitions/TyXDirection"
+///    {
+///      "type": "string",
+///      "const": "check"
 ///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXQuoteNode"
+///  ]
 ///}
 /// ```
 /// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXQuoteNode {
-    pub children: ::std::vec::Vec<TyXNode>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub direction: ::std::option::Option<TyXDirection>,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+#[derive(
+    ::serde::Deserialize,
+    ::serde::Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd
+)]
+pub enum TyXNodeListType {
+    #[serde(rename = "bullet")]
+    Bullet,
+    #[serde(rename = "number")]
+    Number,
+    #[serde(rename = "check")]
+    Check,
 }
-impl ::std::convert::From<&TyXQuoteNode> for TyXQuoteNode {
-    fn from(value: &TyXQuoteNode) -> Self {
+impl ::std::convert::From<&Self> for TyXNodeListType {
+    fn from(value: &TyXNodeListType) -> Self {
         value.clone()
     }
 }
-///The node at the root of a TyX document.
+impl ::std::fmt::Display for TyXNodeListType {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::Bullet => f.write_str("bullet"),
+            Self::Number => f.write_str("number"),
+            Self::Check => f.write_str("check"),
+        }
+    }
+}
+impl ::std::str::FromStr for TyXNodeListType {
+    type Err = self::error::ConversionError;
+    fn from_str(
+        value: &str,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "bullet" => Ok(Self::Bullet),
+            "number" => Ok(Self::Number),
+            "check" => Ok(Self::Check),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for TyXNodeListType {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &str,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for TyXNodeListType {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for TyXNodeListType {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+///`TyXNodeTag`
 ///
 /// <details><summary>JSON schema</summary>
 ///
 /// ```json
 ///{
-///  "description": "The node at the root of a TyX document.",
+///  "anyOf": [
+///    {
+///      "type": "string",
+///      "const": "h1"
+///    },
+///    {
+///      "type": "string",
+///      "const": "h2"
+///    },
+///    {
+///      "type": "string",
+///      "const": "h3"
+///    },
+///    {
+///      "type": "string",
+///      "const": "h4"
+///    },
+///    {
+///      "type": "string",
+///      "const": "h5"
+///    },
+///    {
+///      "type": "string",
+///      "const": "h6"
+///    }
+///  ]
+///}
+/// ```
+/// </details>
+#[derive(
+    ::serde::Deserialize,
+    ::serde::Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd
+)]
+pub enum TyXNodeTag {
+    #[serde(rename = "h1")]
+    H1,
+    #[serde(rename = "h2")]
+    H2,
+    #[serde(rename = "h3")]
+    H3,
+    #[serde(rename = "h4")]
+    H4,
+    #[serde(rename = "h5")]
+    H5,
+    #[serde(rename = "h6")]
+    H6,
+}
+impl ::std::convert::From<&Self> for TyXNodeTag {
+    fn from(value: &TyXNodeTag) -> Self {
+        value.clone()
+    }
+}
+impl ::std::fmt::Display for TyXNodeTag {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::H1 => f.write_str("h1"),
+            Self::H2 => f.write_str("h2"),
+            Self::H3 => f.write_str("h3"),
+            Self::H4 => f.write_str("h4"),
+            Self::H5 => f.write_str("h5"),
+            Self::H6 => f.write_str("h6"),
+        }
+    }
+}
+impl ::std::str::FromStr for TyXNodeTag {
+    type Err = self::error::ConversionError;
+    fn from_str(
+        value: &str,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "h1" => Ok(Self::H1),
+            "h2" => Ok(Self::H2),
+            "h3" => Ok(Self::H3),
+            "h4" => Ok(Self::H4),
+            "h5" => Ok(Self::H5),
+            "h6" => Ok(Self::H6),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for TyXNodeTag {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &str,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for TyXNodeTag {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for TyXNodeTag {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+///`TyXNodeText`
+///
+/// <details><summary>JSON schema</summary>
+///
+/// ```json
+///{
 ///  "type": "object",
 ///  "required": [
-///    "children",
-///    "type"
+///    "editorState"
 ///  ],
 ///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "root"
-///    },
-///    "children": {
-///      "type": "array",
-///      "items": {
-///        "$ref": "#/definitions/TyXNode"
+///    "editorState": {
+///      "type": "object",
+///      "required": [
+///        "root"
+///      ],
+///      "properties": {
+///        "root": {
+///          "$ref": "#/definitions/TyXNode"
+///        }
 ///      }
-///    },
-///    "direction": {
-///      "$ref": "#/definitions/TyXDirection"
 ///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXRootNode"
+///  }
 ///}
 /// ```
 /// </details>
 #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXRootNode {
-    pub children: ::std::vec::Vec<TyXNode>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub direction: ::std::option::Option<TyXDirection>,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+pub struct TyXNodeText {
+    #[serde(rename = "editorState")]
+    pub editor_state: TyXNodeTextEditorState,
 }
-impl ::std::convert::From<&TyXRootNode> for TyXRootNode {
-    fn from(value: &TyXRootNode) -> Self {
+impl ::std::convert::From<&TyXNodeText> for TyXNodeText {
+    fn from(value: &TyXNodeText) -> Self {
+        value.clone()
+    }
+}
+///`TyXNodeTextEditorState`
+///
+/// <details><summary>JSON schema</summary>
+///
+/// ```json
+///{
+///  "type": "object",
+///  "required": [
+///    "root"
+///  ],
+///  "properties": {
+///    "root": {
+///      "$ref": "#/definitions/TyXNode"
+///    }
+///  }
+///}
+/// ```
+/// </details>
+#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+pub struct TyXNodeTextEditorState {
+    pub root: ::std::boxed::Box<TyXNode>,
+}
+impl ::std::convert::From<&TyXNodeTextEditorState> for TyXNodeTextEditorState {
+    fn from(value: &TyXNodeTextEditorState) -> Self {
         value.clone()
     }
 }
@@ -2049,321 +1876,6 @@ impl ::std::default::Default for TyXSettings {
         }
     }
 }
-///A node describing a table cell.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A node describing a table cell.",
-///  "type": "object",
-///  "required": [
-///    "children",
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "tablecell"
-///    },
-///    "children": {
-///      "type": "array",
-///      "items": {
-///        "$ref": "#/definitions/TyXNode"
-///      }
-///    },
-///    "direction": {
-///      "$ref": "#/definitions/TyXDirection"
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXTableCellNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXTableCellNode {
-    pub children: ::std::vec::Vec<TyXNode>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub direction: ::std::option::Option<TyXDirection>,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXTableCellNode> for TyXTableCellNode {
-    fn from(value: &TyXTableCellNode) -> Self {
-        value.clone()
-    }
-}
-///A node describing a table.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A node describing a table.",
-///  "type": "object",
-///  "required": [
-///    "children",
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "table"
-///    },
-///    "children": {
-///      "type": "array",
-///      "items": {
-///        "$ref": "#/definitions/TyXNode"
-///      }
-///    },
-///    "direction": {
-///      "$ref": "#/definitions/TyXDirection"
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXTableNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXTableNode {
-    pub children: ::std::vec::Vec<TyXNode>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub direction: ::std::option::Option<TyXDirection>,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXTableNode> for TyXTableNode {
-    fn from(value: &TyXTableNode) -> Self {
-        value.clone()
-    }
-}
-///A node describing a table row.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A node describing a table row.",
-///  "type": "object",
-///  "required": [
-///    "children",
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "tablerow"
-///    },
-///    "children": {
-///      "type": "array",
-///      "items": {
-///        "$ref": "#/definitions/TyXNode"
-///      }
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXTableRowNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXTableRowNode {
-    pub children: ::std::vec::Vec<TyXNode>,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXTableRowNode> for TyXTableRowNode {
-    fn from(value: &TyXTableRowNode) -> Self {
-        value.clone()
-    }
-}
-///A node describing text.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A node describing text.",
-///  "type": "object",
-///  "required": [
-///    "format",
-///    "text",
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "text"
-///    },
-///    "text": {
-///      "type": "string"
-///    },
-///    "format": {
-///      "type": "integer",
-///      "maximum": 9007199254740991.0,
-///      "minimum": -9007199254740991.0
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXTextNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXTextNode {
-    pub format: i64,
-    pub text: ::std::string::String,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXTextNode> for TyXTextNode {
-    fn from(value: &TyXTextNode) -> Self {
-        value.clone()
-    }
-}
-///A raw Typst code node.
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "description": "A raw Typst code node.",
-///  "type": "object",
-///  "required": [
-///    "text",
-///    "type"
-///  ],
-///  "properties": {
-///    "type": {
-///      "type": "string",
-///      "const": "typstcode"
-///    },
-///    "text": {
-///      "type": "object",
-///      "required": [
-///        "editorState"
-///      ],
-///      "properties": {
-///        "editorState": {
-///          "type": "object",
-///          "required": [
-///            "root"
-///          ],
-///          "properties": {
-///            "root": {
-///              "$ref": "#/definitions/TyXRootNode"
-///            }
-///          },
-///          "additionalProperties": {}
-///        }
-///      },
-///      "additionalProperties": {}
-///    }
-///  },
-///  "additionalProperties": {},
-///  "id": "TyXTypstCodeNode"
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXTypstCodeNode {
-    pub text: TyXTypstCodeNodeText,
-    #[serde(rename = "type")]
-    #[serde(skip_deserializing)]
-    pub type_: ::std::string::String,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXTypstCodeNode> for TyXTypstCodeNode {
-    fn from(value: &TyXTypstCodeNode) -> Self {
-        value.clone()
-    }
-}
-///`TyXTypstCodeNodeText`
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "type": "object",
-///  "required": [
-///    "editorState"
-///  ],
-///  "properties": {
-///    "editorState": {
-///      "type": "object",
-///      "required": [
-///        "root"
-///      ],
-///      "properties": {
-///        "root": {
-///          "$ref": "#/definitions/TyXRootNode"
-///        }
-///      },
-///      "additionalProperties": {}
-///    }
-///  },
-///  "additionalProperties": {}
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXTypstCodeNodeText {
-    #[serde(rename = "editorState")]
-    pub editor_state: TyXTypstCodeNodeTextEditorState,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXTypstCodeNodeText> for TyXTypstCodeNodeText {
-    fn from(value: &TyXTypstCodeNodeText) -> Self {
-        value.clone()
-    }
-}
-///`TyXTypstCodeNodeTextEditorState`
-///
-/// <details><summary>JSON schema</summary>
-///
-/// ```json
-///{
-///  "type": "object",
-///  "required": [
-///    "root"
-///  ],
-///  "properties": {
-///    "root": {
-///      "$ref": "#/definitions/TyXRootNode"
-///    }
-///  },
-///  "additionalProperties": {}
-///}
-/// ```
-/// </details>
-#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
-pub struct TyXTypstCodeNodeTextEditorState {
-    pub root: TyXRootNode,
-    #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::convert::From<&TyXTypstCodeNodeTextEditorState>
-for TyXTypstCodeNodeTextEditorState {
-    fn from(value: &TyXTypstCodeNodeTextEditorState) -> Self {
-        value.clone()
-    }
-}
 ///An object representing some Typst type.
 ///
 /// <details><summary>JSON schema</summary>
@@ -2428,7 +1940,7 @@ for TyXTypstCodeNodeTextEditorState {
 ///        "value": {
 ///          "allOf": [
 ///            {
-///              "$ref": "#/definitions/TyXRootNode"
+///              "$ref": "#/definitions/TyXNode"
 ///            }
 ///          ]
 ///        }
@@ -2469,7 +1981,7 @@ An object representing Typst `content` type.*/
     #[serde(rename = "content")]
     Content {
         #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-        value: ::std::option::Option<TyXRootNode>,
+        value: ::std::option::Option<TyXNode>,
     },
 }
 impl ::std::convert::From<&Self> for TyXValue {

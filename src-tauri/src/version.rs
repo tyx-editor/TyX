@@ -1,1 +1,0 @@
-pub(crate) const VERSION: &str = "0.2.15";

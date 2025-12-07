@@ -3,7 +3,7 @@
  */
 
 import { z } from "zod/v4"
-import { TyXRootNode } from "./content"
+import { TyXNode } from "./content"
 
 export const TyXLength = z
   .object({
@@ -37,16 +37,17 @@ export const TyXBooleanValue = z
 export type TyXBooleanValue = z.infer<typeof TyXBooleanValue>
 
 /** An object representing Typst `content` type. */
-export const TyXContentValue = z
+export const TyXContentValue: any = z
   .object({
     type: z.literal("content"),
-    get value() {
-      return TyXRootNode.optional()
-    },
+    value: z.lazy(() => TyXNode.optional()),
   })
   .describe("An object representing Typst `content` type.")
   .meta({ title: "TyXContentValue" })
-export type TyXContentValue = z.infer<typeof TyXContentValue>
+export type TyXContentValue = {
+  type: "content"
+  value: TyXNode
+}
 
 /** An object representing any TyX value (which in turn, represents some Typst value) */
 export const TyXValue = z

@@ -3,7 +3,7 @@
  */
 
 import { z } from "zod/v4"
-import { TyXRootNode } from "./content"
+import { TyXNode } from "./content"
 import { FunctionDefinition } from "./functions"
 import { TyXLength } from "./values"
 
@@ -52,7 +52,7 @@ export const TyXDocumentSettings = TyXCompilationOptions.extend({
 export type TyXDocumentSettings = z.infer<typeof TyXDocumentSettings>
 
 export const TyXDocumentContent = z
-  .object({ root: TyXRootNode })
+  .object({ root: TyXNode })
   .describe("The serialized content of the editor.")
   .meta({ id: "TyXDocumentContent" })
 export type TyXDocumentContent = z.infer<typeof TyXDocumentContent>

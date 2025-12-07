@@ -1,0 +1,15 @@
+[package]
+name = "tyx-version"
+description = "The automatically generated version of TyX."
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[build-dependencies]
+serde.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true

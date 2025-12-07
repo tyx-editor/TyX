@@ -4,14 +4,14 @@ use std::{collections::HashMap, sync::LazyLock};
 use regex::{Captures, Regex};
 use tyx_schema::*;
 
-fn get_tag_number(tag: &TyXHeadingNodeTag) -> i64 {
+fn get_tag_number(tag: &TyXNodeTag) -> i64 {
     match tag {
-        TyXHeadingNodeTag::H1 => 1,
-        TyXHeadingNodeTag::H2 => 2,
-        TyXHeadingNodeTag::H3 => 3,
-        TyXHeadingNodeTag::H4 => 4,
-        TyXHeadingNodeTag::H5 => 5,
-        TyXHeadingNodeTag::H6 => 6,
+        TyXNodeTag::H1 => 1,
+        TyXNodeTag::H2 => 2,
+        TyXNodeTag::H3 => 3,
+        TyXNodeTag::H4 => 4,
+        TyXNodeTag::H5 => 5,
+        TyXNodeTag::H6 => 6,
     }
 }
 
@@ -27,23 +27,21 @@ fn nodes_to_text(nodes: &[TyXNode]) -> String {
 /// Converts a TyX node to text.
 fn node_to_text(node: &TyXNode) -> String {
     let result = match node {
-        TyXNode::RootNode(root) => Some(nodes_to_text(&root.children)),
-        TyXNode::ParagraphNode(paragraph) => Some(nodes_to_text(&paragraph.children)),
-        TyXNode::TextNode(text) => Some(text.text.clone()),
-        TyXNode::MathNode(math) => math.typst.clone(),
-        TyXNode::ListItemNode(list_item) => Some(nodes_to_text(&list_item.children)),
-        TyXNode::ListNode(list) => Some(nodes_to_text(&list.children)),
-        TyXNode::CodeNode(code) => Some(nodes_to_text(&code.children)),
-        TyXNode::QuoteNode(quote) => Some(nodes_to_text(&quote.children)),
-        TyXNode::TableNode(table) => Some(nodes_to_text(&table.children)),
-        TyXNode::TableRowNode(table_row) => Some(nodes_to_text(&table_row.children)),
-        TyXNode::TableCellNode(table_cell) => Some(nodes_to_text(&table_cell.children)),
-        TyXNode::LineBreakNode(_) => Some("\n".into()),
-        TyXNode::TypstCodeNode(typst_code) => Some(node_to_text(&TyXNode::RootNode(
-            typst_code.text.editor_state.root.clone(),
-        ))),
-        TyXNode::LinkNode(link) => Some(nodes_to_text(&link.children)),
-        TyXNode::HeadingNode(heading) => Some(nodes_to_text(&heading.children)),
+        TyXNode::Root { children, .. }
+        | TyXNode::Paragraph { children, .. }
+        | TyXNode::Listitem { children, .. }
+        | TyXNode::List { children, .. }
+        | TyXNode::Code { children, .. }
+        | TyXNode::Quote { children, .. }
+        | TyXNode::Table { children, .. }
+        | TyXNode::Tablerow { children, .. }
+        | TyXNode::Tablecell { children, .. }
+        | TyXNode::Link { children, .. }
+        | TyXNode::Heading { children, .. } => Some(nodes_to_text(children)),
+        TyXNode::Text { text, .. } => Some(text.clone()),
+        TyXNode::Math { typst, .. } => typst.clone(),
+        TyXNode::Linebreak => Some("\n".into()),
+        TyXNode::Typstcode { text, .. } => Some(node_to_text(&text.editor_state.root)),
         _ => None,
     };
 
@@ -107,7 +105,7 @@ fn children_to_typst(children: &[TyXNode]) -> String {
     let translated = children.iter().map(node_to_typst).collect::<Vec<_>>();
     for i in 0..translated.len() {
         result += &translated[i].clone().unwrap_or_default();
-        if let TyXNode::ParagraphNode(_) = children[i]
+        if let TyXNode::Paragraph { .. } = children[i]
             && i != translated.len() - 1
         {
             result += "\n\n"
@@ -128,60 +126,65 @@ fn typst_escape(text: &str) -> String {
 /// Converts a TyX node to Typst code.
 fn node_to_typst(root: &TyXNode) -> Option<String> {
     match root {
-        TyXNode::RootNode(tyx_root_node) => Some(apply_direction(
-            &children_to_typst(&tyx_root_node.children),
-            tyx_root_node
-                .direction
-                .clone()
-                .unwrap_or(TyXDirection(None)),
+        TyXNode::Root {
+            children,
+            direction,
+            ..
+        }
+        | TyXNode::Quote {
+            children,
+            direction,
+            ..
+        }
+        | TyXNode::Tablecell {
+            children,
+            direction,
+            ..
+        } => Some(apply_direction(
+            &children_to_typst(children),
+            direction.clone().unwrap_or(TyXDirection(None)),
         )),
-        TyXNode::ParagraphNode(tyx_paragraph_node) => Some(apply_direction(
-            &apply_format(
-                &children_to_typst(&tyx_paragraph_node.children),
-                &format!("{}", tyx_paragraph_node.format),
-            ),
-            tyx_paragraph_node
-                .direction
-                .clone()
-                .unwrap_or(TyXDirection(None)),
+        TyXNode::Paragraph {
+            children,
+            direction,
+            format,
+            ..
+        } => Some(apply_direction(
+            &apply_format(&children_to_typst(children), &format!("{format}")),
+            direction.clone().unwrap_or(TyXDirection(None)),
         )),
-        TyXNode::TextNode(tyx_text_node) => Some(apply_text_format(
-            typst_escape(&tyx_text_node.text),
-            &tyx_text_node.text,
-            tyx_text_node.format,
-        )),
-        TyXNode::MathNode(tyx_math_node) => {
-            if tyx_math_node.inline.unwrap_or(false) {
-                Some(format!(
-                    "${}$",
-                    tyx_math_node.typst.clone().unwrap_or_default()
-                ))
+        TyXNode::Text { text, format, .. } => {
+            Some(apply_text_format(typst_escape(text), text, *format))
+        }
+        TyXNode::Math { typst, inline, .. } => {
+            if inline.unwrap_or(false) {
+                Some(format!("${}$", typst.clone().unwrap_or_default()))
             } else {
-                Some(format!(
-                    "$ {} $\n",
-                    tyx_math_node.typst.clone().unwrap_or_default()
-                ))
+                Some(format!("$ {} $\n", typst.clone().unwrap_or_default()))
             }
         }
-        TyXNode::ListItemNode(tyx_list_item_node) => {
-            Some(children_to_typst(&tyx_list_item_node.children))
-        }
-        TyXNode::ListNode(tyx_list_node) => {
-            let mut result = match tyx_list_node.list_type {
-                TyXListNodeListType::Bullet => "\n#list(".into(),
-                TyXListNodeListType::Number => format!("\n#enum(start: {},", tyx_list_node.start),
+        TyXNode::Listitem { children, .. } => Some(children_to_typst(children)),
+        TyXNode::List {
+            children,
+            direction,
+            list_type,
+            start,
+            ..
+        } => {
+            let mut result = match list_type {
+                TyXNodeListType::Bullet => "\n#list(".into(),
+                TyXNodeListType::Number => format!("\n#enum(start: {start},"),
                 _ => return None,
             };
 
-            for i in 0..(tyx_list_node.children.len() - 1) {
-                result += &format!(
-                    "[{}]",
-                    node_to_typst(&tyx_list_node.children[i]).unwrap_or_default()
-                );
+            for i in 0..(children.len() - 1) {
+                result += &format!("[{}]", node_to_typst(&children[i]).unwrap_or_default());
 
-                let delimiter = if let TyXNode::ListItemNode(tyx_list_item_node) =
-                    &tyx_list_node.children[i + 1]
-                    && let TyXNode::ListNode(_) = tyx_list_item_node.children[0]
+                let delimiter = if let TyXNode::Listitem {
+                    children: item_children,
+                    ..
+                } = &children[i + 1]
+                    && let TyXNode::List { .. } = item_children[0]
                 {
                     " + "
                 } else {
@@ -190,7 +193,7 @@ fn node_to_typst(root: &TyXNode) -> Option<String> {
                 result += delimiter;
             }
 
-            if let Some(last) = tyx_list_node.children.last() {
+            if let Some(last) = children.last() {
                 result += &format!("[{}]", node_to_typst(last).unwrap_or_default());
             }
 
@@ -198,38 +201,30 @@ fn node_to_typst(root: &TyXNode) -> Option<String> {
 
             Some(apply_direction(
                 &result,
-                tyx_list_node
-                    .direction
-                    .clone()
-                    .unwrap_or(TyXDirection(None)),
+                direction.clone().unwrap_or(TyXDirection(None)),
             ))
         }
-        TyXNode::CodeNode(tyx_code_node) => Some(format!(
+        TyXNode::Code { language, .. } => Some(format!(
             "#text(dir: ltr)[#raw(block: true, lang: {}, {})]",
-            serde_json::to_string(&tyx_code_node.language.clone().unwrap_or("none".into()))
-                .unwrap(),
+            serde_json::to_string(&language.clone().unwrap_or("none".into())).unwrap(),
             serde_json::to_string(&node_to_text(root)).unwrap()
         )),
-        TyXNode::QuoteNode(tyx_quote_node) => Some(apply_direction(
-            &format!(
-                "#quote(block: true)[{}]",
-                children_to_typst(&tyx_quote_node.children)
-            ),
-            tyx_quote_node
-                .direction
-                .clone()
-                .unwrap_or(TyXDirection(None)),
-        )),
-        TyXNode::TableNode(tyx_table_node) => {
-            let Some(TyXNode::TableRowNode(row)) = tyx_table_node.children.first() else {
+        TyXNode::Table {
+            children,
+            direction,
+            ..
+        } => {
+            let Some(TyXNode::Tablerow {
+                children: row_children,
+            }) = children.first()
+            else {
                 return None;
             };
-            let columns = (0..row.children.len())
+            let columns = (0..row_children.len())
                 .map(|_| String::from("1fr"))
                 .collect::<Vec<String>>()
                 .join(", ");
-            let children = tyx_table_node
-                .children
+            let children = children
                 .iter()
                 .map(|child| node_to_typst(child).unwrap_or_default())
                 .collect::<Vec<String>>()
@@ -237,54 +232,40 @@ fn node_to_typst(root: &TyXNode) -> Option<String> {
 
             Some(apply_direction(
                 &format!("#table(columns: ({columns}), {children})"),
-                tyx_table_node
-                    .direction
-                    .clone()
-                    .unwrap_or(TyXDirection(None)),
+                direction.clone().unwrap_or(TyXDirection(None)),
             ))
         }
-        TyXNode::TableRowNode(tyx_table_row_node) => Some(
-            tyx_table_row_node
-                .children
+        TyXNode::Tablerow { children, .. } => Some(
+            children
                 .iter()
                 .map(|child| node_to_typst(child).unwrap_or_default())
                 .collect::<Vec<String>>()
                 .join(", "),
         ),
-        TyXNode::TableCellNode(tyx_table_cell_node) => Some(apply_direction(
-            &children_to_typst(&tyx_table_cell_node.children),
-            tyx_table_cell_node
-                .direction
-                .clone()
-                .unwrap_or(TyXDirection(None)),
-        )),
-        TyXNode::LineBreakNode(_) => Some("\\ \n".into()),
-        TyXNode::HorizontalRuleNode(_) => Some("#line(length: 100%)\n".into()),
-        TyXNode::TypstCodeNode(tyx_typst_code_node) => Some(node_to_text(&TyXNode::RootNode(
-            tyx_typst_code_node.text.editor_state.root.clone(),
-        ))),
-        TyXNode::ImageNode(tyx_image_node) => Some(format!(
-            "#image({})",
-            serde_json::to_string(&tyx_image_node.src).unwrap()
-        )),
-        TyXNode::LinkNode(tyx_link_node) => Some(format!(
+        TyXNode::Linebreak => Some("\\ \n".into()),
+        TyXNode::Horizontalrule => Some("#line(length: 100%)\n".into()),
+        TyXNode::Typstcode { text, .. } => Some(node_to_text(&text.editor_state.root)),
+        TyXNode::Image { src, .. } => {
+            Some(format!("#image({})", serde_json::to_string(src).unwrap()))
+        }
+        TyXNode::Link { url, children, .. } => Some(format!(
             "#link({})[{}]",
-            serde_json::to_string(&tyx_link_node.url).unwrap(),
-            children_to_typst(&tyx_link_node.children)
+            serde_json::to_string(url).unwrap(),
+            children_to_typst(children)
         )),
-        TyXNode::HeadingNode(tyx_heading_node) => Some(format!(
+        TyXNode::Heading { tag, children, .. } => Some(format!(
             "#heading(depth: {})[{}]",
-            get_tag_number(&tyx_heading_node.tag),
-            children_to_typst(&tyx_heading_node.children)
+            get_tag_number(tag),
+            children_to_typst(children)
         )),
-        TyXNode::FunctionCallNode(tyx_function_call_node) => Some(format!(
+        TyXNode::Functioncall {
+            name,
+            position_parameters,
+            named_parameters,
+            ..
+        } => Some(format!(
             "#{}",
-            stringify_function(
-                &tyx_function_call_node.name,
-                &tyx_function_call_node.position_parameters,
-                &tyx_function_call_node.named_parameters,
-                true
-            )
+            stringify_function(name, position_parameters, named_parameters, true)
         )),
     }
 }
@@ -321,7 +302,7 @@ pub fn stringify_function(
 }
 
 /// Converts a TyX value to a Typst string.
-fn tyx_value_to_typst(value: TyXValue) -> Option<String> {
+pub fn tyx_value_to_typst(value: TyXValue) -> Option<String> {
     match value {
         TyXValue::Length { unit, value } => {
             Some(unit.clone().map_or(String::from("none"), |unit| {
@@ -333,7 +314,7 @@ fn tyx_value_to_typst(value: TyXValue) -> Option<String> {
         }
         TyXValue::Content { value } => {
             if let Some(root) = value {
-                let converted = node_to_typst(&TyXNode::RootNode(root));
+                let converted = node_to_typst(&root);
 
                 converted.map(|c| String::from("[") + c.as_str() + "]")
             } else {
@@ -412,7 +393,7 @@ pub fn tyx_to_typst(document: &TyXDocument) -> String {
     if let Some(document_content) = &document.content {
         content += &format!(
             "// Content\n{}",
-            node_to_typst(&TyXNode::RootNode(document_content.root.clone())).unwrap_or_default()
+            node_to_typst(&document_content.root).unwrap_or_default()
         )
     }
 

@@ -20,8 +20,6 @@ use tinymist_project::{
 use typst_pdf::PdfOptions;
 use typstyle_core::Typstyle;
 
-mod version;
-
 #[derive(Debug, Clone, ValueEnum)]
 enum OutputFormat {
     Typst,
@@ -30,7 +28,7 @@ enum OutputFormat {
 
 /// Simple program to greet a person
 #[derive(Parser, Debug)]
-#[command(version = version::VERSION, about, long_about = None, display_name="TyX")]
+#[command(version = tyx_version::VERSION, about, long_about = None, display_name="TyX")]
 struct Args {
     /// Files to open or export.
     files: Vec<String>,

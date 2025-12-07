@@ -5,6 +5,7 @@ input_file: crates/tyx-converters/src/fixtures/integration/base.typ
 ---
 {
  "root": {
+  "type": "root",
   "children": [
    {
     "type": "heading",
@@ -12,12 +13,10 @@ input_file: crates/tyx-converters/src/fixtures/integration/base.typ
      {
       "type": "text",
       "format": 0,
-      "text": "Hello, World!",
-      "type": "text"
+      "text": "Hello, World!"
      }
     ],
-    "tag": "h2",
-    "type": "heading"
+    "tag": "h2"
    },
    {
     "type": "paragraph",
@@ -25,14 +24,11 @@ input_file: crates/tyx-converters/src/fixtures/integration/base.typ
      {
       "type": "text",
       "format": 0,
-      "text": "This is a typst document.",
-      "type": "text"
+      "text": "This is a typst document."
      }
     ],
-    "format": "",
-    "type": "paragraph"
+    "format": ""
    }
-  ],
-  "type": "root"
+  ]
  }
 }

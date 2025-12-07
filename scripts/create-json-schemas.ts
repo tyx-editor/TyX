@@ -3,6 +3,20 @@ import { readFileSync, writeFileSync } from "fs"
 import { z } from "zod/v4"
 import { TyXDocument, TyXSettings, TyXValue } from "../src/models"
 
+const removeRedundantAdditionalProperties = (x: any) => {
+  if (Array.isArray(x)) {
+    x.forEach(removeRedundantAdditionalProperties)
+  } else if (typeof x === "object") {
+    if (
+      typeof x.additionalProperties === "object" &&
+      Object.keys(x.additionalProperties).length === 0
+    ) {
+      delete x.additionalProperties
+    }
+    Object.values(x).forEach(removeRedundantAdditionalProperties)
+  }
+}
+
 for (const [path, type, title] of [
   ["schemas/tyx-settings.schema.json", TyXSettings, "TyXSettings"],
   ["schemas/tyx-document.schema.json", TyXDocument, "TyXDocument"],
@@ -16,6 +30,7 @@ for (const [path, type, title] of [
   if (title) {
     output.title = title
   }
+  removeRedundantAdditionalProperties(output)
   writeFileSync(path, JSON.stringify(output, null, 4))
 }
 
@@ -34,5 +49,6 @@ result = result.replace(/Union\[([^\]]+)\]/g, (match, group) => {
     .join(", ")
   return `Union[${quoted}]`
 })
+
 writeFileSync(output, result)
 execSync(`python/.venv/bin/black ${output}`)
