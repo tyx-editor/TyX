@@ -8,7 +8,7 @@ use std::{
 use base64::{Engine, engine::general_purpose::STANDARD};
 
 use tauri::{
-    AppHandle, Emitter, Manager,
+    Emitter, Manager,
     menu::{AboutMetadata, MenuBuilder, MenuItemBuilder, SubmenuBuilder},
 };
 
@@ -21,9 +21,30 @@ use typst_pdf::PdfOptions;
 use typstyle_core::Typstyle;
 
 #[derive(Debug, Clone, ValueEnum)]
-enum OutputFormat {
+enum ExportFormat {
     Typst,
     Pdf,
+}
+
+impl ExportFormat {
+    fn extension(&self) -> &str {
+        match self {
+            Self::Pdf => ".pdf",
+            Self::Typst => ".typ",
+        }
+    }
+
+    fn export(&self, input: String, filename: &str) -> Vec<u8> {
+        let dirname = Path::new(filename).parent().unwrap().to_str().unwrap();
+
+        match self {
+            Self::Typst => tyx_converters::serialized_tyx_to_typst(&input).into_bytes(),
+            Self::Pdf => {
+                let contents = tyx_converters::serialized_tyx_to_typst(&input);
+                typst_to_pdf(filename, &contents, PathBuf::from(dirname), vec![]).unwrap()
+            }
+        }
+    }
 }
 
 /// Simple program to greet a person
@@ -32,9 +53,12 @@ enum OutputFormat {
 struct Args {
     /// Files to open or export.
     files: Vec<String>,
-    /// Export as this file format.
+    /// Export as this file format, the default output filenames are just replacing the file extension
     #[arg(short, long)]
-    export: Option<OutputFormat>,
+    export: Option<ExportFormat>,
+    /// Save the output to this filename, requires files to be only one.
+    #[arg(short, long)]
+    output: Option<String>,
 }
 
 #[tauri::command]
@@ -356,22 +380,6 @@ fn insertimage(handle: tauri::AppHandle, filename: &str) {
         });
 }
 
-#[allow(dead_code)]
-fn handle_file_associations(app: AppHandle, files: Vec<PathBuf>) {
-    let files = files
-        .into_iter()
-        .map(|f| {
-            let file = f.to_string_lossy().replace('\\', "\\\\"); // escape backslash
-            format!("\"{file}\"",) // wrap in quotes for JS array
-        })
-        .collect::<Vec<_>>()
-        .join(",");
-
-    let _ = tauri::WebviewWindowBuilder::new(&app, "main", Default::default())
-        .initialization_script(format!("window.openedFiles = [{files}]"))
-        .build();
-}
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 #[cfg(any(target_os = "android", target_os = "ios"))]
 pub fn run() {
@@ -394,8 +402,17 @@ pub fn run() {
 pub fn run() {
     let args = Args::parse();
 
-    if let Some(format) = args.export {
-        for file in args.files {
+    let mut should_exit = false;
+    let output_filename = match args.output {
+        Some(output) => {
+            assert!(args.files.len() == 1);
+            Some(output)
+        }
+        None => None,
+    };
+    for file in args.files.iter() {
+        let contents = std::fs::read_to_string(&file).unwrap();
+        if let Some(ref format) = args.export {
             let file_base = match file.strip_suffix(".tyx") {
                 Some(file) => file,
                 None => {
@@ -403,26 +420,44 @@ pub fn run() {
                     &file
                 }
             };
-            let dirname = Path::new(&file).parent().unwrap().to_str().unwrap();
-            let contents = std::fs::read_to_string(&file).unwrap();
-            let result = match format {
-                OutputFormat::Typst => {
-                    tyx_converters::serialized_tyx_to_typst(&contents).into_bytes()
-                }
-                OutputFormat::Pdf => {
-                    let contents = tyx_converters::serialized_tyx_to_typst(&contents);
-                    typst_to_pdf(&file, &contents, PathBuf::from(dirname), vec![]).unwrap()
-                }
-            };
-            let file_extension = match format {
-                OutputFormat::Typst => ".typ",
-                OutputFormat::Pdf => ".pdf",
-            };
-
-            std::fs::write(String::from(file_base) + file_extension, result).unwrap();
+            should_exit = true;
+            let final_output_filename = output_filename
+                .clone()
+                .unwrap_or(String::from(file_base) + format.extension());
+            println!("Exported to {final_output_filename}");
+            std::fs::write(final_output_filename, format.export(contents, &file)).unwrap();
         }
+    }
+
+    if should_exit {
         return;
     }
+
+    let mut files: Vec<PathBuf> = Vec::new();
+    for maybe_file in args.files.iter() {
+        if let Ok(url) = url::Url::parse(&maybe_file) {
+            // handle `file://` path urls and skip other urls
+            match url.to_file_path() {
+                Ok(path) => {
+                    files.push(path);
+                }
+                Err(_) => {
+                    println!("warning: failed opening {url}");
+                }
+            }
+        } else {
+            files.push(PathBuf::from(maybe_file))
+        }
+    }
+
+    let opened_files = serde_json::to_string(
+        &files
+            .iter()
+            .map(|f| String::from(f.to_str().unwrap()))
+            .collect::<Vec<String>>(),
+    )
+    .unwrap();
+    let initialization_script = format!("window.openedFiles = {opened_files}");
 
     tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
@@ -475,40 +510,7 @@ pub fn run() {
             newfromtemplate,
             opensettingsdirectory
         ])
-        // Blocked on https://github.com/tauri-apps/wry/issues/451
-        // .on_menu_event(|handle, event| handle.emit(event.id().0.as_str(), ()).unwrap())
-        .setup(
-            #[allow(unused_variables)]
-            |app| {
-                #[cfg(any(windows, target_os = "linux"))]
-                {
-                    let mut files = Vec::new();
-
-                    // NOTICE: `args` may include URL protocol (`your-app-protocol://`)
-                    // or arguments (`--`) if your app supports them.
-                    // files may aslo be passed as `file://path/to/file`
-                    for maybe_file in std::env::args().skip(1) {
-                        // skip flags like -f or --flag
-                        if maybe_file.starts_with('-') {
-                            continue;
-                        }
-
-                        // handle `file://` path urls and skip other urls
-                        if let Ok(url) = url::Url::parse(&maybe_file) {
-                            if let Ok(path) = url.to_file_path() {
-                                files.push(path);
-                            }
-                        } else {
-                            files.push(PathBuf::from(maybe_file))
-                        }
-                    }
-
-                    handle_file_associations(app.handle().clone(), files);
-                }
-
-                Ok(())
-            },
-        )
+        .append_invoke_initialization_script(&initialization_script)
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
         .run(

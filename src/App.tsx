@@ -8,7 +8,7 @@ import { ModalsProvider } from "@mantine/modals"
 import { Notifications } from "@mantine/notifications"
 import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
-import { open } from "./backend"
+import "./backend"
 import DocumentTabs from "./components/DocumentTabs"
 import StatusBar from "./components/StatusBar"
 import WelcomeScreen from "./components/WelcomeScreen"
@@ -35,13 +35,6 @@ const App = () => {
     key: "Settings",
     defaultValue: {},
   })
-
-  // Open the double-clicked files
-  useEffect(() => {
-    for (const file of window.openedFiles ?? []) {
-      open(file)
-    }
-  }, [])
 
   // Update the i18n language from the user settings and update the document's direction.
   useEffect(() => {

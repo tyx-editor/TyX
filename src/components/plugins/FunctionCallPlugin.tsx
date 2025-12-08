@@ -25,9 +25,9 @@ import {
 import { useEffect, useMemo, useState } from "react"
 import { serialized_stringify_function } from "../../converters"
 import { getFunctions } from "../../functions"
-import { wasmInitialized } from "../../main"
 import { TyXValue } from "../../models"
 import { useSharedHistoryContext } from "../../resources/playground"
+import { state } from "../../state"
 import { backupEditorSelection, restoreEditorSelection } from "../../utilities"
 import TyXValueEditor from "../TyXValueEditor"
 import CurrentEditorPlugin from "./CurrentEditorPlugin"
@@ -203,7 +203,7 @@ export const FunctionCallEditor = ({
         }}
         onClick={() =>
           modals.open({
-            title: `Edit ${wasmInitialized ? serialized_stringify_function(name, JSON.stringify(positionParameters), JSON.stringify(namedParameters), false).replace("()", "") : ""}`,
+            title: `Edit ${state.wasmInitialized ? serialized_stringify_function(name, JSON.stringify(positionParameters), JSON.stringify(namedParameters), false).replace("()", "") : ""}`,
             children: (
               <FunctionCallEditModal
                 editor={editor}
@@ -216,7 +216,7 @@ export const FunctionCallEditor = ({
           })
         }
       >
-        {wasmInitialized
+        {state.wasmInitialized
           ? serialized_stringify_function(
               name,
               JSON.stringify(positionParameters),
