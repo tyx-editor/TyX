@@ -56,12 +56,14 @@ const WelcomeScreen = () => {
         <CommandButton leftSection={<IconPlus />} command="fileNew">
           {t("newEmptyDocument")}
         </CommandButton>
-        <CommandButton
-          leftSection={<IconFileTextSpark />}
-          command="fileNewFromTemplate"
-        >
-          {t("newFromTemplate")}
-        </CommandButton>
+        {!isWeb && (
+          <CommandButton
+            leftSection={<IconFileTextSpark />}
+            command="fileNewFromTemplate"
+          >
+            {t("newFromTemplate")}
+          </CommandButton>
+        )}
         <CommandButton leftSection={<IconFolderOpen />} command="fileOpen">
           {t("openDocument")}
         </CommandButton>

@@ -107,6 +107,9 @@ export const onSave = async () => {
 
 export const onOpen = (filename?: string | undefined, content?: string) => {
   if (!content) {
+    if (!filename) {
+      open()
+    }
     return
   }
 
