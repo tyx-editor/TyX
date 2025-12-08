@@ -63,7 +63,8 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.2",
     "vite": "^5.4.21",
-    "vite-plugin-static-copy": "^3.1.4"
+    "vite-plugin-static-copy": "^3.1.4",
+    "wasm-pack": "^0.13.1"
   },
   "prettier": {
     "semi": false

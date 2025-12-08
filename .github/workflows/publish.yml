@@ -69,6 +69,10 @@ jobs:
           wget https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20250213-2/linuxdeploy-x86_64.AppImage -O "$TAURI_TOOLKIT_PATH/linuxdeploy-x86_64.AppImage"
           chmod +x "$TAURI_TOOLKIT_PATH/linuxdeploy-x86_64.AppImage"
 
+      - name: Get current changelog
+        id: changelog
+        run: echo "changelog<<EOF" >> $GITHUB_OUTPUT && bun run scripts/get-current-changelog.ts >> $GITHUB_OUTPUT && echo "EOF" >> $GITHUB_OUTPUT
+
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -80,7 +84,7 @@ jobs:
         with:
           tagName: v__VERSION__
           releaseName: "TyX v__VERSION__"
-          releaseBody: "See the assets to download this version and install."
+          releaseBody: ${{ steps.changelog.outputs.changelog }}
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}

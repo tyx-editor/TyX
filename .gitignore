@@ -34,3 +34,5 @@ src-tauri/bin
 docs/_build
 __pycache__
 src/converters
+examples/*.typ
+examples/*.pdf

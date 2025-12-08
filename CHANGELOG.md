@@ -4,9 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.2.16] - 2025-12-08
 
 The settings, templates and extra fonts have moved to the [config directory](https://v2.tauri.app/reference/javascript/api/namespacepath/#configdir). You may need to move them after updating.
+
+### Added
+
+- There is a new CLI interface for TyX, which lets you compile documents without launching the UI itself.
+- There are new Rust bindings for the TyX schema.
+
+### Changed
+
+- The export is now done using a Rust backend (compiled to WebAssembly for the web version).
 
 ### Fixed
 
