@@ -186,13 +186,6 @@ export const FunctionCallEditor = ({
     )
   }, [editor])
 
-  console.log(
-    name,
-    JSON.stringify(positionParameters),
-    JSON.stringify(namedParameters),
-    false,
-  )
-
   return (
     <>
       <span

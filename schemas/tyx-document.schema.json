@@ -502,6 +502,36 @@
             }
           },
           "required": ["type"]
+        },
+        {
+          "description": "A node describing a tab character.",
+          "title": "TyXTabNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "tab"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": ["type", "text"]
+        },
+        {
+          "description": "A node describing highlighted code text.",
+          "title": "TyXCodeHighlightNode",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "code-highlight"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": ["type", "text"]
         }
       ]
     },

@@ -4,8 +4,9 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "predev": "bun run prebuild",
     "dev": "vite",
-    "dev:app": "tauri dev",
+    "dev:app": "bun run predev && tauri dev",
     "prebuild": "wasm-pack build crates/tyx-converters-wasm --target web --out-dir ../../src/converters",
     "build": "tsc && vite build",
     "preview": "vite preview",

@@ -411,13 +411,13 @@ pub fn run() {
         None => None,
     };
     for file in args.files.iter() {
-        let contents = std::fs::read_to_string(&file).unwrap();
+        let contents = std::fs::read_to_string(file).unwrap();
         if let Some(ref format) = args.export {
             let file_base = match file.strip_suffix(".tyx") {
                 Some(file) => file,
                 None => {
                     println!("warning: file {file} might not be a TyX document!");
-                    &file
+                    file
                 }
             };
             should_exit = true;
@@ -425,7 +425,7 @@ pub fn run() {
                 .clone()
                 .unwrap_or(String::from(file_base) + format.extension());
             println!("Exported to {final_output_filename}");
-            std::fs::write(final_output_filename, format.export(contents, &file)).unwrap();
+            std::fs::write(final_output_filename, format.export(contents, file)).unwrap();
         }
     }
 
@@ -435,7 +435,7 @@ pub fn run() {
 
     let mut files: Vec<PathBuf> = Vec::new();
     for maybe_file in args.files.iter() {
-        if let Ok(url) = url::Url::parse(&maybe_file) {
+        if let Ok(url) = url::Url::parse(maybe_file) {
             // handle `file://` path urls and skip other urls
             match url.to_file_path() {
                 Ok(path) => {

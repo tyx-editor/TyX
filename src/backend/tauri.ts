@@ -64,7 +64,6 @@ export const onPreview = async (open = false) => {
     showFailureMessage(e.message)
     return
   }
-  console.log(content)
   const result: string = await invoke("preview", {
     filename: document.filename ?? "",
     content,
@@ -127,17 +126,14 @@ export const onOpen = (
   }
   const document = z.safeParse(TyXDocument, JSON.parse(content))
   if (document.error) {
-    showFailureMessage(`Failed to open document: ${document.error.message}`)
+    const last = document.error.issues.at(-1)!
+    showFailureMessage(
+      `Failed to open document: invalid key at ${last.path.join(".")}: ${last.code}`,
+    )
     return
   }
 
   const parsedContent = document.data
-  if (parsedContent.version?.startsWith("0.1")) {
-    showFailureMessage(
-      `This TyX file is not compatible with this version of TyX!`,
-    )
-    return
-  }
 
   const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
   if (filename && !filename.endsWith(".tyx")) {

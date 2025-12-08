@@ -131,17 +131,20 @@ fn node_to_typst(root: &TyXNode) -> Option<String> {
             direction,
             ..
         }
-        | TyXNode::Quote {
-            children,
-            direction,
-            ..
-        }
         | TyXNode::Tablecell {
             children,
             direction,
             ..
         } => Some(apply_direction(
             &children_to_typst(children),
+            direction.clone().unwrap_or(TyXDirection(None)),
+        )),
+        TyXNode::Quote {
+            children,
+            direction,
+            ..
+        } => Some(apply_direction(
+            &format!("#quote(block: true)[{}]", children_to_typst(children)),
             direction.clone().unwrap_or(TyXDirection(None)),
         )),
         TyXNode::Paragraph {
@@ -156,6 +159,8 @@ fn node_to_typst(root: &TyXNode) -> Option<String> {
         TyXNode::Text { text, format, .. } => {
             Some(apply_text_format(typst_escape(text), text, *format))
         }
+        TyXNode::Tab { .. } => Some("\t".into()),
+        TyXNode::CodeHighlight { text, .. } => Some(typst_escape(text)),
         TyXNode::Math { typst, inline, .. } => {
             if inline.unwrap_or(false) {
                 Some(format!("${}$", typst.clone().unwrap_or_default()))
@@ -238,7 +243,7 @@ fn node_to_typst(root: &TyXNode) -> Option<String> {
         TyXNode::Tablerow { children, .. } => Some(
             children
                 .iter()
-                .map(|child| node_to_typst(child).unwrap_or_default())
+                .map(|child| format!("[{}]", node_to_typst(child).unwrap_or_default()))
                 .collect::<Vec<String>>()
                 .join(", "),
         ),

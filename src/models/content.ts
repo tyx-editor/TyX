@@ -124,6 +124,23 @@ export const TyXQuoteNode = z
   .meta({ title: "TyXQuoteNode" })
 export type TyXQuoteNode = z.infer<typeof TyXQuoteNode>
 
+export const TyXTabNode = z
+  .looseObject({
+    type: z.literal("tab"),
+    text: z.string(),
+  })
+  .describe("A node describing a tab character.")
+  .meta({ title: "TyXTabNode" })
+export type TyXTabNode = z.infer<typeof TyXTabNode>
+export const TyXCodeHighlightNode = z
+  .looseObject({
+    type: z.literal("code-highlight"),
+    text: z.string(),
+  })
+  .describe("A node describing highlighted code text.")
+  .meta({ title: "TyXCodeHighlightNode" })
+export type TyXCodeHighlightNode = z.infer<typeof TyXCodeHighlightNode>
+
 export const TyXCodeNode = z
   .looseObject({
     type: z.literal("code"),
@@ -267,6 +284,8 @@ export const TyXNode = z
     TyXLinkNode,
     TyXHeadingNode,
     TyXFunctionCallNode,
+    TyXTabNode,
+    TyXCodeHighlightNode,
   ])
   .describe("Some TyX node.")
   .meta({ id: "TyXNode" })

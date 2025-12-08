@@ -1156,6 +1156,42 @@ impl ::std::default::Default for TyXLength {
 ///          }
 ///        }
 ///      }
+///    },
+///    {
+///      "title": "TyXTabNode",
+///      "description": "A node describing a tab character.",
+///      "type": "object",
+///      "required": [
+///        "text",
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "tab"
+///        },
+///        "text": {
+///          "type": "string"
+///        }
+///      }
+///    },
+///    {
+///      "title": "TyXCodeHighlightNode",
+///      "description": "A node describing highlighted code text.",
+///      "type": "object",
+///      "required": [
+///        "text",
+///        "type"
+///      ],
+///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "code-highlight"
+///        },
+///        "text": {
+///          "type": "string"
+///        }
+///      }
 ///    }
 ///  ],
 ///  "id": "TyXNode"
@@ -1303,6 +1339,16 @@ A function call node.*/
         )]
         position_parameters: ::std::vec::Vec<TyXValue>,
     },
+    /**TyXTabNode
+
+A node describing a tab character.*/
+    #[serde(rename = "tab")]
+    Tab { text: ::std::string::String },
+    /**TyXCodeHighlightNode
+
+A node describing highlighted code text.*/
+    #[serde(rename = "code-highlight")]
+    CodeHighlight { text: ::std::string::String },
 }
 impl ::std::convert::From<&Self> for TyXNode {
     fn from(value: &TyXNode) -> Self {

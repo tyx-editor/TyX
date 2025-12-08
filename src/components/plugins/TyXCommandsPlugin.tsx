@@ -24,7 +24,7 @@ import {
   formatHeading,
   formatQuote,
 } from "../../resources/playground"
-import { showSuccessMessage } from "../../utilities"
+import { showFailureMessage, showSuccessMessage } from "../../utilities"
 import { getLocalStorage } from "../../utilities/hooks"
 import DocumentSettingsModal from "../DocumentSettingsModal"
 import SettingsModal from "../SettingsModal"
@@ -152,9 +152,13 @@ const TyXCommandsPlugin = () => {
               ".tyx",
               ".typ",
             )
-            save(filename, serialized_tyx_to_typst(JSON.stringify(doc))).then(
-              () => showSuccessMessage(`Document exported to ${filename}.`),
-            )
+            try {
+              save(filename, serialized_tyx_to_typst(JSON.stringify(doc))).then(
+                () => showSuccessMessage(`Document exported to ${filename}.`),
+              )
+            } catch {
+              showFailureMessage("Document export failed!")
+            }
           }
           return true
         },
