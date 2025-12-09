@@ -1,5 +1,4 @@
-Document Settings
-=================
+# Document Settings
 
 TyX document settings are a nice way to edit common Typst document options as well as compiler options.
 

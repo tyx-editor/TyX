@@ -1,0 +1,31 @@
+site_name: TyX
+theme:
+  name: readthedocs
+  highlightjs: true
+  logo: _static/icon.png
+site_favicon: _static/icon.ico
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: sphinx
+  - mkdocs-video:
+      is_video: True
+      css_style:
+        width: "100%"
+        height: "auto"
+markdown_extensions:
+  - markdown_include.include:
+      base_path: docs
+  - admonition
+nav:
+  - Introduction:
+      - getting-started.md
+      - settings.md
+      - document-settings.md
+  - API Docs:
+      - file-format.md
+      - commands.md
+      - CHANGELOG.md
