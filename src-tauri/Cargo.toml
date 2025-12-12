@@ -31,6 +31,7 @@ typst-pdf.workspace = true
 tyx-schema.workspace = true
 tyx-converters.workspace = true
 tyx-version.workspace = true
+directories = "6.0.0"
 typstyle-core = "0.13.14"
 url = "2.5.4"
 open = "5"

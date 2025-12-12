@@ -42,6 +42,7 @@
     "save": "שמירה",
     "success": "הצלחה",
     "failed": "כישלון",
-    "openSettingsDirectory": "פתיחת תיקיית הגדרות"
+    "openSettingsDirectory": "פתיחת תיקיית הגדרות",
+    "noOpenDocument": "אין מסמך פתוח!"
   }
 }

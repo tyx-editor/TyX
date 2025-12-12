@@ -23,9 +23,7 @@ markdown_extensions:
 nav:
   - Introduction:
       - getting-started.md
-      - settings.md
-      - document-settings.md
+      - configuration.md
   - API Docs:
-      - file-format.md
       - commands.md
       - CHANGELOG.md

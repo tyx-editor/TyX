@@ -11,6 +11,8 @@ It is designed to create an easy-to-use, WYSIWYM interface inspired by LyX.
     Keep this in mind!
     **Contributions are encouraged and welcomed!**
 
+For installation and more details using TyX, see the [Getting Started](./getting-started.md) section!
+
 ## Features
 
 ### Math Editor

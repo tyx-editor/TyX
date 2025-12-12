@@ -42,6 +42,7 @@
     "save": "Save",
     "success": "Success",
     "failed": "Failed",
-    "openSettingsDirectory": "Open Settings Directory"
+    "openSettingsDirectory": "Open Settings Directory",
+    "noOpenDocument": "There is no open document!"
   }
 }

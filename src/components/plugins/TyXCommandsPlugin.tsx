@@ -209,7 +209,7 @@ const TyXCommandsPlugin = () => {
           const currentDocument = getLocalStorage<number>("Current Document")
           const doc = openDocuments[currentDocument]
           if (!doc) {
-            // TODO: show error
+            showFailureMessage(t("noOpenDocument"))
             return true
           }
 
