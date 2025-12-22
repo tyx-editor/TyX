@@ -17,7 +17,7 @@
         "@tauri-apps/plugin-updater": "~2.7.1",
         "i18next": "^25.6.0",
         "lexical": "^0.38.2",
-        "mathlive": "^0.106.0",
+        "mathlive": "^0.108.2",
         "mousetrap": "^1.6.5",
         "mousetrap-global-bind": "^1.1.0",
         "mousetrap-record": "^1.0.1",
@@ -108,7 +108,7 @@
 
     "@colors/colors": ["@colors/colors@1.6.0", "", {}, "sha512-Ir+AOibqzrIsL6ajt3Rz3LskB7OiMVHqltZmspbW/TJuTVuyOMirVqAkjfY6JISiLHgyNqicAC8AyHHGzNd/dA=="],
 
-    "@cortex-js/compute-engine": ["@cortex-js/compute-engine@0.28.0", "", { "dependencies": { "complex-esm": "^2.1.1-esm1", "decimal.js": "^10.4.3" } }, "sha512-kGs74P4KVNLSqu+iVhLSAvodScZdVGoZI2kOsUjnBEFCFjlPJ1Nj5TpBz/4nwPT+viguB+g7VseXsmcxWRx23Q=="],
+    "@cortex-js/compute-engine": ["@cortex-js/compute-engine@0.30.2", "", { "dependencies": { "complex-esm": "^2.1.1-esm1", "decimal.js": "^10.6.0" } }, "sha512-Zx+iisk9WWdbxjm8EYsneIBszvjfUs7BHNwf1jBtSINIgfWGpHrTTq9vW0J59iGCFt6bOFxbmWyxNMRSmksHMA=="],
 
     "@cspotcode/source-map-support": ["@cspotcode/source-map-support@0.8.1", "", { "dependencies": { "@jridgewell/trace-mapping": "0.3.9" } }, "sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw=="],
 
@@ -1724,7 +1724,7 @@
 
     "math-intrinsics": ["math-intrinsics@1.1.0", "", {}, "sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g=="],
 
-    "mathlive": ["mathlive@0.106.0", "", { "dependencies": { "@cortex-js/compute-engine": "0.28.0" } }, "sha512-TfoX+A9SoHlWzJkcpMadN6ZrUpK7okGLAf4qXi8N7L6zBj5dvQICwGuCC5PP8oIU5ffxGeGQDoZqAj7UC155JA=="],
+    "mathlive": ["mathlive@0.108.2", "", { "dependencies": { "@cortex-js/compute-engine": "0.30.2" } }, "sha512-GIZkfprGTxrbHckOvwo92ZmOOxdD018BHDzlrEwYUU+pzR5KabhqI1s43lxe/vqXdF5RLiQKgDcuk5jxEjhkYg=="],
 
     "maxstache": ["maxstache@1.0.7", "", {}, "sha512-53ZBxHrZM+W//5AcRVewiLpDunHnucfdzZUGz54Fnvo4tE+J3p8EL66kBrs2UhBXvYKTWckWYYWBqJqoTcenqg=="],
 

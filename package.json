@@ -32,7 +32,7 @@
     "@tauri-apps/plugin-updater": "~2.7.1",
     "i18next": "^25.6.0",
     "lexical": "^0.38.2",
-    "mathlive": "^0.106.0",
+    "mathlive": "^0.108.2",
     "mousetrap": "^1.6.5",
     "mousetrap-global-bind": "^1.1.0",
     "mousetrap-record": "^1.0.1",

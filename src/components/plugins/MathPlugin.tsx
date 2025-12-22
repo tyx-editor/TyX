@@ -102,14 +102,18 @@ export const MathEditor = ({
   useEffect(() => {
     const mf = mathfieldRef.current
     if (mf) {
-      mf.mathVirtualKeyboardPolicy = "manual"
-      mf.keybindings = mf.keybindings.filter(
-        (keybinding) =>
-          !(
-            Array.isArray(keybinding.command) &&
-            keybinding.command[0] === "insert"
-          ),
-      )
+      console.log(mf.keybindings)
+      mf.keybindings = [
+        ...mf.keybindings.filter(
+          (keybinding) =>
+            !(
+              Array.isArray(keybinding.command) &&
+              keybinding.command[0] === "insert"
+            ),
+        ),
+        // TODO: why is this needed?
+        { key: "_", command: ["insert", "_{#0}"] },
+      ]
 
       if (mf.isConnected && !mf.isRegistered) {
         mf.isRegistered = true
