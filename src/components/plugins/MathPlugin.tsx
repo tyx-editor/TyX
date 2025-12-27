@@ -102,7 +102,6 @@ export const MathEditor = ({
   useEffect(() => {
     const mf = mathfieldRef.current
     if (mf) {
-      console.log(mf.keybindings)
       mf.keybindings = [
         ...mf.keybindings.filter(
           (keybinding) =>
@@ -143,13 +142,7 @@ export const MathEditor = ({
             e.detail.direction === "forward" ||
             e.detail.direction === "downward"
 
-          let element: HTMLElement | null = mf
-          while (element && !element.dir) {
-            element = element.parentElement
-          }
-          const dir = element?.dir ?? "ltr"
-
-          if (dir === "rtl") {
+          if (window.getComputedStyle(mf).direction === "rtl") {
             isForward = !isForward
           }
 
