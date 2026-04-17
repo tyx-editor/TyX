@@ -41,12 +41,9 @@ pub mod error {
 ///  "description": "TyX specification for a Typst function.",
 ///  "type": "object",
 ///  "properties": {
-///    "positional": {
-///      "description": "Positional arguments to the function.",
-///      "type": "array",
-///      "items": {
-///        "$ref": "#/definitions/ParameterDescription"
-///      }
+///    "inline": {
+///      "description": "Whether TyX should display the function as inline.",
+///      "type": "boolean"
 ///    },
 ///    "named": {
 ///      "description": "Named arguments to the function.",
@@ -58,32 +55,35 @@ pub mod error {
 ///          "type"
 ///        ],
 ///        "properties": {
-///          "type": {
-///            "description": "The TyX type of this parameter.",
+///          "documentation": {
+///            "description": "Optional documentation for this parameter to show on hover.",
+///            "type": "string"
+///          },
+///          "label": {
+///            "description": "Optional label (usually name) of this parameter.",
+///            "type": "string"
+///          },
+///          "name": {
 ///            "type": "string"
 ///          },
 ///          "required": {
 ///            "description": "Whether this parameter is required.",
 ///            "type": "boolean"
 ///          },
-///          "label": {
-///            "description": "Optional label (usually name) of this parameter.",
-///            "type": "string"
-///          },
-///          "documentation": {
-///            "description": "Optional documentation for this parameter to show on hover.",
-///            "type": "string"
-///          },
-///          "name": {
+///          "type": {
+///            "description": "The TyX type of this parameter.",
 ///            "type": "string"
 ///          }
 ///        },
 ///        "additionalProperties": false
 ///      }
 ///    },
-///    "inline": {
-///      "description": "Whether TyX should display the function as inline.",
-///      "type": "boolean"
+///    "positional": {
+///      "description": "Positional arguments to the function.",
+///      "type": "array",
+///      "items": {
+///        "$ref": "#/definitions/ParameterDescription"
+///      }
 ///    }
 ///  },
 ///  "additionalProperties": false,
@@ -130,23 +130,23 @@ impl ::std::default::Default for FunctionDefinition {
 ///    "type"
 ///  ],
 ///  "properties": {
-///    "type": {
-///      "description": "The TyX type of this parameter.",
+///    "documentation": {
+///      "description": "Optional documentation for this parameter to show on hover.",
+///      "type": "string"
+///    },
+///    "label": {
+///      "description": "Optional label (usually name) of this parameter.",
+///      "type": "string"
+///    },
+///    "name": {
 ///      "type": "string"
 ///    },
 ///    "required": {
 ///      "description": "Whether this parameter is required.",
 ///      "type": "boolean"
 ///    },
-///    "label": {
-///      "description": "Optional label (usually name) of this parameter.",
-///      "type": "string"
-///    },
-///    "documentation": {
-///      "description": "Optional documentation for this parameter to show on hover.",
-///      "type": "string"
-///    },
-///    "name": {
+///    "type": {
+///      "description": "The TyX type of this parameter.",
 ///      "type": "string"
 ///    }
 ///  },
@@ -188,20 +188,20 @@ impl ::std::convert::From<&FunctionDefinitionNamedItem> for FunctionDefinitionNa
 ///    "type"
 ///  ],
 ///  "properties": {
-///    "type": {
-///      "description": "The TyX type of this parameter.",
+///    "documentation": {
+///      "description": "Optional documentation for this parameter to show on hover.",
+///      "type": "string"
+///    },
+///    "label": {
+///      "description": "Optional label (usually name) of this parameter.",
 ///      "type": "string"
 ///    },
 ///    "required": {
 ///      "description": "Whether this parameter is required.",
 ///      "type": "boolean"
 ///    },
-///    "label": {
-///      "description": "Optional label (usually name) of this parameter.",
-///      "type": "string"
-///    },
-///    "documentation": {
-///      "description": "Optional documentation for this parameter to show on hover.",
+///    "type": {
+///      "description": "The TyX type of this parameter.",
 ///      "type": "string"
 ///    }
 ///  },
@@ -377,18 +377,6 @@ impl ::std::convert::TryFrom<::std::string::String> for TyXDirectionValue {
 ///    "$schema": {
 ///      "type": "string"
 ///    },
-///    "version": {
-///      "description": "The version of TyX in which the document was created.",
-///      "type": "string"
-///    },
-///    "preamble": {
-///      "description": "Raw Typst code to insert before the content.",
-///      "type": "string"
-///    },
-///    "filename": {
-///      "description": "The filename of the document, unused.",
-///      "type": "string"
-///    },
 ///    "content": {
 ///      "allOf": [
 ///        {
@@ -400,6 +388,14 @@ impl ::std::convert::TryFrom<::std::string::String> for TyXDirectionValue {
 ///      "description": "Whether the document has been modified since loading, unused.",
 ///      "type": "boolean"
 ///    },
+///    "filename": {
+///      "description": "The filename of the document, unused.",
+///      "type": "string"
+///    },
+///    "preamble": {
+///      "description": "Raw Typst code to insert before the content.",
+///      "type": "string"
+///    },
 ///    "settings": {
 ///      "description": "The document's settings.",
 ///      "allOf": [
@@ -407,6 +403,10 @@ impl ::std::convert::TryFrom<::std::string::String> for TyXDirectionValue {
 ///          "$ref": "#/definitions/TyXDocumentSettings"
 ///        }
 ///      ]
+///    },
+///    "version": {
+///      "description": "The version of TyX in which the document was created.",
+///      "type": "string"
 ///    }
 ///  },
 ///  "additionalProperties": false,
@@ -485,9 +485,13 @@ impl ::std::convert::From<&TyXDocumentContent> for TyXDocumentContent {
 ///  "description": "An object wrapping some common Typst document configuration options.",
 ///  "type": "object",
 ///  "properties": {
-///    "root": {
-///      "description": "The root directory for the Typst compiler.",
-///      "type": "string"
+///    "columns": {
+///      "description": "The amount of columns in the document.",
+///      "type": "number"
+///    },
+///    "flipped": {
+///      "description": "Whether the document's page is flipped.",
+///      "type": "boolean"
 ///    },
 ///    "fontPaths": {
 ///      "description": "Additional font paths for the Typst compiler.",
@@ -495,34 +499,6 @@ impl ::std::convert::From<&TyXDocumentContent> for TyXDocumentContent {
 ///      "items": {
 ///        "type": "string"
 ///      }
-///    },
-///    "language": {
-///      "description": "The language of the document.",
-///      "type": "string"
-///    },
-///    "paper": {
-///      "description": "The paper size of the document.",
-///      "type": "string"
-///    },
-///    "flipped": {
-///      "description": "Whether the document's page is flipped.",
-///      "type": "boolean"
-///    },
-///    "justified": {
-///      "description": "Whether the document's text is justified.",
-///      "type": "boolean"
-///    },
-///    "indentation": {
-///      "description": "Optional indentation for paragraphs in the document.",
-///      "allOf": [
-///        {
-///          "$ref": "#/definitions/TyXLength"
-///        }
-///      ]
-///    },
-///    "columns": {
-///      "description": "The amount of columns in the document.",
-///      "type": "number"
 ///    },
 ///    "functions": {
 ///      "description": "Additional TyX function definitions.",
@@ -533,6 +509,30 @@ impl ::std::convert::From<&TyXDocumentContent> for TyXDocumentContent {
 ///      "propertyNames": {
 ///        "type": "string"
 ///      }
+///    },
+///    "indentation": {
+///      "description": "Optional indentation for paragraphs in the document.",
+///      "allOf": [
+///        {
+///          "$ref": "#/definitions/TyXLength"
+///        }
+///      ]
+///    },
+///    "justified": {
+///      "description": "Whether the document's text is justified.",
+///      "type": "boolean"
+///    },
+///    "language": {
+///      "description": "The language of the document.",
+///      "type": "string"
+///    },
+///    "paper": {
+///      "description": "The paper size of the document.",
+///      "type": "string"
+///    },
+///    "root": {
+///      "description": "The root directory for the Typst compiler.",
+///      "type": "string"
 ///    }
 ///  },
 ///  "additionalProperties": false,
@@ -660,10 +660,6 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
-///        "type": {
-///          "type": "string",
-///          "const": "root"
-///        },
 ///        "children": {
 ///          "type": "array",
 ///          "items": {
@@ -672,6 +668,10 @@ impl ::std::default::Default for TyXLength {
 ///        },
 ///        "direction": {
 ///          "$ref": "#/definitions/TyXDirection"
+///        },
+///        "type": {
+///          "type": "string",
+///          "const": "root"
 ///        }
 ///      }
 ///    },
@@ -685,15 +685,14 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
-///        "type": {
-///          "type": "string",
-///          "const": "paragraph"
-///        },
 ///        "children": {
 ///          "type": "array",
 ///          "items": {
 ///            "$ref": "#/definitions/TyXNode"
 ///          }
+///        },
+///        "direction": {
+///          "$ref": "#/definitions/TyXDirection"
 ///        },
 ///        "format": {
 ///          "anyOf": [
@@ -727,8 +726,9 @@ impl ::std::default::Default for TyXLength {
 ///            }
 ///          ]
 ///        },
-///        "direction": {
-///          "$ref": "#/definitions/TyXDirection"
+///        "type": {
+///          "type": "string",
+///          "const": "paragraph"
 ///        }
 ///      }
 ///    },
@@ -742,17 +742,17 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
-///        "type": {
-///          "type": "string",
-///          "const": "text"
-///        },
-///        "text": {
-///          "type": "string"
-///        },
 ///        "format": {
 ///          "type": "integer",
 ///          "maximum": 9007199254740991.0,
 ///          "minimum": -9007199254740991.0
+///        },
+///        "text": {
+///          "type": "string"
+///        },
+///        "type": {
+///          "type": "string",
+///          "const": "text"
 ///        }
 ///      }
 ///    },
@@ -764,18 +764,18 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
+///        "formula": {
+///          "type": "string"
+///        },
+///        "inline": {
+///          "type": "boolean"
+///        },
 ///        "type": {
 ///          "type": "string",
 ///          "const": "math"
 ///        },
 ///        "typst": {
 ///          "type": "string"
-///        },
-///        "formula": {
-///          "type": "string"
-///        },
-///        "inline": {
-///          "type": "boolean"
 ///        }
 ///      }
 ///    },
@@ -789,6 +789,12 @@ impl ::std::default::Default for TyXLength {
 ///        "value"
 ///      ],
 ///      "properties": {
+///        "children": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXNode"
+///          }
+///        },
 ///        "type": {
 ///          "type": "string",
 ///          "const": "listitem"
@@ -797,12 +803,6 @@ impl ::std::default::Default for TyXLength {
 ///          "type": "integer",
 ///          "maximum": 9007199254740991.0,
 ///          "minimum": -9007199254740991.0
-///        },
-///        "children": {
-///          "type": "array",
-///          "items": {
-///            "$ref": "#/definitions/TyXNode"
-///          }
 ///        }
 ///      }
 ///    },
@@ -817,15 +817,14 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
-///        "type": {
-///          "type": "string",
-///          "const": "list"
-///        },
 ///        "children": {
 ///          "type": "array",
 ///          "items": {
 ///            "$ref": "#/definitions/TyXNode"
 ///          }
+///        },
+///        "direction": {
+///          "$ref": "#/definitions/TyXDirection"
 ///        },
 ///        "listType": {
 ///          "anyOf": [
@@ -848,8 +847,9 @@ impl ::std::default::Default for TyXLength {
 ///          "maximum": 9007199254740991.0,
 ///          "minimum": -9007199254740991.0
 ///        },
-///        "direction": {
-///          "$ref": "#/definitions/TyXDirection"
+///        "type": {
+///          "type": "string",
+///          "const": "list"
 ///        }
 ///      }
 ///    },
@@ -862,10 +862,6 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
-///        "type": {
-///          "type": "string",
-///          "const": "code"
-///        },
 ///        "children": {
 ///          "type": "array",
 ///          "items": {
@@ -874,6 +870,10 @@ impl ::std::default::Default for TyXLength {
 ///        },
 ///        "language": {
 ///          "type": "string"
+///        },
+///        "type": {
+///          "type": "string",
+///          "const": "code"
 ///        }
 ///      }
 ///    },
@@ -886,10 +886,6 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
-///        "type": {
-///          "type": "string",
-///          "const": "quote"
-///        },
 ///        "children": {
 ///          "type": "array",
 ///          "items": {
@@ -898,6 +894,10 @@ impl ::std::default::Default for TyXLength {
 ///        },
 ///        "direction": {
 ///          "$ref": "#/definitions/TyXDirection"
+///        },
+///        "type": {
+///          "type": "string",
+///          "const": "quote"
 ///        }
 ///      }
 ///    },
@@ -910,10 +910,6 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
-///        "type": {
-///          "type": "string",
-///          "const": "table"
-///        },
 ///        "children": {
 ///          "type": "array",
 ///          "items": {
@@ -922,6 +918,10 @@ impl ::std::default::Default for TyXLength {
 ///        },
 ///        "direction": {
 ///          "$ref": "#/definitions/TyXDirection"
+///        },
+///        "type": {
+///          "type": "string",
+///          "const": "table"
 ///        }
 ///      }
 ///    },
@@ -934,15 +934,15 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
-///        "type": {
-///          "type": "string",
-///          "const": "tablerow"
-///        },
 ///        "children": {
 ///          "type": "array",
 ///          "items": {
 ///            "$ref": "#/definitions/TyXNode"
 ///          }
+///        },
+///        "type": {
+///          "type": "string",
+///          "const": "tablerow"
 ///        }
 ///      }
 ///    },
@@ -955,10 +955,6 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
-///        "type": {
-///          "type": "string",
-///          "const": "tablecell"
-///        },
 ///        "children": {
 ///          "type": "array",
 ///          "items": {
@@ -967,6 +963,10 @@ impl ::std::default::Default for TyXLength {
 ///        },
 ///        "direction": {
 ///          "$ref": "#/definitions/TyXDirection"
+///        },
+///        "type": {
+///          "type": "string",
+///          "const": "tablecell"
 ///        }
 ///      }
 ///    },
@@ -1007,10 +1007,6 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
-///        "type": {
-///          "type": "string",
-///          "const": "typstcode"
-///        },
 ///        "text": {
 ///          "type": "object",
 ///          "required": [
@@ -1029,6 +1025,10 @@ impl ::std::default::Default for TyXLength {
 ///              }
 ///            }
 ///          }
+///        },
+///        "type": {
+///          "type": "string",
+///          "const": "typstcode"
 ///        }
 ///      }
 ///    },
@@ -1041,12 +1041,12 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
+///        "src": {
+///          "type": "string"
+///        },
 ///        "type": {
 ///          "type": "string",
 ///          "const": "image"
-///        },
-///        "src": {
-///          "type": "string"
 ///        }
 ///      }
 ///    },
@@ -1060,15 +1060,15 @@ impl ::std::default::Default for TyXLength {
 ///        "url"
 ///      ],
 ///      "properties": {
-///        "type": {
-///          "type": "string",
-///          "const": "link"
-///        },
 ///        "children": {
 ///          "type": "array",
 ///          "items": {
 ///            "$ref": "#/definitions/TyXNode"
 ///          }
+///        },
+///        "type": {
+///          "type": "string",
+///          "const": "link"
 ///        },
 ///        "url": {
 ///          "type": "string"
@@ -1085,9 +1085,11 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
-///        "type": {
-///          "type": "string",
-///          "const": "heading"
+///        "children": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXNode"
+///          }
 ///        },
 ///        "tag": {
 ///          "anyOf": [
@@ -1117,11 +1119,9 @@ impl ::std::default::Default for TyXLength {
 ///            }
 ///          ]
 ///        },
-///        "children": {
-///          "type": "array",
-///          "items": {
-///            "$ref": "#/definitions/TyXNode"
-///          }
+///        "type": {
+///          "type": "string",
+///          "const": "heading"
 ///        }
 ///      }
 ///    },
@@ -1133,18 +1133,8 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
-///        "type": {
-///          "type": "string",
-///          "const": "functioncall"
-///        },
 ///        "name": {
 ///          "type": "string"
-///        },
-///        "positionParameters": {
-///          "type": "array",
-///          "items": {
-///            "$ref": "#/definitions/TyXValue"
-///          }
 ///        },
 ///        "namedParameters": {
 ///          "type": "object",
@@ -1154,6 +1144,16 @@ impl ::std::default::Default for TyXLength {
 ///          "propertyNames": {
 ///            "type": "string"
 ///          }
+///        },
+///        "positionParameters": {
+///          "type": "array",
+///          "items": {
+///            "$ref": "#/definitions/TyXValue"
+///          }
+///        },
+///        "type": {
+///          "type": "string",
+///          "const": "functioncall"
 ///        }
 ///      }
 ///    },
@@ -1166,12 +1166,12 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
+///        "text": {
+///          "type": "string"
+///        },
 ///        "type": {
 ///          "type": "string",
 ///          "const": "tab"
-///        },
-///        "text": {
-///          "type": "string"
 ///        }
 ///      }
 ///    },
@@ -1184,12 +1184,12 @@ impl ::std::default::Default for TyXLength {
 ///        "type"
 ///      ],
 ///      "properties": {
+///        "text": {
+///          "type": "string"
+///        },
 ///        "type": {
 ///          "type": "string",
 ///          "const": "code-highlight"
-///        },
-///        "text": {
-///          "type": "string"
 ///        }
 ///      }
 ///    }
@@ -1768,24 +1768,21 @@ impl ::std::convert::From<&TyXNodeTextEditorState> for TyXNodeTextEditorState {
 ///    "$schema": {
 ///      "type": "string"
 ///    },
-///    "language": {
-///      "description": "The UI Language for the app.",
-///      "type": "string"
+///    "autoStartServer": {
+///      "description": "Whether to automatically start a server that updates the PDF when the document changes.",
+///      "type": "boolean"
 ///    },
-///    "keyboardShortcuts": {
-///      "description": "An array of pairs of [shortcut, command] of keyboard shortcuts.",
-///      "type": "array",
-///      "items": {
-///        "type": "array",
-///        "items": {
-///          "type": "string"
-///        }
-///      }
+///    "format": {
+///      "description": "Whether to format the output Typst documents.",
+///      "type": "boolean"
 ///    },
-///    "unbindKeyboardShortcuts": {
-///      "description": "An array of default shortcuts to unbind, e.g. \"mod+b\"",
-///      "type": "array",
-///      "items": {
+///    "functions": {
+///      "description": "Additional TyX function definitions.",
+///      "type": "object",
+///      "additionalProperties": {
+///        "$ref": "#/definitions/FunctionDefinition"
+///      },
+///      "propertyNames": {
 ///        "type": "string"
 ///      }
 ///    },
@@ -1800,6 +1797,20 @@ impl ::std::convert::From<&TyXNodeTextEditorState> for TyXNodeTextEditorState {
 ///        }
 ///      ]
 ///    },
+///    "keyboardShortcuts": {
+///      "description": "An array of pairs of [shortcut, command] of keyboard shortcuts.",
+///      "type": "array",
+///      "items": {
+///        "type": "array",
+///        "items": {
+///          "type": "string"
+///        }
+///      }
+///    },
+///    "language": {
+///      "description": "The UI Language for the app.",
+///      "type": "string"
+///    },
 ///    "mathInlineShortcuts": {
 ///      "description": "An array of pairs of [shortcut, command] of LaTeX inline math replacements.",
 ///      "type": "array",
@@ -1810,25 +1821,14 @@ impl ::std::convert::From<&TyXNodeTextEditorState> for TyXNodeTextEditorState {
 ///        }
 ///      }
 ///    },
-///    "format": {
-///      "description": "Whether to format the output Typst documents.",
-///      "type": "boolean"
-///    },
-///    "autoStartServer": {
-///      "description": "Whether to automatically start a server that updates the PDF when the document changes.",
-///      "type": "boolean"
-///    },
 ///    "serverDebounce": {
 ///      "description": "The amount in milliseconds to debounce before updating the PDF.",
 ///      "type": "number"
 ///    },
-///    "functions": {
-///      "description": "Additional TyX function definitions.",
-///      "type": "object",
-///      "additionalProperties": {
-///        "$ref": "#/definitions/FunctionDefinition"
-///      },
-///      "propertyNames": {
+///    "unbindKeyboardShortcuts": {
+///      "description": "An array of default shortcuts to unbind, e.g. \"mod+b\"",
+///      "type": "array",
+///      "items": {
 ///        "type": "string"
 ///      }
 ///    }
@@ -1938,6 +1938,10 @@ impl ::std::default::Default for TyXSettings {
 ///        "type"
 ///      ],
 ///      "properties": {
+///        "type": {
+///          "type": "string",
+///          "const": "length"
+///        },
 ///        "unit": {
 ///          "description": "The TyX length unit, one of 'pt', 'mm', 'cm', 'in', 'em', 'fr', '%'.",
 ///          "type": "string"
@@ -1945,10 +1949,6 @@ impl ::std::default::Default for TyXSettings {
 ///        "value": {
 ///          "description": "The length numeric value.",
 ///          "type": "string"
-///        },
-///        "type": {
-///          "type": "string",
-///          "const": "length"
 ///        }
 ///      },
 ///      "additionalProperties": false

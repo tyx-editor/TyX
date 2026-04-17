@@ -1,5 +1,5 @@
 // Utilities from Lexical Playground.
-import { $createCodeNode, $isCodeNode } from "@lexical/code"
+import { $createCodeNode, $isCodeNode } from "@lexical/code-core"
 import { HistoryState } from "@lexical/react/LexicalHistoryPlugin"
 import {
   $createHeadingNode,

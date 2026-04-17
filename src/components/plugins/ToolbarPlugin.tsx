@@ -1,4 +1,4 @@
-import { $isCodeNode } from "@lexical/code"
+import { $isCodeNode } from "@lexical/code-core"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { $findTableNode } from "@lexical/table"
 import { mergeRegister } from "@lexical/utils"

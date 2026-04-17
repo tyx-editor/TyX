@@ -1,4 +1,4 @@
-import { CodeHighlightNode, CodeNode } from "@lexical/code"
+import { CodeHighlightNode, CodeNode } from "@lexical/code-core"
 import { LinkNode } from "@lexical/link"
 import { ListItemNode, ListNode } from "@lexical/list"
 import { InitialConfigType } from "@lexical/react/LexicalComposer"

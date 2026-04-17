@@ -2,7 +2,7 @@
  * @file A utility file containing all serialized item types.
  */
 
-import { SerializedCodeNode } from "@lexical/code"
+import { SerializedCodeNode } from "@lexical/code-core"
 import { SerializedLinkNode } from "@lexical/link"
 import { SerializedListItemNode, SerializedListNode } from "@lexical/list"
 import { SerializedHorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode"
