@@ -36,3 +36,4 @@ __pycache__
 src/converters
 examples/*.typ
 examples/*.pdf
+.claude
