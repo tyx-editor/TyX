@@ -89,7 +89,9 @@ const DocumentTabs = () => {
               <>
                 <p>This document appears to be corrupted!</p>
                 <pre>
-                  <code>{error instanceof Error ? error.message : String(error)}</code>
+                  <code>
+                    {error instanceof Error ? error.message : String(error)}
+                  </code>
                 </pre>
                 {/* Invisible stub editor for TyX's commands. */}
                 <LexicalComposer initialConfig={initialConfig}>

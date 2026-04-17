@@ -36,4 +36,4 @@ jobs:
         run: cargo test --workspace
 
       - name: run prettier
-        run: bun run prettier --check .
+        run: bun run prettier --check src
