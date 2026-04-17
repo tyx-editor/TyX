@@ -1,4 +1,3 @@
-//! Automatically generated from Tauri configuration
+//! Version constant for TyX, generated from Tauri configuration.
 
-///The version of TyX
-pub const VERSION: &str = "0.2.16";
+include!(concat!(env!("OUT_DIR"), "/version.rs"));
