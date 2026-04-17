@@ -1,0 +1,33 @@
+---
+source: crates/tyx-converters/src/tests.rs
+expression: conv(world)
+input_file: crates/tyx-converters/src/fixtures/integration/math.typ
+---
+{
+ "root": {
+  "type": "root",
+  "children": [
+   {
+    "type": "paragraph",
+    "children": [
+     {
+      "type": "text",
+      "format": 0,
+      "text": "Inline"
+     },
+     {
+      "type": "text",
+      "format": 0,
+      "text": ":"
+     }
+    ],
+    "format": ""
+   },
+   {
+    "type": "text",
+    "format": 0,
+    "text": ""
+   }
+  ]
+ }
+}

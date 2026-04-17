@@ -428,3 +428,113 @@ pub fn serialized_stringify_function(
         include_content,
     )
 }
+
+#[cfg(test)]
+mod tests {
+    use std::collections::HashMap;
+
+    use tyx_schema::TyXValue;
+
+    use super::*;
+
+    // --- tyx_value_to_typst ---
+
+    #[test]
+    fn test_length_with_unit_and_value() {
+        let result = tyx_value_to_typst(TyXValue::Length {
+            unit: Some("em".into()),
+            value: Some("1".into()),
+        });
+        assert_eq!(result, Some("1em".into()));
+    }
+
+    #[test]
+    fn test_length_with_no_unit_returns_none_string() {
+        let result = tyx_value_to_typst(TyXValue::Length {
+            unit: None,
+            value: Some("5".into()),
+        });
+        assert_eq!(result, Some("none".into()));
+    }
+
+    #[test]
+    fn test_length_with_no_value_and_unit() {
+        let result = tyx_value_to_typst(TyXValue::Length {
+            unit: Some("pt".into()),
+            value: None,
+        });
+        assert_eq!(result, Some("pt".into()));
+    }
+
+    #[test]
+    fn test_boolean_true() {
+        let result = tyx_value_to_typst(TyXValue::Boolean { value: Some(true) });
+        assert_eq!(result, Some("true".into()));
+    }
+
+    #[test]
+    fn test_boolean_false() {
+        let result = tyx_value_to_typst(TyXValue::Boolean { value: Some(false) });
+        assert_eq!(result, Some("false".into()));
+    }
+
+    #[test]
+    fn test_boolean_none_returns_none() {
+        let result = tyx_value_to_typst(TyXValue::Boolean { value: None });
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn test_content_none_returns_none() {
+        let result = tyx_value_to_typst(TyXValue::Content { value: None });
+        assert!(result.is_none());
+    }
+
+    // --- stringify_function ---
+
+    #[test]
+    fn test_stringify_function_no_params() {
+        let result = stringify_function(&Some("pagebreak".into()), &vec![], &HashMap::new(), true);
+        assert_eq!(result, "pagebreak()");
+    }
+
+    #[test]
+    fn test_stringify_function_positional_length() {
+        let result = stringify_function(
+            &Some("h".into()),
+            &vec![TyXValue::Length {
+                unit: Some("em".into()),
+                value: Some("1".into()),
+            }],
+            &HashMap::new(),
+            true,
+        );
+        assert_eq!(result, "h(1em)");
+    }
+
+    #[test]
+    fn test_stringify_function_named_boolean() {
+        let mut named = HashMap::new();
+        named.insert("weak".into(), TyXValue::Boolean { value: Some(true) });
+        let result =
+            stringify_function(&Some("v".into()), &vec![], &named, true);
+        assert_eq!(result, "v(weak: true)");
+    }
+
+    #[test]
+    fn test_stringify_function_none_name() {
+        let result = stringify_function(&None, &vec![], &HashMap::new(), true);
+        assert_eq!(result, "()");
+    }
+
+    #[test]
+    fn test_stringify_function_skips_unset_boolean() {
+        let result = stringify_function(
+            &Some("fn".into()),
+            &vec![TyXValue::Boolean { value: None }],
+            &HashMap::new(),
+            true,
+        );
+        assert_eq!(result, "fn()");
+    }
+}

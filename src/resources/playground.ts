@@ -81,7 +81,6 @@ export const clearFormatting = (editor: LexicalEditor) => {
           if (nearestBlockElement.__indent !== 0) {
             nearestBlockElement.setIndent(0)
           }
-          node = textNode
         } else if ($isHeadingNode(node) || $isQuoteNode(node)) {
           node.replace($createParagraphNode(), true)
         }

@@ -37,3 +37,4 @@ src/converters
 examples/*.typ
 examples/*.pdf
 .claude
+coverage

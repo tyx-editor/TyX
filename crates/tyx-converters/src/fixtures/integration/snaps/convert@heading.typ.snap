@@ -1,0 +1,45 @@
+---
+source: crates/tyx-converters/src/tests.rs
+expression: conv(world)
+input_file: crates/tyx-converters/src/fixtures/integration/heading.typ
+---
+{
+ "root": {
+  "type": "root",
+  "children": [
+   {
+    "type": "heading",
+    "children": [
+     {
+      "type": "text",
+      "format": 0,
+      "text": "Heading One"
+     }
+    ],
+    "tag": "h2"
+   },
+   {
+    "type": "heading",
+    "children": [
+     {
+      "type": "text",
+      "format": 0,
+      "text": "Heading Two"
+     }
+    ],
+    "tag": "h3"
+   },
+   {
+    "type": "heading",
+    "children": [
+     {
+      "type": "text",
+      "format": 0,
+      "text": "Heading Three"
+     }
+    ],
+    "tag": "h4"
+   }
+  ]
+ }
+}

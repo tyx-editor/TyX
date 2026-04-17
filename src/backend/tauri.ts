@@ -57,7 +57,7 @@ export const onPreview = async (open = false) => {
     return
   }
 
-  let content = ""
+  let content: string
   try {
     content = serialized_tyx_to_typst(JSON.stringify(document))
   } catch (e: any) {

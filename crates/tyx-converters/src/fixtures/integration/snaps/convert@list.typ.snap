@@ -1,0 +1,128 @@
+---
+source: crates/tyx-converters/src/tests.rs
+expression: conv(world)
+input_file: crates/tyx-converters/src/fixtures/integration/list.typ
+---
+{
+ "root": {
+  "type": "root",
+  "children": [
+   {
+    "type": "list",
+    "children": [
+     {
+      "type": "listitem",
+      "children": [
+       {
+        "type": "paragraph",
+        "children": [
+         {
+          "type": "text",
+          "format": 0,
+          "text": "Item one"
+         }
+        ],
+        "format": ""
+       }
+      ],
+      "value": 0
+     },
+     {
+      "type": "listitem",
+      "children": [
+       {
+        "type": "paragraph",
+        "children": [
+         {
+          "type": "text",
+          "format": 0,
+          "text": "Item two"
+         }
+        ],
+        "format": ""
+       }
+      ],
+      "value": 0
+     },
+     {
+      "type": "listitem",
+      "children": [
+       {
+        "type": "paragraph",
+        "children": [
+         {
+          "type": "text",
+          "format": 0,
+          "text": "Item three"
+         }
+        ],
+        "format": ""
+       }
+      ],
+      "value": 0
+     }
+    ],
+    "listType": "bullet",
+    "start": 0
+   },
+   {
+    "type": "list",
+    "children": [
+     {
+      "type": "listitem",
+      "children": [
+       {
+        "type": "paragraph",
+        "children": [
+         {
+          "type": "text",
+          "format": 0,
+          "text": "First"
+         }
+        ],
+        "format": ""
+       }
+      ],
+      "value": 0
+     },
+     {
+      "type": "listitem",
+      "children": [
+       {
+        "type": "paragraph",
+        "children": [
+         {
+          "type": "text",
+          "format": 0,
+          "text": "Second"
+         }
+        ],
+        "format": ""
+       }
+      ],
+      "value": 0
+     },
+     {
+      "type": "listitem",
+      "children": [
+       {
+        "type": "paragraph",
+        "children": [
+         {
+          "type": "text",
+          "format": 0,
+          "text": "Third"
+         }
+        ],
+        "format": ""
+       }
+      ],
+      "value": 0
+     }
+    ],
+    "listType": "number",
+    "start": 1
+   }
+  ]
+ }
+}

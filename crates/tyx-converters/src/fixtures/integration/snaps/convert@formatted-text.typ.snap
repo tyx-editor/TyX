@@ -1,0 +1,68 @@
+---
+source: crates/tyx-converters/src/tests.rs
+expression: conv(world)
+input_file: crates/tyx-converters/src/fixtures/integration/formatted-text.typ
+---
+{
+ "root": {
+  "type": "root",
+  "children": [
+   {
+    "type": "paragraph",
+    "children": [
+     {
+      "type": "text",
+      "format": 1,
+      "text": "Bold text"
+     },
+     {
+      "type": "text",
+      "format": 0,
+      "text": " "
+     },
+     {
+      "type": "text",
+      "format": 0,
+      "text": "and"
+     },
+     {
+      "type": "text",
+      "format": 0,
+      "text": " "
+     },
+     {
+      "type": "text",
+      "format": 2,
+      "text": "italic text"
+     },
+     {
+      "type": "text",
+      "format": 0,
+      "text": " "
+     },
+     {
+      "type": "text",
+      "format": 0,
+      "text": "and"
+     },
+     {
+      "type": "text",
+      "format": 0,
+      "text": " "
+     },
+     {
+      "type": "text",
+      "format": 16,
+      "text": "code"
+     },
+     {
+      "type": "text",
+      "format": 0,
+      "text": "."
+     }
+    ],
+    "format": ""
+   }
+  ]
+ }
+}
