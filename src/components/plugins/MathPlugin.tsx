@@ -244,7 +244,8 @@ export const MathEditor = ({
       })
 
       if (shouldFocus) {
-        mathfieldRef.current?.focus()
+        // TODO: https://github.com/arnog/mathlive/issues/2973
+        setTimeout(() => mathfieldRef.current?.focus(), 0)
         updateCurrentMathEditor()
       }
     }
