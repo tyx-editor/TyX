@@ -11,10 +11,15 @@ export default defineConfig(async () => ({
     react(),
     viteStaticCopy({
       targets: [
-        { src: "node_modules/mathlive/fonts/*", dest: "fonts" },
+        {
+          src: "node_modules/mathlive/fonts/*",
+          dest: "fonts",
+          rename: { stripBase: 3 },
+        },
         {
           src: "node_modules/mathlive/mathlive-fonts.css",
           dest: ".",
+          rename: { stripBase: 2 },
         },
       ],
     }),
