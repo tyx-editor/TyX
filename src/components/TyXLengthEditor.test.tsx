@@ -9,19 +9,14 @@ const renderWithMantine = (ui: React.ReactElement) =>
 describe("TyXLengthEditor", () => {
   it("renders numeric input with current value", () => {
     renderWithMantine(
-      <TyXLengthEditor
-        value={{ unit: "em", value: "2" }}
-        onChange={vi.fn()}
-      />,
+      <TyXLengthEditor value={{ unit: "em", value: "2" }} onChange={vi.fn()} />,
     )
     const input = screen.getByRole("textbox")
     expect(input).toHaveValue("2")
   })
 
   it("renders empty input when value is undefined", () => {
-    renderWithMantine(
-      <TyXLengthEditor value={{}} onChange={vi.fn()} />,
-    )
+    renderWithMantine(<TyXLengthEditor value={{}} onChange={vi.fn()} />)
     const input = screen.getByRole("textbox")
     expect(input).toHaveValue("")
   })
@@ -41,7 +36,10 @@ describe("TyXLengthEditor", () => {
     const user = userEvent.setup()
     const onChange = vi.fn()
     renderWithMantine(
-      <TyXLengthEditor value={{ unit: "mm", value: "5" }} onChange={onChange} />,
+      <TyXLengthEditor
+        value={{ unit: "mm", value: "5" }}
+        onChange={onChange}
+      />,
     )
     const input = screen.getByRole("textbox")
     await user.clear(input)

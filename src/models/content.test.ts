@@ -54,12 +54,15 @@ describe("TyXTextNode", () => {
 
   it("rejects wrong type discriminator", () => {
     expect(
-      TyXTextNode.safeParse({ type: "paragraph", text: "hi", format: 0 }).success,
+      TyXTextNode.safeParse({ type: "paragraph", text: "hi", format: 0 })
+        .success,
     ).toBe(false)
   })
 
   it("rejects missing text field", () => {
-    expect(TyXTextNode.safeParse({ type: "text", format: 0 }).success).toBe(false)
+    expect(TyXTextNode.safeParse({ type: "text", format: 0 }).success).toBe(
+      false,
+    )
   })
 })
 

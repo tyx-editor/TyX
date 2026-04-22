@@ -2,7 +2,10 @@ import { FunctionDefinition, ParameterDescription } from "./functions"
 
 describe("ParameterDescription", () => {
   it("parses required parameter", () => {
-    const result = ParameterDescription.parse({ type: "length", required: true })
+    const result = ParameterDescription.parse({
+      type: "length",
+      required: true,
+    })
     expect(result.type).toBe("length")
     expect(result.required).toBe(true)
   })
@@ -14,7 +17,9 @@ describe("ParameterDescription", () => {
   })
 
   it("rejects missing type field", () => {
-    expect(ParameterDescription.safeParse({ required: true }).success).toBe(false)
+    expect(ParameterDescription.safeParse({ required: true }).success).toBe(
+      false,
+    )
   })
 })
 

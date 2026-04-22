@@ -65,10 +65,7 @@ describe("splitCommand", () => {
   })
 
   it("handles nested braces", () => {
-    expect(splitCommand('cmd {"a":{"b":1}}')).toEqual([
-      "cmd",
-      '{"a":{"b":1}}',
-    ])
+    expect(splitCommand('cmd {"a":{"b":1}}')).toEqual(["cmd", '{"a":{"b":1}}'])
   })
 
   it("handles multiple arguments", () => {

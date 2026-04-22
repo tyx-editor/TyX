@@ -75,9 +75,7 @@ describe("TyXValueEditor — boolean type", () => {
 
 describe("TyXValueEditor — content type", () => {
   it("renders nothing for content type", () => {
-    renderWithMantine(
-      <TyXValueEditor type="content" setValue={vi.fn()} />,
-    )
+    renderWithMantine(<TyXValueEditor type="content" setValue={vi.fn()} />)
     expect(screen.queryByRole("textbox")).toBeNull()
     expect(screen.queryByRole("switch")).toBeNull()
   })
@@ -85,9 +83,7 @@ describe("TyXValueEditor — content type", () => {
 
 describe("TyXValueEditor — initializes from type when value absent", () => {
   it("renders length editor when no value but type is length", () => {
-    renderWithMantine(
-      <TyXValueEditor type="length" setValue={vi.fn()} />,
-    )
+    renderWithMantine(<TyXValueEditor type="length" setValue={vi.fn()} />)
     expect(screen.getByRole("textbox")).toBeInTheDocument()
   })
 })

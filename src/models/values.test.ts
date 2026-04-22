@@ -31,15 +31,17 @@ describe("TyXBooleanValue", () => {
   })
 
   it("rejects wrong type discriminator", () => {
-    expect(
-      TyXBooleanValue.safeParse({ type: "length" }).success,
-    ).toBe(false)
+    expect(TyXBooleanValue.safeParse({ type: "length" }).success).toBe(false)
   })
 })
 
 describe("TyXLengthValue", () => {
   it("parses length value with type discriminator", () => {
-    const result = TyXLengthValue.parse({ type: "length", unit: "pt", value: "12" })
+    const result = TyXLengthValue.parse({
+      type: "length",
+      unit: "pt",
+      value: "12",
+    })
     expect(result.type).toBe("length")
     expect(result.unit).toBe("pt")
   })

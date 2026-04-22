@@ -1,4 +1,8 @@
-import { TyXCompilationOptions, TyXDocument, TyXDocumentSettings } from "./document"
+import {
+  TyXCompilationOptions,
+  TyXDocument,
+  TyXDocumentSettings,
+} from "./document"
 
 describe("TyXCompilationOptions", () => {
   it("parses with root and fontPaths", () => {
