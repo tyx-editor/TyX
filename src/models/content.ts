@@ -66,6 +66,7 @@ export const TyXTextNode = z
     type: z.literal("text"),
     text: z.string(),
     format: z.int(),
+    style: z.string().optional(),
   })
   .describe("A node describing text.")
   .meta({ title: "TyXTextNode" })

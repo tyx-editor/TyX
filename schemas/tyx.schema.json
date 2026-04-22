@@ -13,16 +13,14 @@
   ],
   "definitions": {
     "TyXDocument": {
-      "description": "An object representing an entire TyX document. Saved in `.tyx` files.",
-      "id": "TyXDocument",
       "type": "object",
       "properties": {
         "$schema": {
           "type": "string"
         },
         "version": {
-          "description": "The version of TyX in which the document was created.",
-          "type": "string"
+          "type": "string",
+          "description": "The version of TyX in which the document was created."
         },
         "preamble": {
           "description": "Raw Typst code to insert before the content.",
@@ -53,11 +51,11 @@
         }
       },
       "required": ["version"],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "An object representing an entire TyX document. Saved in `.tyx` files.",
+      "id": "TyXDocument"
     },
     "TyXDocumentContent": {
-      "description": "The serialized content of the editor.",
-      "id": "TyXDocumentContent",
       "type": "object",
       "properties": {
         "root": {
@@ -65,15 +63,13 @@
         }
       },
       "required": ["root"],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "The serialized content of the editor.",
+      "id": "TyXDocumentContent"
     },
     "TyXNode": {
-      "description": "Some TyX node.",
-      "id": "TyXNode",
       "anyOf": [
         {
-          "description": "The node at the root of a TyX document.",
-          "title": "TyXRootNode",
           "type": "object",
           "properties": {
             "type": {
@@ -90,11 +86,11 @@
               "$ref": "#/definitions/TyXDirection"
             }
           },
-          "required": ["type", "children"]
+          "required": ["type", "children"],
+          "description": "The node at the root of a TyX document.",
+          "title": "TyXRootNode"
         },
         {
-          "description": "A node describing a paragraph.",
-          "title": "TyXParagraphNode",
           "type": "object",
           "properties": {
             "type": {
@@ -143,11 +139,11 @@
               "$ref": "#/definitions/TyXDirection"
             }
           },
-          "required": ["type", "children", "format"]
+          "required": ["type", "children", "format"],
+          "description": "A node describing a paragraph.",
+          "title": "TyXParagraphNode"
         },
         {
-          "description": "A node describing text.",
-          "title": "TyXTextNode",
           "type": "object",
           "properties": {
             "type": {
@@ -161,13 +157,16 @@
               "type": "integer",
               "minimum": -9007199254740991,
               "maximum": 9007199254740991
+            },
+            "style": {
+              "type": "string"
             }
           },
-          "required": ["type", "text", "format"]
+          "required": ["type", "text", "format"],
+          "description": "A node describing text.",
+          "title": "TyXTextNode"
         },
         {
-          "description": "A node describing a math equation.",
-          "title": "TyXMathNode",
           "type": "object",
           "properties": {
             "type": {
@@ -184,11 +183,11 @@
               "type": "boolean"
             }
           },
-          "required": ["type"]
+          "required": ["type"],
+          "description": "A node describing a math equation.",
+          "title": "TyXMathNode"
         },
         {
-          "description": "A node describing a list item.",
-          "title": "TyXListItemNode",
           "type": "object",
           "properties": {
             "type": {
@@ -207,11 +206,11 @@
               }
             }
           },
-          "required": ["type", "value", "children"]
+          "required": ["type", "value", "children"],
+          "description": "A node describing a list item.",
+          "title": "TyXListItemNode"
         },
         {
-          "description": "A node describing a bullet or numbered list.",
-          "title": "TyXListNode",
           "type": "object",
           "properties": {
             "type": {
@@ -249,11 +248,11 @@
               "$ref": "#/definitions/TyXDirection"
             }
           },
-          "required": ["type", "children", "listType", "start"]
+          "required": ["type", "children", "listType", "start"],
+          "description": "A node describing a bullet or numbered list.",
+          "title": "TyXListNode"
         },
         {
-          "description": "A node describing a code block.",
-          "title": "TyXCodeNode",
           "type": "object",
           "properties": {
             "type": {
@@ -270,11 +269,11 @@
               "type": "string"
             }
           },
-          "required": ["type", "children"]
+          "required": ["type", "children"],
+          "description": "A node describing a code block.",
+          "title": "TyXCodeNode"
         },
         {
-          "description": "A node describing a block quote.",
-          "title": "TyXQuoteNode",
           "type": "object",
           "properties": {
             "type": {
@@ -291,11 +290,11 @@
               "$ref": "#/definitions/TyXDirection"
             }
           },
-          "required": ["type", "children"]
+          "required": ["type", "children"],
+          "description": "A node describing a block quote.",
+          "title": "TyXQuoteNode"
         },
         {
-          "description": "A node describing a table.",
-          "title": "TyXTableNode",
           "type": "object",
           "properties": {
             "type": {
@@ -312,11 +311,11 @@
               "$ref": "#/definitions/TyXDirection"
             }
           },
-          "required": ["type", "children"]
+          "required": ["type", "children"],
+          "description": "A node describing a table.",
+          "title": "TyXTableNode"
         },
         {
-          "description": "A node describing a table row.",
-          "title": "TyXTableRowNode",
           "type": "object",
           "properties": {
             "type": {
@@ -330,11 +329,11 @@
               }
             }
           },
-          "required": ["type", "children"]
+          "required": ["type", "children"],
+          "description": "A node describing a table row.",
+          "title": "TyXTableRowNode"
         },
         {
-          "description": "A node describing a table cell.",
-          "title": "TyXTableCellNode",
           "type": "object",
           "properties": {
             "type": {
@@ -351,11 +350,11 @@
               "$ref": "#/definitions/TyXDirection"
             }
           },
-          "required": ["type", "children"]
+          "required": ["type", "children"],
+          "description": "A node describing a table cell.",
+          "title": "TyXTableCellNode"
         },
         {
-          "description": "A line break node.",
-          "title": "TyXLineBreakNode",
           "type": "object",
           "properties": {
             "type": {
@@ -363,11 +362,11 @@
               "const": "linebreak"
             }
           },
-          "required": ["type"]
+          "required": ["type"],
+          "description": "A line break node.",
+          "title": "TyXLineBreakNode"
         },
         {
-          "description": "A horizontal rule node.",
-          "title": "TyXHorizontalRuleNode",
           "type": "object",
           "properties": {
             "type": {
@@ -375,11 +374,11 @@
               "const": "horizontalrule"
             }
           },
-          "required": ["type"]
+          "required": ["type"],
+          "description": "A horizontal rule node.",
+          "title": "TyXHorizontalRuleNode"
         },
         {
-          "description": "A raw Typst code node.",
-          "title": "TyXTypstCodeNode",
           "type": "object",
           "properties": {
             "type": {
@@ -402,11 +401,11 @@
               "required": ["editorState"]
             }
           },
-          "required": ["type", "text"]
+          "required": ["type", "text"],
+          "description": "A raw Typst code node.",
+          "title": "TyXTypstCodeNode"
         },
         {
-          "description": "An image node.",
-          "title": "TyXImageNode",
           "type": "object",
           "properties": {
             "type": {
@@ -417,11 +416,11 @@
               "type": "string"
             }
           },
-          "required": ["type", "src"]
+          "required": ["type", "src"],
+          "description": "An image node.",
+          "title": "TyXImageNode"
         },
         {
-          "description": "A link node.",
-          "title": "TyXLinkNode",
           "type": "object",
           "properties": {
             "type": {
@@ -438,11 +437,11 @@
               "type": "string"
             }
           },
-          "required": ["type", "children", "url"]
+          "required": ["type", "children", "url"],
+          "description": "A link node.",
+          "title": "TyXLinkNode"
         },
         {
-          "description": "A heading node.",
-          "title": "TyXHeadingNode",
           "type": "object",
           "properties": {
             "type": {
@@ -484,11 +483,11 @@
               }
             }
           },
-          "required": ["type", "tag", "children"]
+          "required": ["type", "tag", "children"],
+          "description": "A heading node.",
+          "title": "TyXHeadingNode"
         },
         {
-          "description": "A function call node.",
-          "title": "TyXFunctionCallNode",
           "type": "object",
           "properties": {
             "type": {
@@ -514,11 +513,11 @@
               }
             }
           },
-          "required": ["type"]
+          "required": ["type"],
+          "description": "A function call node.",
+          "title": "TyXFunctionCallNode"
         },
         {
-          "description": "A node describing a tab character.",
-          "title": "TyXTabNode",
           "type": "object",
           "properties": {
             "type": {
@@ -529,11 +528,11 @@
               "type": "string"
             }
           },
-          "required": ["type", "text"]
+          "required": ["type", "text"],
+          "description": "A node describing a tab character.",
+          "title": "TyXTabNode"
         },
         {
-          "description": "A node describing highlighted code text.",
-          "title": "TyXCodeHighlightNode",
           "type": "object",
           "properties": {
             "type": {
@@ -544,9 +543,13 @@
               "type": "string"
             }
           },
-          "required": ["type", "text"]
+          "required": ["type", "text"],
+          "description": "A node describing highlighted code text.",
+          "title": "TyXCodeHighlightNode"
         }
-      ]
+      ],
+      "description": "Some TyX node.",
+      "id": "TyXNode"
     },
     "TyXDirection": {
       "description": "A direction of text in TyX.",
@@ -561,8 +564,6 @@
       ]
     },
     "TyXDirectionValue": {
-      "description": "Possible direction values of text in TyX.",
-      "id": "TyXDirectionValue",
       "anyOf": [
         {
           "type": "string",
@@ -572,15 +573,13 @@
           "type": "string",
           "const": "rtl"
         }
-      ]
+      ],
+      "description": "Possible direction values of text in TyX.",
+      "id": "TyXDirectionValue"
     },
     "TyXValue": {
-      "description": "An object representing some Typst type.",
-      "id": "TyXValue",
       "anyOf": [
         {
-          "description": "An object representing Typst `relative` or `fraction` types.",
-          "title": "TyXLengthValue",
           "type": "object",
           "properties": {
             "unit": {
@@ -597,11 +596,11 @@
             }
           },
           "required": ["type"],
-          "additionalProperties": false
+          "additionalProperties": false,
+          "description": "An object representing Typst `relative` or `fraction` types.",
+          "title": "TyXLengthValue"
         },
         {
-          "description": "An object representing Typst `bool` type.",
-          "title": "TyXBooleanValue",
           "type": "object",
           "properties": {
             "type": {
@@ -613,11 +612,11 @@
             }
           },
           "required": ["type"],
-          "additionalProperties": false
+          "additionalProperties": false,
+          "description": "An object representing Typst `bool` type.",
+          "title": "TyXBooleanValue"
         },
         {
-          "description": "An object representing Typst `content` type.",
-          "title": "TyXContentValue",
           "type": "object",
           "properties": {
             "type": {
@@ -633,13 +632,15 @@
             }
           },
           "required": ["type"],
-          "additionalProperties": false
+          "additionalProperties": false,
+          "description": "An object representing Typst `content` type.",
+          "title": "TyXContentValue"
         }
-      ]
+      ],
+      "description": "An object representing some Typst type.",
+      "id": "TyXValue"
     },
     "TyXDocumentSettings": {
-      "description": "An object wrapping some common Typst document configuration options.",
-      "id": "TyXDocumentSettings",
       "type": "object",
       "properties": {
         "root": {
@@ -692,11 +693,11 @@
           }
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "An object wrapping some common Typst document configuration options.",
+      "id": "TyXDocumentSettings"
     },
     "TyXLength": {
-      "description": "An object representing Typst `relative` or `fraction` types.",
-      "id": "TyXLength",
       "type": "object",
       "properties": {
         "unit": {
@@ -708,11 +709,11 @@
           "type": "string"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "An object representing Typst `relative` or `fraction` types.",
+      "id": "TyXLength"
     },
     "FunctionDefinition": {
-      "description": "TyX specification for a Typst function.",
-      "id": "FunctionDefinition",
       "type": "object",
       "properties": {
         "positional": {
@@ -729,8 +730,8 @@
             "type": "object",
             "properties": {
               "type": {
-                "description": "The TyX type of this parameter.",
-                "type": "string"
+                "type": "string",
+                "description": "The TyX type of this parameter."
               },
               "required": {
                 "description": "Whether this parameter is required.",
@@ -757,16 +758,16 @@
           "type": "boolean"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "TyX specification for a Typst function.",
+      "id": "FunctionDefinition"
     },
     "ParameterDescription": {
-      "description": "TyX specification for a function parameter.",
-      "id": "ParameterDescription",
       "type": "object",
       "properties": {
         "type": {
-          "description": "The TyX type of this parameter.",
-          "type": "string"
+          "type": "string",
+          "description": "The TyX type of this parameter."
         },
         "required": {
           "description": "Whether this parameter is required.",
@@ -782,11 +783,11 @@
         }
       },
       "required": ["type"],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "TyX specification for a function parameter.",
+      "id": "ParameterDescription"
     },
     "TyXSettings": {
-      "description": "App-wide customization for TyX.",
-      "id": "TyXSettings",
       "type": "object",
       "properties": {
         "$schema": {
@@ -857,7 +858,9 @@
           }
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "App-wide customization for TyX.",
+      "id": "TyXSettings"
     }
   }
 }

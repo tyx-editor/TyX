@@ -1,7 +1,5 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "description": "App-wide customization for TyX.",
-  "id": "TyXSettings",
   "type": "object",
   "properties": {
     "$schema": {
@@ -73,10 +71,10 @@
     }
   },
   "additionalProperties": false,
+  "description": "App-wide customization for TyX.",
+  "id": "TyXSettings",
   "definitions": {
     "FunctionDefinition": {
-      "description": "TyX specification for a Typst function.",
-      "id": "FunctionDefinition",
       "type": "object",
       "properties": {
         "positional": {
@@ -93,8 +91,8 @@
             "type": "object",
             "properties": {
               "type": {
-                "description": "The TyX type of this parameter.",
-                "type": "string"
+                "type": "string",
+                "description": "The TyX type of this parameter."
               },
               "required": {
                 "description": "Whether this parameter is required.",
@@ -121,16 +119,16 @@
           "type": "boolean"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "TyX specification for a Typst function.",
+      "id": "FunctionDefinition"
     },
     "ParameterDescription": {
-      "description": "TyX specification for a function parameter.",
-      "id": "ParameterDescription",
       "type": "object",
       "properties": {
         "type": {
-          "description": "The TyX type of this parameter.",
-          "type": "string"
+          "type": "string",
+          "description": "The TyX type of this parameter."
         },
         "required": {
           "description": "Whether this parameter is required.",
@@ -146,7 +144,9 @@
         }
       },
       "required": ["type"],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "TyX specification for a function parameter.",
+      "id": "ParameterDescription"
     }
   },
   "title": "TyXSettings"

@@ -1,9 +1,10 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { HeadingTagType } from "@lexical/rich-text"
+import { $patchStyleText } from "@lexical/selection"
 import { mergeRegister } from "@lexical/utils"
 import { modals } from "@mantine/modals"
 import { t } from "i18next"
-import { COMMAND_PRIORITY_EDITOR } from "lexical"
+import { $getSelection, $isRangeSelection, COMMAND_PRIORITY_EDITOR } from "lexical"
 import { useEffect } from "react"
 import {
   newFromTemplate,
@@ -43,6 +44,7 @@ import {
   INSERT_QUOTE_COMMAND,
   OPEN_DOCUMENT_SETTINGS_COMMAND,
   OPEN_SETTINGS_COMMAND,
+  SET_FONT_SIZE_COMMAND,
 } from "./tyxCommands"
 
 const TyXCommandsPlugin = () => {
@@ -101,6 +103,24 @@ const TyXCommandsPlugin = () => {
         () => {
           if (window.currentEditor !== undefined) {
             clearFormatting(window.currentEditor)
+          }
+          return true
+        },
+        COMMAND_PRIORITY_EDITOR,
+      ),
+      editor.registerCommand(
+        SET_FONT_SIZE_COMMAND,
+        (size) => {
+          const activeEditor = window.currentEditor
+          if (activeEditor !== undefined) {
+            activeEditor.update(() => {
+              const selection = $getSelection()
+              if ($isRangeSelection(selection)) {
+                $patchStyleText(selection, {
+                  "font-size": size ? `${size}pt` : null,
+                })
+              }
+            })
           }
           return true
         },

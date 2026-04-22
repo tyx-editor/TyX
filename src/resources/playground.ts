@@ -8,7 +8,11 @@ import {
   $isQuoteNode,
   HeadingTagType,
 } from "@lexical/rich-text"
-import { $isAtNodeEnd, $setBlocksType } from "@lexical/selection"
+import {
+  $getSelectionStyleValueForProperty,
+  $isAtNodeEnd,
+  $setBlocksType,
+} from "@lexical/selection"
 import { $isTableSelection } from "@lexical/table"
 import {
   $findMatchingParent,
@@ -212,6 +216,7 @@ export const $getToolbarState = () => {
       isSubscript: selection.hasFormat("subscript"),
       isSuperscript: selection.hasFormat("superscript"),
       isCode: selection.hasFormat("code"),
+      fontSize: $getSelectionStyleValueForProperty(selection, "font-size", ""),
       blockType: $isHeadingNode(element) ? element.getTag() : element.getType(),
       codeLanguage: $isCodeNode(element)
         ? (element.getLanguage() ?? undefined)

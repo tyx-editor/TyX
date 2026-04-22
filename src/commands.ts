@@ -57,6 +57,7 @@ import {
   OPEN_DOCUMENT_SETTINGS_COMMAND,
   OPEN_LINK_POPUP_COMMAND,
   OPEN_SETTINGS_COMMAND,
+  SET_FONT_SIZE_COMMAND,
 } from "./components/plugins/tyxCommands"
 
 declare global {
@@ -105,6 +106,7 @@ const COMMANDS: Record<string, LexicalCommand<any>> = {
   filePreview: FILE_PREVIEW_COMMAND,
   openSettings: OPEN_SETTINGS_COMMAND,
   openDocumentSettings: OPEN_DOCUMENT_SETTINGS_COMMAND,
+  setFontSize: SET_FONT_SIZE_COMMAND,
 }
 
 /** Parse the given parameter into the corresponding JS object, to be passed to command functions. */

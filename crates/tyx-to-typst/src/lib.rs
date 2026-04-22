@@ -83,6 +83,21 @@ fn apply_text_format(mut result: String, text: &str, format: i64) -> String {
     result
 }
 
+/// Extracts a `font-size` pt value from a CSS inline style string.
+/// Returns the numeric part if the value uses `pt` units.
+fn parse_font_size_pt(style: &str) -> Option<f64> {
+    for part in style.split(';') {
+        let part = part.trim();
+        if let Some(value) = part.strip_prefix("font-size:") {
+            let value = value.trim();
+            if let Some(n) = value.strip_suffix("pt") {
+                return n.trim().parse::<f64>().ok();
+            }
+        }
+    }
+    None
+}
+
 /// Applies the given alignment format to the output Typst code.
 fn apply_format(result: &str, format: &str) -> String {
     if format == "justify" {
@@ -156,8 +171,14 @@ fn node_to_typst(root: &TyXNode) -> Option<String> {
             &apply_format(&children_to_typst(children), &format!("{format}")),
             direction.clone().unwrap_or(TyXDirection(None)),
         )),
-        TyXNode::Text { text, format, .. } => {
-            Some(apply_text_format(typst_escape(text), text, *format))
+        TyXNode::Text {
+            text, format, style, ..
+        } => {
+            let mut result = apply_text_format(typst_escape(text), text, *format);
+            if let Some(size) = style.as_deref().and_then(parse_font_size_pt) {
+                result = format!("#text(size: {size}pt)[{result}]");
+            }
+            Some(result)
         }
         TyXNode::Tab { .. } => Some("\t".into()),
         TyXNode::CodeHighlight { text, .. } => Some(typst_escape(text)),

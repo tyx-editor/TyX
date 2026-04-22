@@ -6,6 +6,7 @@ import {
   ActionIcon,
   Loader,
   Menu,
+  NumberInput,
   Popover,
   TextInput,
   Tooltip,
@@ -108,6 +109,7 @@ interface ToolbarState {
   isSubscript?: boolean
   isSuperscript?: boolean
   isCode?: boolean
+  fontSize?: string
   blockType?: string
   codeLanguage?: string
   elementKey?: NodeKey
@@ -310,6 +312,51 @@ const FormatControls = () => {
       <ToolbarControl label="Clear formatting" command="clearFormatting">
         <IconClearFormatting />
       </ToolbarControl>
+    </ToolbarControlGroup>
+  )
+}
+
+const DEFAULT_FONT_SIZE_PT = 11
+
+const FontSizeControls = () => {
+  const toolbarState = useToolbarState()
+  const [value, setValue] = useState<number | string>("")
+
+  useEffect(() => {
+    const raw = toolbarState.fontSize ?? ""
+    const pt = parseFloat(raw)
+    if (!isNaN(pt)) {
+      setValue(pt)
+    } else if (toolbarState.blockType !== undefined) {
+      setValue(DEFAULT_FONT_SIZE_PT)
+    } else {
+      setValue("")
+    }
+  }, [toolbarState.fontSize, toolbarState.blockType])
+
+  const apply = (v: number | string) => {
+    const size = typeof v === "number" && v > 0 ? v : null
+    executeCommandSequence(size ? `setFontSize ${size}` : "setFontSize null")
+  }
+
+  return (
+    <ToolbarControlGroup>
+      <NumberInput
+        size="xs"
+        w={72}
+        min={1}
+        placeholder="pt"
+        value={value}
+        onChange={(v) => setValue(v)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault()
+            e.stopPropagation()
+            apply(value)
+          }
+        }}
+        onBlur={() => apply(value)}
+      />
     </ToolbarControlGroup>
   )
 }
@@ -868,6 +915,7 @@ const ToolbarPlugin = () => {
       <ToolbarContext.Provider value={toolbarState}>
         <ManagementControls />
         <FormatControls />
+        <FontSizeControls />
         <InsertControls />
         <HeadingControls />
         <AlignmentControls />

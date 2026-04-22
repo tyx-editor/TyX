@@ -24,7 +24,11 @@ use typlite::ast;
 use tyx_schema::{self as s, TextFormat, TyXNode};
 
 fn plain(text: String) -> TyXNode {
-    TyXNode::Text { format: 0, text }
+    TyXNode::Text {
+        format: 0,
+        text,
+        style: None,
+    }
 }
 
 /// Converts the main document in a [`LspWorld`] to a [`TyXDocument`]

@@ -16,6 +16,7 @@ class TyXTextNode(BaseModel):
     type: Literal["text"]
     text: str
     format: conint(ge=-9007199254740991, le=9007199254740991)
+    style: Optional[str] = None
 
 
 class TyXMathNode(BaseModel):

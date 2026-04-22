@@ -21,3 +21,6 @@ export const FILE_PREVIEW_COMMAND: LexicalCommand<void> = createCommand()
 export const OPEN_SETTINGS_COMMAND: LexicalCommand<void> = createCommand()
 export const OPEN_DOCUMENT_SETTINGS_COMMAND: LexicalCommand<void> =
   createCommand()
+
+export const SET_FONT_SIZE_COMMAND: LexicalCommand<number | null> =
+  createCommand()
