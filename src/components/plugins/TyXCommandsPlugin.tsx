@@ -4,7 +4,11 @@ import { $patchStyleText } from "@lexical/selection"
 import { mergeRegister } from "@lexical/utils"
 import { modals } from "@mantine/modals"
 import { t } from "i18next"
-import { $getSelection, $isRangeSelection, COMMAND_PRIORITY_EDITOR } from "lexical"
+import {
+  $getSelection,
+  $isRangeSelection,
+  COMMAND_PRIORITY_EDITOR,
+} from "lexical"
 import { useEffect } from "react"
 import {
   newFromTemplate,
