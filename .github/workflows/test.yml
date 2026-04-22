@@ -29,7 +29,7 @@ jobs:
         run: cargo test --workspace
 
       - name: run frontend tests
-        run: bun run test:unit
+        run: bun run test:unit:coverage
 
       - name: upload coverage
         uses: actions/upload-artifact@v4
