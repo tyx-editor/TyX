@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.19] - 2026-09-19
+
+### Changed
+
+- The bundled typst compiler has been bumped to 0.15.1.
+
+### Added
+
+- There is now a text size control.
+
 ## [0.2.18] - 2026-04-17
 
 ### Fixed
