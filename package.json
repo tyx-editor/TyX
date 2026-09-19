@@ -75,7 +75,7 @@
     "vite": "^8.0.8",
     "vite-plugin-static-copy": "^4.0.1",
     "vitest": "^4.1.4",
-    "wasm-pack": "^0.14.0"
+    "wasm-pack": "^0.15.0"
   },
   "prettier": {
     "semi": false
