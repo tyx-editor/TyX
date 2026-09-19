@@ -173,8 +173,7 @@ export const MathEditor = ({
               "#mathlive-suggestion-popover",
             )
             const current = popover?.querySelector(".ML__popover__current") as
-              | HTMLLIElement
-              | undefined
+              HTMLLIElement | undefined
             // If popover is visible, should complete the popover instead of moving after parent
             if (popover !== null) {
               current?.click()

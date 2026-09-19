@@ -1,10 +1,6 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin"
-import {
-  COMMAND_PRIORITY_EDITOR,
-  SerializedEditorState,
-  SerializedLexicalNode,
-} from "lexical"
+import { COMMAND_PRIORITY_EDITOR, SerializedEditorState } from "lexical"
 import { useEffect } from "react"
 import { TyXDocument, TyXRootNode } from "../../models"
 import { getLocalStorage, setLocalStorage } from "../../utilities/hooks"
@@ -13,7 +9,7 @@ import { UPDATE_LOCAL_STORAGE_COMMAND } from "./updateLocalStorage"
 const UpdateLocalStoragePlugin = () => {
   const [editor] = useLexicalComposerContext()
 
-  const update = (content: SerializedEditorState<SerializedLexicalNode>) => {
+  const update = (content: SerializedEditorState) => {
     const openDocuments = getLocalStorage<TyXDocument[]>("Open Documents", [])
     const currentDocument = getLocalStorage<number>("Current Document", 0)
     const doc = openDocuments[currentDocument]

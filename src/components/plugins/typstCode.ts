@@ -8,6 +8,7 @@ import {
   LexicalEditor,
   LexicalNode,
   LexicalUpdateJSON,
+  SerializedPartial,
   NodeKey,
   SerializedEditor,
   SerializedLexicalNode,
@@ -52,9 +53,11 @@ export class TypstCodeNode extends DecoratorNode<React.ReactNode> {
   }
 
   static importJSON(
-    serializedNode: LexicalUpdateJSON<SerializedTypstCodeNode>,
+    serializedNode: SerializedPartial<SerializedTypstCodeNode>,
   ): TypstCodeNode {
-    return new TypstCodeNode().updateFromJSON(serializedNode)
+    return new TypstCodeNode().updateFromJSON(
+      serializedNode as LexicalUpdateJSON<SerializedTypstCodeNode>,
+    )
   }
 
   updateFromJSON(

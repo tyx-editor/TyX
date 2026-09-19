@@ -13,7 +13,6 @@ import {
   SerializedTableRowNode,
 } from "@lexical/table"
 import {
-  SerializedLexicalNode,
   SerializedLineBreakNode,
   SerializedParagraphNode,
   SerializedRootNode,
@@ -23,7 +22,7 @@ import { SerializedImageNode } from "./components/plugins/image"
 import { SerializedMathNode } from "./components/plugins/math"
 import { SerializedTypstCodeNode } from "./components/plugins/typstCode"
 
-export type Root = SerializedRootNode<SerializedLexicalNode>
+export type Root = SerializedRootNode
 export type Paragraph = SerializedParagraphNode
 export type Text = SerializedTextNode
 export type Math = SerializedMathNode

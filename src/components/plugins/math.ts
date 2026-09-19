@@ -6,6 +6,7 @@ import {
   LexicalCommand,
   LexicalNode,
   LexicalUpdateJSON,
+  SerializedPartial,
   NodeKey,
   SerializedLexicalNode,
   Spread,
@@ -40,9 +41,11 @@ export class MathNode extends DecoratorNode<React.ReactNode> {
   }
 
   static importJSON(
-    serializedNode: LexicalUpdateJSON<SerializedMathNode>,
+    serializedNode: SerializedPartial<SerializedMathNode>,
   ): MathNode {
-    return new MathNode().updateFromJSON(serializedNode)
+    return new MathNode().updateFromJSON(
+      serializedNode as LexicalUpdateJSON<SerializedMathNode>,
+    )
   }
 
   updateFromJSON(serializedNode: LexicalUpdateJSON<SerializedMathNode>): this {

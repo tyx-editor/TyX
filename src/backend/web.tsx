@@ -5,6 +5,7 @@
 
 import { modals } from "@mantine/modals"
 import { createTypstCompiler, TypstCompiler } from "@myriaddreamin/typst.ts"
+import { CompileFormatEnum } from "@myriaddreamin/typst.ts/compiler"
 import { version } from "../../src-tauri/tauri.conf.json"
 import SaveAsModal from "../components/SaveAsModal"
 import { serialized_tyx_to_typst } from "../converters"
@@ -47,7 +48,7 @@ export const onPreview = async (_open = false) => {
     serialized_tyx_to_typst(JSON.stringify(document)),
   )
   const result = await compiler.compile({
-    format: "pdf",
+    format: CompileFormatEnum.pdf,
     mainFilePath: "/main.typ",
     diagnostics: "none",
   })

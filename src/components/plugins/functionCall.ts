@@ -8,6 +8,7 @@ import {
   LexicalEditor,
   LexicalNode,
   LexicalUpdateJSON,
+  SerializedPartial,
   NodeKey,
   SerializedEditorState,
   SerializedLexicalNode,
@@ -124,10 +125,7 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
     }
   }
 
-  setContentParameter(
-    index: number,
-    state: SerializedEditorState<SerializedLexicalNode>,
-  ) {
+  setContentParameter(index: number, state: SerializedEditorState) {
     const self = this.getWritable()
     self.__positionParameters[index] = {
       type: "content",
@@ -150,9 +148,11 @@ export class FunctionCallNode extends DecoratorNode<React.ReactNode> {
   }
 
   static importJSON(
-    serializedNode: LexicalUpdateJSON<SerializedFunctionCallNode>,
+    serializedNode: SerializedPartial<SerializedFunctionCallNode>,
   ): FunctionCallNode {
-    return new FunctionCallNode().updateFromJSON(serializedNode)
+    return new FunctionCallNode().updateFromJSON(
+      serializedNode as LexicalUpdateJSON<SerializedFunctionCallNode>,
+    )
   }
 
   updateFromJSON(
